@@ -1,27 +1,11 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import Link from '@material-ui/core/Link';
+import Link from 'next/link'
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-
-const useStyles = makeStyles((theme) => ({
-    paper: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-    },
-    form: {
-        width: '100%', // Fix IE 11 issue.
-        marginTop: theme.spacing(1),
-    },
-    submit: {
-        margin: theme.spacing(3, 0, 2),
-    },
-}));
+import styles from '../styles/Home.module.css'
 
 export default function SignIn() {
     const [emailValue, setEmailValue] = React.useState('')
@@ -30,7 +14,6 @@ export default function SignIn() {
     const [passError, setPassError] = React.useState(false)
     const [emailMes, setEmailMes] = React.useState('')
     const [passMes, setPassMes] = React.useState('')
-    const classes = useStyles();
 
 
     function logInClicked() {
@@ -91,14 +74,12 @@ export default function SignIn() {
     return (
         <div className={"App"}>
             <Container component="div" maxWidth="xs">
-                <CssBaseline />
-                <div className={classes.paper}>
-                    <Typography component="h1" variant="h5" color={'primary'}>
+                <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                    <Typography color={"secondary"} component={'h1'} variant={'h5'} style={{margin:0}}>
                         Log in
                     </Typography>
-                    <form className={classes.form} noValidate>
+                    <form noValidate style={{borderTop: '1px solid #F2C116', width: '100%', marginTop: '10px'}}>
                         <TextField
-                            variant="outlined"
                             margin="normal"
                             required
                             fullWidth
@@ -114,7 +95,6 @@ export default function SignIn() {
                             onClick={removeErrorEmail}
                         />
                         <TextField
-                            variant="outlined"
                             margin="normal"
                             required
                             error={passError}
@@ -133,23 +113,20 @@ export default function SignIn() {
                             fullWidth
                             variant="contained"
                             color="primary"
-                            className={classes.submit}
+                            style={{fontWeight: 300, marginTop: '10%', marginBottom: '2%'}}
                             onClick={() => logInClicked()}
                         >
                             Log In
                         </Button>
-                        {/*<Grid container>*/}
-                        {/*    <Grid item xs>*/}
-                        {/*        <Link href="/forgotPass" variant="body2" style={{float:"left"}}>*/}
-                        {/*            Forgot password?*/}
-                        {/*        </Link>*/}
-                        {/*    </Grid>*/}
-                        {/*    <Grid item>*/}
-                        {/*        <Link href='/createAccount' variant="body2" style={{float:"right"}}>*/}
-                        {/*            {"Don't have an account? Sign Up"}*/}
-                        {/*        </Link>*/}
-                        {/*    </Grid>*/}
-                        {/*</Grid>*/}
+                        <Grid container>
+                            <Grid item xs={7}>
+                            </Grid>
+                            <Grid item xs={5}>
+                                <Link href='/ChooseUserNewAccount'>
+                                    <a className={styles.createAccount}>Create an account</a>
+                                </Link>
+                            </Grid>
+                        </Grid>
                     </form>
                 </div>
             </Container>

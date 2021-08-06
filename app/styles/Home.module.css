@@ -117,3 +117,14 @@
     flex-direction: column;
   }
 }
+
+.createAccount {
+  color: #1F75A6;
+  font-size: 1em;
+  transition: font-size 200ms linear;
+}
+
+.createAccount:hover {
+  color: #A64B28;
+  font-size: 1.01em;
+}
