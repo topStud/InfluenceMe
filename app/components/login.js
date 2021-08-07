@@ -118,12 +118,10 @@ export default function SignIn() {
                         >
                             Log In
                         </Button>
-                        <Grid container>
-                            <Grid item xs={7}>
-                            </Grid>
-                            <Grid item xs={5}>
-                                <Link href='/ChooseUserNewAccount'>
-                                    <a className={styles.createAccount}>Create an account</a>
+                        <Grid container justifyContent="flex-end">
+                            <Grid item>
+                                <Link href='/newAccount'>
+                                    <a className={styles.link}>Create an account</a>
                                 </Link>
                             </Grid>
                         </Grid>
