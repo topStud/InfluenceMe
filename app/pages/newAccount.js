@@ -7,10 +7,11 @@ import Layout from "../components/layout";
 import Chip from '@material-ui/core/Chip';
 import PersonIcon from '@material-ui/icons/Person'
 import BusinessIcon from '@material-ui/icons/Business'
-import { useRouter } from 'next/router'
+import StepperAccountInfo from '../components/newAccountSteps'
+//import { useRouter } from 'next/router'
 
 export default function SignUp() {
-    const router = useRouter()
+    //const router = useRouter()
     // values
     const [emailValue, setEmailValue] = React.useState('')
     const [passValue, setPassValue] = React.useState('')
@@ -27,6 +28,8 @@ export default function SignUp() {
     const [chipValue, setChipValue] = React.useState(1)
     const [variantInfluencerValue, setVariantInfluencerValue] = React.useState('default')
     const [variantCompanyValue, setVariantCompanyValue] = React.useState('outlined')
+
+    const [registered, setRegistered] = React.useState(false)
 
     const required_txt = 'This field is required'
 
@@ -83,7 +86,8 @@ export default function SignUp() {
         }
         // sends values to server for registration
         if (valid) {
-            router.push('/newAccountSteps').then(null)
+            setRegistered(true)
+            //router.push('/newAccountSteps').then(null)
         }
     }
 
@@ -109,78 +113,82 @@ export default function SignUp() {
 
                 </Grid>
                 <Grid item xs={12} sm={8}>
-                    <div style={{marginTop: '3%', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                        <Typography color={"secondary"} component={'h1'} variant={'h3'} style={{margin:0}}>
-                            Sign Up
-                        </Typography>
-                        <form style={{width: '100%', marginTop: '5%'}} noValidate>
-                            <Grid container spacing={2}>
-                                <Grid item xs={12}>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        id="email"
-                                        label="Email Address"
-                                        name="email"
-                                        autoComplete="email"
-                                        value={emailValue}
-                                        onChange={emailChange}
-                                        error={emailError}
-                                        helperText={emailMes}
-                                        onClick={removeEmailError}
-                                    />
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        name="password"
-                                        label="Password"
-                                        type="password"
-                                        id="password"
-                                        autoComplete="current-password"
-                                        value={passValue}
-                                        onChange={passChange}
-                                        error={passError}
-                                        helperText={passMes}
-                                        onClick={removePassError}
-                                    />
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        name="password_v"
-                                        label="Password Verification"
-                                        type="password"
-                                        id="password_v"
-                                        value={passVValue}
-                                        onChange={passVChange}
-                                        error={passVError}
-                                        helperText={passVMes}
-                                        onClick={removePassVError}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <Chip variant={variantInfluencerValue} color="secondary" icon={<PersonIcon />} label={'Influencer'}
-                                    style={{width: '100%', fontSize: '1em'}} onClick={handleInfluencerClick}/>
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <Chip variant={variantCompanyValue} color={"secondary"} icon={<BusinessIcon />} label={'Company'}
-                                          style={{width: '100%', fontSize: '1em'}} onClick={handleCompanyClick}/>
-                                </Grid>
-                            </Grid>
-                            <Button
-                                variant="contained"
-                                fullWidth
-                                color="primary"
-                                style={{fontWeight: 300, marginTop: '5%', marginBottom: '2%'}}
-                                onClick={() => SignUpClicked()}
-                            >
+                    {!registered ? (
+                        <div style={{marginTop: '3%', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                            <Typography color={"secondary"} component={'h1'} variant={'h3'} style={{margin:0}}>
                                 Sign Up
-                            </Button>
-                        </form>
-                    </div>
+                            </Typography>
+                            <form style={{width: '100%', marginTop: '5%'}} noValidate>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            required
+                                            fullWidth
+                                            id="email"
+                                            label="Email Address"
+                                            name="email"
+                                            autoComplete="email"
+                                            value={emailValue}
+                                            onChange={emailChange}
+                                            error={emailError}
+                                            helperText={emailMes}
+                                            onClick={removeEmailError}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            required
+                                            fullWidth
+                                            name="password"
+                                            label="Password"
+                                            type="password"
+                                            id="password"
+                                            autoComplete="current-password"
+                                            value={passValue}
+                                            onChange={passChange}
+                                            error={passError}
+                                            helperText={passMes}
+                                            onClick={removePassError}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            required
+                                            fullWidth
+                                            name="password_v"
+                                            label="Password Verification"
+                                            type="password"
+                                            id="password_v"
+                                            value={passVValue}
+                                            onChange={passVChange}
+                                            error={passVError}
+                                            helperText={passVMes}
+                                            onClick={removePassVError}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm={6}>
+                                        <Chip variant={variantInfluencerValue} color="secondary" icon={<PersonIcon />} label={'Influencer'}
+                                              style={{width: '100%', fontSize: '1em'}} onClick={handleInfluencerClick}/>
+                                    </Grid>
+                                    <Grid item xs={12} sm={6}>
+                                        <Chip variant={variantCompanyValue} color={"secondary"} icon={<BusinessIcon />} label={'Company'}
+                                              style={{width: '100%', fontSize: '1em'}} onClick={handleCompanyClick}/>
+                                    </Grid>
+                                </Grid>
+                                <Button
+                                    variant="contained"
+                                    fullWidth
+                                    color="primary"
+                                    style={{fontWeight: 300, marginTop: '5%', marginBottom: '2%'}}
+                                    onClick={() => SignUpClicked()}
+                                >
+                                    Sign Up
+                                </Button>
+                            </form>
+                        </div>
+                    ):(
+                        <StepperAccountInfo register={setRegistered}/>
+                    )}
                 </Grid>
                 <Grid item xs={12} sm={2}>
 
