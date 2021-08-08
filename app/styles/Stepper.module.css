@@ -1,0 +1,35 @@
+.root_icon {
+    background-color: #ccc;
+    z-index: 1;
+    color: #fff;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+}
+
+.active_icon {
+    background-image: linear-gradient( 136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%);
+    box-shadow: 0 4px 10px 0 rgba(0,0,0,.25)
+}
+.completed_icon {
+    background-image: linear-gradient( 136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)
+}
+
+.line_conn {
+    height: 3px;
+    border: 0;
+    background-color: #eaeaf0;
+    border-radius: 1px;
+    opacity: 40%;
+}
+
+.active_conn {
+    background-image: linear-gradient( 95deg,rgb(242,113,33) 0%,rgb(233,64,87) 50%,rgb(138,35,135) 100%);
+}
+
+.completed_conn {
+    background-image: linear-gradient( 95deg,rgb(242,113,33) 0%,#F27746 50%,#A64B28 100%);
+}

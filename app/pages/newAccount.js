@@ -7,8 +7,10 @@ import Layout from "../components/layout";
 import Chip from '@material-ui/core/Chip';
 import PersonIcon from '@material-ui/icons/Person'
 import BusinessIcon from '@material-ui/icons/Business'
+import { useRouter } from 'next/router'
 
 export default function SignUp() {
+    const router = useRouter()
     // values
     const [emailValue, setEmailValue] = React.useState('')
     const [passValue, setPassValue] = React.useState('')
@@ -81,7 +83,7 @@ export default function SignUp() {
         }
         // sends values to server for registration
         if (valid) {
-
+            router.push('/newAccountSteps').then(null)
         }
     }
 
