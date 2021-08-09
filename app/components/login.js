@@ -31,15 +31,20 @@ export default function SignIn() {
             }
         } else {
             // removes the error annotation
-            setEmailError(false)
-            setPassError(false)
             setEmailMes('')
             setPassMes('')
 
-            let url = '/userInfo?email=' + emailValue + '&pass=' + passValue
+            let url = '/api/login'
 
             // sends values to server for a check.
-            fetch(url).then(res => {
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({email: emailValue, pass: passValue})
+            }).then(res => {
                 if (!res.ok) {
                     throw Error(res.statusText);
                 }
