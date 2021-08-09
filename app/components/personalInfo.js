@@ -6,9 +6,35 @@ import AddPhotoAlternateIcon from "@material-ui/icons/AddPhotoAlternate";
 import {blue} from "@material-ui/core/colors";
 import PhoneTextField from './phoneTextField'
 
-export default function PersonalInfo() {
-    const [phoneValue, setPhoneValue] = React.useState('')
-    const [selectedFile, setSelectedFile] = React.useState(null)
+export default function PersonalInfo(props) {
+    // values
+    const values = props.personalInfoValues.val
+    const firstName = values.fName
+    const lastName = values.lName
+    const date = values.dateValue
+    const photo = values.photo
+    const phone = values.phoneNum
+    // values - setters
+    const setFirstName = values.setFName
+    const setLastName = values.setLName
+    const setDate = values.setDateValue
+    const setPhoto = values.setPhoto
+    const setPhone = values.setPhone
+    // error marks
+    const errors = props.personalInfoValues.err
+    const firstNameErr = errors.fName
+    const lastNameErr = errors.lName
+    // error marks - setters
+    const setFirstNameErr = errors.setFName
+    const setLastNameErr = errors.setLName
+    // error message
+    const msg = props.personalInfoValues.errMsg
+    const firstNameMsg = msg.fName
+    const lastNameMsg = msg.lName
+    // error message - setters
+    const setFirstNameMsg = msg.setFName
+    const setLastNameMsg = msg.setLName
+
     const [imageName, setImageName] = React.useState('')
 
     const handleUploadClick = event => {
@@ -18,30 +44,60 @@ export default function PersonalInfo() {
         reader.readAsDataURL(file);
 
         reader.onloadend = function(e) {
-            setSelectedFile(reader.result)
+            setPhoto(reader.result)
         }
     };
 
-    function onPhoneChange(e) {
-        setPhoneValue(e.target.value)
+    function onFirstNameChange(e) {
+        setFirstName(e.target.value)
+    }
+
+    function onLastNameChange(e) {
+        setLastName(e.target.value)
+    }
+
+    function onDateChange(e) {
+        setDate(e.target.value)
+    }
+
+    function onFirstNameClick() {
+        setFirstNameMsg('')
+        setFirstNameErr(false)
+    }
+
+    function onLastNameClick() {
+        setLastNameMsg('')
+        setLastNameErr(false)
     }
 
     return (
         <Grid container spacing={4}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={6} style={{height: 100}}>
                 <TextField
                     id="firstName"
                     label="First Name"
                     type="text"
                     fullWidth
+                    error={firstNameErr}
+                    helperText={firstNameMsg}
+                    required
+                    value={firstName}
+                    onClick={onFirstNameClick}
+                    onChange={onFirstNameChange}
                 />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={6} style={{height: 100}}>
                 <TextField
                     id="lastName"
                     label="Last Name"
                     type="text"
                     fullWidth
+                    error={lastNameErr}
+                    helperText={lastNameMsg}
+                    onClick={onLastNameClick}
+                    required
+                    value={lastName}
+                    onChange={onLastNameChange}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -53,6 +109,8 @@ export default function PersonalInfo() {
                     InputLabelProps={{
                         shrink: true,
                     }}
+                    value={date}
+                    onChange={onDateChange}
                 />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -72,7 +130,7 @@ export default function PersonalInfo() {
                 </label>
             </Grid>
             <Grid item xs={12} sm={6}>
-                <PhoneTextField />
+                <PhoneTextField val={phone} setter={setPhone}/>
             </Grid>
         </Grid>
     )

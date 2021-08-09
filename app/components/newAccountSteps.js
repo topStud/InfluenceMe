@@ -19,11 +19,10 @@ function getSteps() {
     return ['Personal information', 'instagram account', 'Bio'];
 }
 
-function getStepContent(stepIndex) {
+function getStepContent(stepIndex, values) {
     switch (stepIndex) {
         case 0:
-            // return 'What is an ad group anyways?';
-            return <PersonalInfo/>
+            return <PersonalInfo personalInfoValues={values.personalInfo}/>
         case 1:
             return 'What is an ad group anyways?';
         case 2:
@@ -55,11 +54,72 @@ function ColorLibStepIcon(props) {
 }
 
 export default function HorizontalLabelPositionBelowStepper(props) {
+    const required_txt = 'This field is required'
     const [activeStep, setActiveStep] = React.useState(0);
     const steps = getSteps();
 
+    // values from next steps - influencer
+    let currDate = new Date()
+    currDate = currDate.getFullYear() + '-' + String(currDate.getMonth() + 1).padStart(2, '0') + '-' +
+        String(currDate.getDate()).padStart(2, '0')
+    const [firstName, setFirstName] = React.useState('')
+    const [lastName, setLastName] = React.useState('')
+    const [date, setDate] = React.useState(currDate)
+    const [phoneValue, setPhoneValue] = React.useState('')
+    const [selectedFile, setSelectedFile] = React.useState(null)
+    // errors from next steps - influencer
+    const [firstNameErr, setFirstNameErr] = React.useState(false)
+    const [lastNameErr, setLastNameErr] = React.useState(false)
+    // error messages from next steps - influencer
+    const [firstNameMsg, setFirstNameMsg] = React.useState('')
+    const [lastNameMsg, setLastNameMsg] = React.useState('')
+
+    const values_influencer = {
+        personalInfo: {
+            val: {
+                fName: firstName,
+                setFName: setFirstName,
+                lName: lastName,
+                setLName: setLastName,
+                dateValue: date,
+                setDateValue: setDate,
+                phoneNum: phoneValue,
+                setPhone: setPhoneValue,
+                photo: selectedFile,
+                setPhoto: setSelectedFile
+            },
+            err: {
+                fName: firstNameErr,
+                setFName: setFirstNameErr,
+                lName: lastNameErr,
+                setLName: setLastNameErr
+            },
+            errMsg: {
+                fName: firstNameMsg,
+                setFName: setFirstNameMsg,
+                lName: lastNameMsg,
+                setLName: setLastNameMsg
+            }
+        },
+    }
+
     const handleNext = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        let mayContinue = true
+        // personal information
+        if (activeStep === 0) {
+            if (firstName === '') {
+                mayContinue = false
+                setFirstNameErr(true)
+                setFirstNameMsg(required_txt)
+            }
+            if (lastName === '') {
+                mayContinue = false
+                setLastNameErr(true)
+                setLastNameMsg(required_txt)
+            }
+        }
+        if (mayContinue)
+            setActiveStep((prevActiveStep) => prevActiveStep + 1);
     };
 
     const handleBackStandard = () => {
@@ -93,8 +153,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
                     // here we need to go to user page
                 ) : (
                     <div>
-                        <div style={{marginBottom: 50}}>{getStepContent(activeStep)}</div>
-                        {/*<Divider style={{marginTop: '30px', marginBottom: '30px'}}/>*/}
+                        <div style={{marginBottom: 30}}>{getStepContent(activeStep, values_influencer)}</div>
                         <div style={{display:"flex", justifyContent: "center"}}>
                             <Button
                                 onClick={activeStep === 0 ? handleBackToRegister : handleBackStandard}

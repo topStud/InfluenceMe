@@ -5,18 +5,11 @@ import MuiPhoneNumber from "material-ui-phone-number";
 export default class CreateUserDialog extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            defaultValues: {
-                phone: ""
-            }
-        };
-
         this.handlePhoneChange = this.handlePhoneChange.bind(this);
     }
     handlePhoneChange(value) {
         if (value) {
-            this.setState({ phone: value });
-            console.log(value)
+            this.props.setter(value)
         }
     }
     render() {
@@ -27,7 +20,7 @@ export default class CreateUserDialog extends React.Component {
                 label="Phone Number"
                 data-cy="user-phone"
                 defaultCountry={"us"}
-                value={this.state.phone}
+                value={this.props.val}
                 onChange={this.handlePhoneChange}
             />
         );

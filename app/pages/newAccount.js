@@ -8,10 +8,9 @@ import Chip from '@material-ui/core/Chip';
 import PersonIcon from '@material-ui/icons/Person'
 import BusinessIcon from '@material-ui/icons/Business'
 import StepperAccountInfo from '../components/newAccountSteps'
-//import { useRouter } from 'next/router'
 
 export default function SignUp() {
-    //const router = useRouter()
+    const required_txt = 'This field is required'
     // values
     const [emailValue, setEmailValue] = React.useState('')
     const [passValue, setPassValue] = React.useState('')
@@ -30,8 +29,6 @@ export default function SignUp() {
     const [variantCompanyValue, setVariantCompanyValue] = React.useState('outlined')
 
     const [registered, setRegistered] = React.useState(false)
-
-    const required_txt = 'This field is required'
 
     function handleInfluencerClick() {
         setChipValue(1)
@@ -87,7 +84,6 @@ export default function SignUp() {
         // sends values to server for registration
         if (valid) {
             setRegistered(true)
-            //router.push('/newAccountSteps').then(null)
         }
     }
 
@@ -113,6 +109,7 @@ export default function SignUp() {
 
                 </Grid>
                 <Grid item xs={12} sm={8}>
+                    {/* needs to know when we are talking about influencer and a company*/}
                     {!registered ? (
                         <div style={{marginTop: '3%', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                             <Typography color={"secondary"} component={'h1'} variant={'h3'} style={{margin:0}}>
