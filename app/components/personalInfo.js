@@ -12,7 +12,6 @@ export default function PersonalInfo(props) {
     const firstName = values.fName
     const lastName = values.lName
     const date = values.dateValue
-    const photo = values.photo
     const phone = values.phoneNum
     // values - setters
     const setFirstName = values.setFName
@@ -40,12 +39,13 @@ export default function PersonalInfo(props) {
     const handleUploadClick = event => {
         let file = event.target.files[0];
         setImageName(file.name)
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-
-        reader.onloadend = function(e) {
-            setPhoto(reader.result)
-        }
+        setPhoto(file)
+        // const reader = new FileReader();
+        // reader.readAsDataURL(file);
+        //
+        // reader.onloadend = function() {
+        //     setPhoto(reader.result)
+        // }
     };
 
     function onFirstNameChange(e) {
@@ -72,7 +72,7 @@ export default function PersonalInfo(props) {
 
     return (
         <Grid container spacing={4}>
-            <Grid item xs={12} sm={6} style={{height: 100}}>
+            <Grid item xs={12} sm={6} style={{height: 90}}>
                 <TextField
                     id="firstName"
                     label="First Name"
@@ -86,7 +86,7 @@ export default function PersonalInfo(props) {
                     onChange={onFirstNameChange}
                 />
             </Grid>
-            <Grid item xs={12} sm={6} style={{height: 100}}>
+            <Grid item xs={12} sm={6} style={{height: 90}}>
                 <TextField
                     id="lastName"
                     label="Last Name"

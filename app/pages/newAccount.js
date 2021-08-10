@@ -29,6 +29,10 @@ export default function SignUp() {
     const [variantCompanyValue, setVariantCompanyValue] = React.useState('outlined')
 
     const [registered, setRegistered] = React.useState(false)
+    const values_obj = {
+        emailVal: emailValue,
+        passVal: passValue
+    }
 
     function handleInfluencerClick() {
         setChipValue(1)
@@ -184,7 +188,7 @@ export default function SignUp() {
                             </form>
                         </div>
                     ):(
-                        <StepperAccountInfo register={setRegistered}/>
+                        <StepperAccountInfo register={setRegistered} values={values_obj}/>
                     )}
                 </Grid>
                 <Grid item xs={12} sm={2}>
