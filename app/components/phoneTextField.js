@@ -9,7 +9,10 @@ export default class CreateUserDialog extends React.Component {
     }
     handlePhoneChange(value) {
         if (value) {
-            this.props.setter(value)
+            this.props.val.setter({
+                ...this.props.val.getter,
+                phoneNum: value
+            })
         }
     }
     render() {
@@ -20,7 +23,7 @@ export default class CreateUserDialog extends React.Component {
                 label="Phone Number"
                 data-cy="user-phone"
                 defaultCountry={"us"}
-                value={this.props.val}
+                value={this.props.val.getter.phoneNum}
                 onChange={this.handlePhoneChange}
             />
         );

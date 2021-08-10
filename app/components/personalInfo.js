@@ -9,37 +9,16 @@ import PhoneTextField from './phoneTextField'
 export default function PersonalInfo(props) {
     // values
     const values = props.personalInfoValues.val
-    const firstName = values.fName
-    const lastName = values.lName
-    const date = values.dateValue
-    const phone = values.phoneNum
-    // values - setters
-    const setFirstName = values.setFName
-    const setLastName = values.setLName
-    const setDate = values.setDateValue
-    const setPhoto = values.setPhoto
-    const setPhone = values.setPhone
-    // error marks
     const errors = props.personalInfoValues.err
-    const firstNameErr = errors.fName
-    const lastNameErr = errors.lName
-    // error marks - setters
-    const setFirstNameErr = errors.setFName
-    const setLastNameErr = errors.setLName
-    // error message
-    const msg = props.personalInfoValues.errMsg
-    const firstNameMsg = msg.fName
-    const lastNameMsg = msg.lName
-    // error message - setters
-    const setFirstNameMsg = msg.setFName
-    const setLastNameMsg = msg.setLName
-
     const [imageName, setImageName] = React.useState('')
 
     const handleUploadClick = event => {
         let file = event.target.files[0];
         setImageName(file.name)
-        setPhoto(file)
+        values.setter({
+            ...values.getter,
+            photo: event.target.value,
+        })
         // const reader = new FileReader();
         // reader.readAsDataURL(file);
         //
@@ -49,25 +28,40 @@ export default function PersonalInfo(props) {
     };
 
     function onFirstNameChange(e) {
-        setFirstName(e.target.value)
+        values.setter({
+            ...values.getter,
+            firstName: e.target.value
+        })
     }
 
     function onLastNameChange(e) {
-        setLastName(e.target.value)
+        values.setter({
+            ...values.getter,
+            lastName: e.target.value
+        })
     }
 
     function onDateChange(e) {
-        setDate(e.target.value)
+        values.setter({
+            ...values.getter,
+            date: e.target.value
+        })
     }
 
     function onFirstNameClick() {
-        setFirstNameMsg('')
-        setFirstNameErr(false)
+        errors.setter({
+            ...errors.getter,
+            firstNameMsg: '',
+            firstNameErr: false
+        })
     }
 
     function onLastNameClick() {
-        setLastNameMsg('')
-        setLastNameErr(false)
+        errors.setter({
+            ...errors.getter,
+            lastNameMsg: '',
+            lastNameErr: false
+        })
     }
 
     return (
@@ -78,10 +72,10 @@ export default function PersonalInfo(props) {
                     label="First Name"
                     type="text"
                     fullWidth
-                    error={firstNameErr}
-                    helperText={firstNameMsg}
+                    error={errors.getter.firstNameErr}
+                    helperText={errors.getter.firstNameMsg}
                     required
-                    value={firstName}
+                    value={values.getter.firstName}
                     onClick={onFirstNameClick}
                     onChange={onFirstNameChange}
                 />
@@ -92,11 +86,11 @@ export default function PersonalInfo(props) {
                     label="Last Name"
                     type="text"
                     fullWidth
-                    error={lastNameErr}
-                    helperText={lastNameMsg}
+                    error={errors.getter.lastNameErr}
+                    helperText={errors.getter.lastNameMsg}
                     onClick={onLastNameClick}
                     required
-                    value={lastName}
+                    value={values.getter.lastName}
                     onChange={onLastNameChange}
                 />
             </Grid>
@@ -109,7 +103,7 @@ export default function PersonalInfo(props) {
                     InputLabelProps={{
                         shrink: true,
                     }}
-                    value={date}
+                    value={values.getter.date}
                     onChange={onDateChange}
                 />
             </Grid>
@@ -130,7 +124,7 @@ export default function PersonalInfo(props) {
                 </label>
             </Grid>
             <Grid item xs={12} sm={6}>
-                <PhoneTextField val={phone} setter={setPhone}/>
+                <PhoneTextField val={values}/>
             </Grid>
         </Grid>
     )

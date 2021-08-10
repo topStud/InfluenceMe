@@ -3,7 +3,6 @@ import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
 import clsx from 'clsx';
 import PersonIcon from '@material-ui/icons/Person';
 import InstagramIcon from '@material-ui/icons/Instagram';
@@ -13,6 +12,8 @@ import '../styles/Stepper.module.css'
 import {StepConnector} from "@material-ui/core";
 import PersonalInfo from "./personalInfo";
 import InstagramInfo from './instagramInfo'
+import Bio from "./bio";
+import { Alert, AlertTitle } from '@material-ui/lab';
 
 function getSteps() {
     return ['Personal information', 'instagram account', 'Bio'];
@@ -25,7 +26,7 @@ function getStepContent(stepIndex, values) {
         case 1:
             return <InstagramInfo instagramInfoValues={values.instagramInfo}/>
         case 2:
-            return 'This is the bit I really care about!';
+            return <Bio bioValues={values.Bio}/>;
         default:
             return 'Unknown stepIndex';
     }
@@ -54,92 +55,72 @@ function ColorLibStepIcon(props) {
 
 export default function HorizontalLabelPositionBelowStepper(props) {
     const required_txt = 'This field is required'
+    let userId = ''
     const [activeStep, setActiveStep] = React.useState(0);
     const steps = getSteps();
 
-    // values from next steps - influencer
-    // personal information
+    // influencer variables for user inputs
+    // personal info
     let currDate = new Date()
     currDate = currDate.getFullYear() + '-' + String(currDate.getMonth() + 1).padStart(2, '0') + '-' +
         String(currDate.getDate()).padStart(2, '0')
-    const [firstName, setFirstName] = React.useState('')
-    const [lastName, setLastName] = React.useState('')
-    const [date, setDate] = React.useState(currDate)
-    const [phoneValue, setPhoneValue] = React.useState('')
-    const [selectedFile, setSelectedFile] = React.useState(null)
-    // instagram info
-    const [instaUser, setInstaUser] = React.useState('')
-    const [instaFollowers, setInstaFollowers] = React.useState('')
-    const [url, setUrl] = React.useState('')
+    const [valuesPersonalInfo, setValuesPersonalInfo] = React.useState({
+        firstName: '',
+        lastName: '',
+        date: currDate,
+        phoneNum: '',
+        photo: null,
+    })
+    const [errPersonalInfo, setErrPersonalInfo] = React.useState({
+        firstNameErr: false,
+        lastNameErr: false,
+        firstNameMsg: '',
+        lastNameMsg: '',
+    })
 
-    // errors from next steps - influencer
-    // personal information
-    const [firstNameErr, setFirstNameErr] = React.useState(false)
-    const [lastNameErr, setLastNameErr] = React.useState(false)
     // instagram info
-    const [instaUserErr, setInstaUserErr] = React.useState(false)
-    const [followersErr, setFollowersErr] = React.useState(false)
-    const [urlErr, setUrlErr] = React.useState(false)
-
-    // error messages from next steps - influencer
-    // personal information
-    const [firstNameMsg, setFirstNameMsg] = React.useState('')
-    const [lastNameMsg, setLastNameMsg] = React.useState('')
-    // instagram info
-    const [instaUserMsg, setInstaUserMsg] = React.useState('')
-    const [followersMsg, setFollowersMsg] = React.useState('')
-    const [urlMsg, setUrlMsg] = React.useState('')
+    const [valuesInstaAccount, setValuesInstaAccount] = React.useState({
+        user: '',
+        followers: '',
+        url: '',
+        categories: []
+    })
+    const [errInstaAccount, setErrInstaAccount] = React.useState({
+        userErr: false,
+        followersErr: false,
+        urlErr: false,
+        categoryErr: false,
+        userMsg: '',
+        followersMsg: '',
+        urlMsg: '',
+    })
+    const [bio, setBio] = React.useState('')
 
     const values_influencer = {
         personalInfo: {
             val: {
-                fName: firstName,
-                setFName: setFirstName,
-                lName: lastName,
-                setLName: setLastName,
-                dateValue: date,
-                setDateValue: setDate,
-                phoneNum: phoneValue,
-                setPhone: setPhoneValue,
-                setPhoto: setSelectedFile
+                getter: valuesPersonalInfo,
+                setter: setValuesPersonalInfo,
             },
             err: {
-                fName: firstNameErr,
-                setFName: setFirstNameErr,
-                lName: lastNameErr,
-                setLName: setLastNameErr
-            },
-            errMsg: {
-                fName: firstNameMsg,
-                setFName: setFirstNameMsg,
-                lName: lastNameMsg,
-                setLName: setLastNameMsg
+                getter: errPersonalInfo,
+                setter: setErrPersonalInfo,
             },
         },
         instagramInfo: {
             val: {
-                user: instaUser,
-                setUser: setInstaUser,
-                followers: instaFollowers,
-                setFollowers: setInstaFollowers,
-                url: url,
-                setUrl: setUrl
+                getter: valuesInstaAccount,
+                setter: setValuesInstaAccount,
             },
             err: {
-                user: instaUserErr,
-                setUser: setInstaUserErr,
-                followers: followersErr,
-                setFollowers: setFollowersErr,
-                url: urlErr,
-                setUrl: setUrlErr
+                getter: errInstaAccount,
+                setter: setErrInstaAccount,
             },
-            errMsg: {
-                user: instaUserMsg,
-                setUser: setInstaUserMsg,
-                followers: followersMsg,
-                setFollowers: setFollowersMsg,
-                url: urlMsg,
-                setUrl: setUrlMsg
+        },
+        Bio:{
+            val: {
+                getter: bio,
+                setter: setBio
             }
         }
     }
@@ -153,47 +134,52 @@ export default function HorizontalLabelPositionBelowStepper(props) {
         let mayContinue = true
         // personal information
         if (activeStep === 0) {
-            if (firstName === '') {
-                mayContinue = false
-                setFirstNameErr(true)
-                setFirstNameMsg(required_txt)
+            let fNameErr = valuesPersonalInfo.firstName === ''
+            let lNameErr = valuesPersonalInfo.lastName === ''
+            if (fNameErr || lNameErr) {
+                mayContinue = false;
             }
-            if (lastName === '') {
-                mayContinue = false
-                setLastNameErr(true)
-                setLastNameMsg(required_txt)
-            }
+            setErrPersonalInfo({
+                ...errPersonalInfo,
+                firstNameErr: fNameErr,
+                firstNameMsg: fNameErr ? required_txt : '',
+                lastNameErr: lNameErr,
+                lastNameMsg: lNameErr ? required_txt : '',
+            })
         }
         // Instagram account
         else if (activeStep === 1) {
-            if (url && !validateWebsiteUrl(url)) {
+            let instaUserErr = valuesInstaAccount.user === ''
+            let instaFollowersErr = valuesInstaAccount.followers === ''
+            let linkErr = valuesInstaAccount.url && !validateWebsiteUrl(valuesInstaAccount.url)
+            let categoryErr = valuesInstaAccount.categories.length === 0
+            console.log('check' + valuesInstaAccount.categories)
+            if (linkErr || instaUserErr || instaFollowersErr || categoryErr) {
                 mayContinue = false
-                setUrlErr(true)
-                setUrlMsg('Url format is invalid')
-            }
-            if (instaUser === '') {
-                mayContinue = false
-                setInstaUserErr(true)
-                setInstaUserMsg(required_txt)
-            }
-            if (instaFollowers === '') {
-                mayContinue = false
-                setFollowersErr(true)
-                setFollowersMsg(required_txt)
+                setErrInstaAccount({
+                    urlErr: linkErr,
+                    urlMsg: linkErr ? 'Url format is invalid' : '',
+                    userErr: instaUserErr,
+                    userMsg: instaUserErr ? required_txt : '',
+                    followersErr: instaFollowersErr,
+                    followersMsg: instaFollowersErr ? required_txt : '',
+                    categoryErr: categoryErr
+                })
             }
         } else {
-            // here fo now, preparing object
             const obj = {
                 email: props.values.emailVal,
                 pass: props.values.passVal,
-                fName: firstName,
-                lName: lastName,
-                date: date,
-                photo: selectedFile,
-                phone: phoneValue,
-                user: instaUser,
-                followers: instaFollowers,
-                url: url
+                fName: valuesPersonalInfo.firstName,
+                lName: valuesPersonalInfo.lastName,
+                date: valuesPersonalInfo.date,
+                photo: valuesPersonalInfo.photo,
+                phone: valuesPersonalInfo.phone,
+                user: valuesInstaAccount.user,
+                followers: valuesInstaAccount.followers,
+                url: valuesInstaAccount.url,
+                categories: valuesInstaAccount.categories,
+                bio: bio
             }
             // send data to server
             fetch('api/register', {
@@ -209,11 +195,11 @@ export default function HorizontalLabelPositionBelowStepper(props) {
                 }
                 return res.json()
             }).then(data => {
-                // data = user id
-                // window.open("?uid="+data);
+                userId = data
             }).catch(function (error) {
                 console.log(error);
             });
+
         }
         if (mayContinue)
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -243,8 +229,13 @@ export default function HorizontalLabelPositionBelowStepper(props) {
             </Stepper>
             <div>
                 {activeStep === steps.length ? (
-                    <div>
-                        <Typography style={{marginTop: '4%', marginBottom: '4%'}}>All steps completed</Typography>
+                    // we need to check it the server returned an id
+                    <div style={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems: 'center', height:320}}>
+                        <Alert severity="success" style={{height: 180, fontSize:16, marginBottom: 50}}>
+                            <AlertTitle style={{fontSize:28}}><strong>Congrats!</strong></AlertTitle>
+                            You registered successfully to our system.<br/>
+                            Now, to log in to your account, please return to the Home page and put in the required inputs.
+                        </Alert>
                         <Button onClick={handleReset}>Reset</Button>
                     </div>
                     // here we need to go to user page

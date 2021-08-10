@@ -3,60 +3,94 @@ import TextField from "@material-ui/core/TextField";
 import React from "react";
 import NumberFormat from 'react-number-format';
 import PropTypes from 'prop-types';
-import {Checkbox, FormControlLabel, FormGroup, FormLabel} from "@material-ui/core";
+import {Checkbox, FormControlLabel, FormGroup, FormHelperText, FormLabel} from "@material-ui/core";
 
 export default function instagramInfo(props) {
-    const val = props.instagramInfoValues.val
-    const err = props.instagramInfoValues.err
-    const msg = props.instagramInfoValues.errMsg
+    const values = props.instagramInfoValues.val
+    const errors = props.instagramInfoValues.err
 
-    const user = val.user
-    const setUser = val.setUser
-    const userErr = err.user
-    const setUserErr = err.setUser
-    const userErrMsg = msg.user
-    const setUserErrMsg = msg.setUser
-
-    const followers = val.followers
-    const setFollowers = val.setFollowers
-    const followersErr = err.followers
-    const setFollowersErr = err.setFollowers
-    const followersMsg = msg.followers
-    const setFollowersMsg = msg.setFollowers
-
-    const url = val.url
-    const setUrl = val.setUrl
-    const urlErr = err.url
-    const setUrlErr = err.setUrl
-    const urlMsg = msg.url
-    const setUrlMsg = msg.setUrl
+    const [checked, setChecked] = React.useState({
+        lifestyle: false,
+        travel: false,
+        gadgets: false,
+        games: false
+    })
 
     function onUserClick() {
-        setUserErrMsg('')
-        setUserErr(false)
+        errors.setter({
+            ...errors.getter,
+            userErr: false,
+            userMsg: ''
+        })
     }
 
     function onUserChange(e) {
-        setUser(e.target.value)
+        values.setter({
+            ...values.getter,
+            user: e.target.value
+        })
     }
 
     function handleChangeFollowers(e) {
-        setFollowers(e.target.value)
-        console.log(followers)
+        values.setter({
+            ...values.getter,
+            followers: e.target.value
+        })
     }
 
     function onUrlChange(e) {
-        setUrl(e.target.value)
+        values.setter({
+            ...values.getter,
+            url: e.target.value
+        })
     }
 
     function onFollowersClick() {
-        setFollowersMsg('')
-        setFollowersErr(false)
+        errors.setter({
+            ...errors.getter,
+            followersErr: false,
+            followersMsg: ''
+        })
     }
 
     function onURLClick() {
-        setUrlMsg('')
-        setUrlErr(false)
+        errors.setter({
+            ...errors.getter,
+            urlErr: false,
+            urlMsg: ''
+        })
+    }
+    
+    function handleCheckboxesChange(e) {
+        // if checked, add to list
+        if (e.target.checked) {
+            values.setter({
+                ...values.getter,
+                categories: [
+                    ...values.getter.categories,
+                    e.target.value
+                ]
+            })
+            errors.setter({
+                ...errors.getter,
+                categoryErr: false
+            })
+            setChecked({
+                ...checked,
+                [e.target.value]: true
+            })
+        }
+        // not checked, remove from list
+        else {
+            values.setter({
+                ...values.getter,
+                categories: values.getter.categories.filter((category) => category !== e.target.value)
+            })
+            setChecked({
+                ...checked,
+                [e.target.value]: false
+            })
+        }
     }
 
     return (
@@ -67,10 +101,10 @@ export default function instagramInfo(props) {
                     label="Instagram user"
                     type="text"
                     fullWidth
-                    error={userErr}
-                    helperText={userErrMsg}
+                    error={errors.getter.userErr}
+                    helperText={errors.getter.userMsg}
                     required
-                    value={user}
+                    value={values.getter.user}
                     onClick={onUserClick}
                     onChange={onUserChange}
                 />
@@ -78,7 +112,7 @@ export default function instagramInfo(props) {
             <Grid item xs={12} sm={6} style={{height: 90}}>
                 <TextField
                     label="Followers number"
-                    value={followers}
+                    value={values.getter.followers}
                     onChange={handleChangeFollowers}
                     name="followers"
                     id="followers"
@@ -87,33 +121,34 @@ export default function instagramInfo(props) {
                     }}
                     fullWidth
                     required
-                    error={followersErr}
-                    helperText={followersMsg}
+                    error={errors.getter.followersErr}
+                    helperText={errors.getter.followersMsg}
                     onClick={onFollowersClick}
                 />
             </Grid>
             <Grid item xs={12} style={{height: 90}}>
                 <TextField
-                    value={url}
+                    value={values.getter.url}
                     onChange={onUrlChange}
-                    error={urlErr}
-                    helperText={urlMsg}
+                    error={errors.getter.urlErr}
+                    helperText={errors.getter.urlMsg}
                     fullWidth
                     label={'instagram URL'}
                     onClick={onURLClick}
                 />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} style={{height: 90}}>
                 <FormLabel component="legend">Choose your categories</FormLabel>
                 <FormGroup row={true}>
                     <FormControlLabel
                         control={
                             <Checkbox
-                                // checked={}
-                                // onChange={handleChange}
+                                onChange={handleCheckboxesChange}
                                 name="category"
                                 color="primary"
                                 size={"small"}
+                                value={'lifestyle'}
+                                checked={checked.lifestyle || values.getter.categories.includes('lifestyle')}
                             />
                         }
                         label="lifestyle"
@@ -121,11 +156,12 @@ export default function instagramInfo(props) {
                     <FormControlLabel
                         control={
                             <Checkbox
-                                // checked={}
-                                // onChange={handleChange}
+                                onChange={handleCheckboxesChange}
                                 name="category"
                                 color="primary"
                                 size={"small"}
+                                value={'travel'}
+                                checked={checked.travel || values.getter.categories.includes('travel')}
                             />
                         }
                         label="travel"
@@ -133,11 +169,12 @@ export default function instagramInfo(props) {
                     <FormControlLabel
                         control={
                             <Checkbox
-                                // checked={}
-                                // onChange={handleChange}
+                                onChange={handleCheckboxesChange}
                                 name="category"
                                 color="primary"
                                 size={"small"}
+                                value={'games'}
+                                checked={checked.games || values.getter.categories.includes('games')}
                             />
                         }
                         label="games"
@@ -145,16 +182,18 @@ export default function instagramInfo(props) {
                     <FormControlLabel
                         control={
                             <Checkbox
-                                // checked={}
-                                // onChange={handleChange}
+                                onChange={handleCheckboxesChange}
                                 name="category"
                                 color="primary"
                                 size={"small"}
+                                value={'gadgets'}
+                                checked={checked.gadgets || values.getter.categories.includes('gadgets')}
                             />
                         }
                         label="gadgets"
                     />
                 </FormGroup>
+                <FormHelperText hidden={!errors.getter.categoryErr} error={errors.getter.categoryErr}>Please select at least one category</FormHelperText>
             </Grid>
         </Grid>
     )
