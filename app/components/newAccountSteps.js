@@ -230,13 +230,13 @@ export default function HorizontalLabelPositionBelowStepper(props) {
             <div>
                 {activeStep === steps.length ? (
                     // we need to check it the server returned an id
-                    <div style={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems: 'center', height:320}}>
-                        <Alert severity="success" style={{height: 180, fontSize:16, marginBottom: 50}}>
+                    <div style={{display: "flex", flexDirection: "column", height:320}}>
+                        <Alert severity="success" style={{height: 150, fontSize:16, marginBottom: 50, width:'100%', lineHeight: '22pt'}}>
                             <AlertTitle style={{fontSize:28}}><strong>Congrats!</strong></AlertTitle>
                             You registered successfully to our system.<br/>
-                            Now, to log in to your account, please return to the Home page and put in the required inputs.
+                            We hope you'll find InfluenceMe helpful, enjoy!
                         </Alert>
-                        <Button onClick={handleReset}>Reset</Button>
+                        <Button onClick={handleReset} style={{alignSelf:"center"}}>Continue</Button>
                     </div>
                     // here we need to go to user page
                 ) : (
