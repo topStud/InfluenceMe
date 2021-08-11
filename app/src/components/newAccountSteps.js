@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
@@ -14,6 +14,7 @@ import PersonalInfo from "./personalInfo";
 import InstagramInfo from './instagramInfo'
 import Bio from "./bio";
 import { Alert, AlertTitle } from '@material-ui/lab';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 function getSteps() {
     return ['Personal information', 'instagram account', 'Bio'];
@@ -55,7 +56,7 @@ function ColorLibStepIcon(props) {
 
 export default function HorizontalLabelPositionBelowStepper(props) {
     const required_txt = 'This field is required'
-    let userId = ''
+    const [userId, setUserId] = React.useState(0)
     const [activeStep, setActiveStep] = React.useState(0);
     const steps = getSteps();
 
@@ -166,40 +167,6 @@ export default function HorizontalLabelPositionBelowStepper(props) {
                     categoryErr: categoryErr
                 })
             }
-        } else {
-            const obj = {
-                email: props.values.emailVal,
-                pass: props.values.passVal,
-                fName: valuesPersonalInfo.firstName,
-                lName: valuesPersonalInfo.lastName,
-                date: valuesPersonalInfo.date,
-                photo: valuesPersonalInfo.photo,
-                phone: valuesPersonalInfo.phone,
-                user: valuesInstaAccount.user,
-                followers: valuesInstaAccount.followers,
-                url: valuesInstaAccount.url,
-                categories: valuesInstaAccount.categories,
-                bio: bio
-            }
-            // send data to server
-            fetch('api/register', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(obj)
-            }).then(res => {
-                if (!res.ok) {
-                    throw Error(res.statusText);
-                }
-                return res.json()
-            }).then(data => {
-                userId = data
-            }).catch(function (error) {
-                console.log(error);
-            });
-
         }
         if (mayContinue)
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -224,10 +191,6 @@ export default function HorizontalLabelPositionBelowStepper(props) {
         props.register(false);
     };
 
-    const handleReset = () => {
-        setActiveStep(0);
-    };
-
     return (
         <div style={{width: '100%', boxShadow: '1px 10px 10px gray', paddingRight:50, paddingLeft:50, paddingBottom:20, marginBottom: 20, height:480}} >
             <Stepper activeStep={activeStep} alternativeLabel connector={<StepConnector style={{marginTop: '10px'}}
@@ -240,16 +203,20 @@ export default function HorizontalLabelPositionBelowStepper(props) {
             </Stepper>
             <div>
                 {activeStep === steps.length ? (
-                    // we need to check it the server returned an id
-                    <div style={{display: "flex", flexDirection: "column", height:320}}>
-                        <Alert severity="success" style={{height: 150, fontSize:16, marginBottom: 50, width:'100%', lineHeight: '22pt'}}>
-                            <AlertTitle style={{fontSize:28}}><strong>Congrats!</strong></AlertTitle>
-                            You registered successfully to our system.<br/>
-                            We hope you'll find InfluenceMe helpful, enjoy!
-                        </Alert>
-                        <Button onClick={handleReset} style={{alignSelf:"center"}}>Continue</Button>
-                    </div>
-                    // here we need to go to user page
+                        <AnswerOfServer obj={{
+                            email: props.values.emailVal,
+                            password: props.values.passVal,
+                            firstName: valuesPersonalInfo.firstName,
+                            lastName: valuesPersonalInfo.lastName,
+                            date: valuesPersonalInfo.date,
+                            photo: valuesPersonalInfo.photo,
+                            phone: valuesPersonalInfo.phone,
+                            user: valuesInstaAccount.user,
+                            followersAmount: valuesInstaAccount.followers,
+                            instagramUrl: valuesInstaAccount.url,
+                            categories: valuesInstaAccount.categories,
+                            bio: bio
+                        }}/>
                 ) : (
                     <div style={{display:"flex", flexDirection:"column", justifyContent:"flex-end" , height:320}}>
                         <div style={{marginBottom: 30}}>{getStepContent(activeStep, values_influencer)}</div>
@@ -270,3 +237,60 @@ export default function HorizontalLabelPositionBelowStepper(props) {
         </div>
     );
 }
+
+const AnswerOfServer = ({ obj }) => {
+    const [id, setId] = React.useState(null)
+    const [err, setErr] = React.useState(false)
+
+    const handleReset = () => {
+        window.location('/newAccount')
+    };
+
+    const handleContinue = (userId) => {
+        // move to user's page
+    }
+
+    useEffect(() => {
+        fetch(`api/register/`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(obj)
+        }).then(res=> {
+            if(!res.ok) {
+                setErr(true)
+                throw new Error(res.statusText)
+            }
+            return res.json()
+        }).then(data=>{
+            setId(data)
+        }).catch(function (error) {
+            console.log(error);
+        });
+    },[])
+
+    return (
+        <>
+            {id && <div style={{display: "flex", flexDirection: "column", height:320}}>
+                <Alert severity="success" style={{height: 150, fontSize:16, marginBottom: 50, width:'100%', lineHeight: '22pt'}}>
+                    <AlertTitle style={{fontSize:28}}><strong>Congrats!</strong></AlertTitle>
+                    You registered successfully to our system.<br/>
+                    We hope you'll find InfluenceMe helpful, enjoy!
+                </Alert>
+                <Button onClick={()=>handleContinue(id)} style={{alignSelf:"center"}}>Continue</Button>
+            </div>}
+            {err && <div style={{display: "flex", flexDirection: "column", height:320}}>
+                <Alert severity="error" style={{height: 150, fontSize:16, marginBottom: 50, width:'100%', lineHeight: '22pt'}}>
+                    <AlertTitle style={{fontSize:28}}><strong>Note!</strong></AlertTitle>
+                    Something went wrong!<br/>
+                    We couldn't add you to our system. Please try again!
+                </Alert>
+                <Button onClick={handleReset} style={{alignSelf:"center"}}>reset registration</Button>
+            </div>}
+            {!(id || err) && <div style={{display:"flex", justifyContent: "center", alignItems: "center", height:350}}><CircularProgress/></div>}
+        </>
+    )
+}
+

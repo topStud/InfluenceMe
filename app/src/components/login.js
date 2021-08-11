@@ -43,7 +43,7 @@ export default function SignIn() {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({email: emailValue, pass: passValue})
+                body: JSON.stringify({email: emailValue, password: passValue})
             }).then(res => {
                 if (!res.ok) {
                     throw Error(res.statusText);
