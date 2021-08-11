@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import { Link } from 'react-router-dom'
@@ -15,6 +15,7 @@ export default function SignIn() {
     const [emailMes, setEmailMes] = React.useState('')
     const [passMes, setPassMes] = React.useState('')
 
+    const [callServer, setCallServer] = React.useState(false)
 
     function logInClicked() {
         if (!ValidateEmail(emailValue) || passValue === '') {
@@ -33,28 +34,7 @@ export default function SignIn() {
             // removes the error annotation
             setEmailMes('')
             setPassMes('')
-
-            let url = '/api/login'
-
-            // sends values to server for a check.
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({email: emailValue, password: passValue})
-            }).then(res => {
-                if (!res.ok) {
-                    throw Error(res.statusText);
-                }
-                return res.json()
-            }).then(data => {
-                // data = user id
-                window.open("?uid="+data);
-            }).catch(function (error) {
-                console.log(error);
-            });
+            setCallServer(true)
         }
     }
 
@@ -66,14 +46,16 @@ export default function SignIn() {
         setPassValue(e.target.value)
     }
 
-    function removeErrorEmail() {
+    function onClickEmail() {
         setEmailError(false)
         setEmailMes('')
+        setCallServer(false)
     }
 
-    function removeErrorPass() {
+    function onClickPass() {
         setPassError(false)
         setPassMes('')
+        setCallServer(false)
     }
 
     return (
@@ -97,7 +79,7 @@ export default function SignIn() {
                             helperText={emailMes}
                             value={emailValue}
                             onChange={emailChange}
-                            onClick={removeErrorEmail}
+                            onClick={onClickEmail}
                         />
                         <TextField
                             margin="normal"
@@ -112,7 +94,7 @@ export default function SignIn() {
                             helperText={passMes}
                             value={passValue}
                             onChange={passChange}
-                            onClick={removeErrorPass}
+                            onClick={onClickPass}
                         />
                         <Button
                             fullWidth
@@ -130,6 +112,7 @@ export default function SignIn() {
                                 </Link>
                             </Grid>
                         </Grid>
+                        {callServer && <AnswerOfServer obj={{email: emailValue, password: passValue}}/>}
                     </form>
                 </div>
             </Container>
@@ -140,4 +123,43 @@ export default function SignIn() {
 function ValidateEmail(email)
 {
     return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email);
+}
+
+
+const AnswerOfServer = ({ obj }) => {
+    const [err, setErr] = React.useState(false)
+    const [errNotFound, setErrNotFound] = React.useState(false)
+
+    useEffect(() => {
+        fetch('api/login', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(obj)
+        }).then(res => {
+            if (res.statusCode !== 200 && res.statusCode !== 304) {
+                if (res.statusCode === 404) {
+                    setErrNotFound(true)
+                } else {
+                    setErr(true)
+                }
+                throw Error(res.statusText);
+            }
+            return res.json()
+        }).then(data => {
+            // moves to correct window
+            console.log('logged in successfully')
+        }).catch(function (error) {
+            console.log(error);
+        });
+    },[])
+
+    return (
+      <>
+          {err && 'Something went wrong, try again'}
+          {errNotFound && 'A user with this email does not exist'}
+      </>
+    )
 }
