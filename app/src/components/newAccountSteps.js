@@ -252,7 +252,7 @@ const AnswerOfServer = ({ obj }) => {
 
     useEffect(() => {
         console.log(JSON.stringify(obj))
-        fetch(`/api/register`, {
+        fetch(`/api/influencers/register`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
