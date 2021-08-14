@@ -22,7 +22,7 @@ export default class CreateUserDialog extends React.Component {
                 name="phone"
                 label="Phone Number"
                 data-cy="user-phone"
-                defaultCountry={"us"}
+                defaultCountry={"il"}
                 value={this.props.val.getter.phoneNum}
                 onChange={this.handlePhoneChange}
             />
