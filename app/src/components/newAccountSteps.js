@@ -211,7 +211,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
                             date: valuesPersonalInfo.date,
                             photo: valuesPersonalInfo.photo,
                             phone: valuesPersonalInfo.phoneNum,
-                            user: valuesInstaAccount.user,
+                            instagramUser: valuesInstaAccount.user,
                             followersAmount: valuesInstaAccount.followers,
                             instagramUrl: valuesInstaAccount.url,
                             categories: valuesInstaAccount.categories,
