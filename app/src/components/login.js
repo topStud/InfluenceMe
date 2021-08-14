@@ -6,6 +6,12 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import styles from '../styles/Home.module.css'
+import InputAdornment from "@material-ui/core/InputAdornment";
+import IconButton from "@material-ui/core/IconButton";
+import Visibility from "@material-ui/icons/Visibility";
+import VisibilityOff from "@material-ui/icons/VisibilityOff";
+import {Snackbar} from "@material-ui/core";
+import {Alert} from "@material-ui/lab";
 
 export default function SignIn() {
     const [emailValue, setEmailValue] = React.useState('')
@@ -14,10 +20,12 @@ export default function SignIn() {
     const [passError, setPassError] = React.useState(false)
     const [emailMes, setEmailMes] = React.useState('')
     const [passMes, setPassMes] = React.useState('')
+    const [showPass, setShowPass] = React.useState(false)
 
     const [callServer, setCallServer] = React.useState(false)
 
     function logInClicked() {
+        setCallServer(false)
         if (!ValidateEmail(emailValue) || passValue === '') {
             if (emailValue === '') {
                 setEmailError(true)
@@ -37,6 +45,14 @@ export default function SignIn() {
             setCallServer(true)
         }
     }
+
+    const handleClickShowPassword = () => {
+        setShowPass(!showPass)
+    };
+
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault();
+    };
 
     function emailChange(e) {
         setEmailValue(e.target.value)
@@ -67,6 +83,7 @@ export default function SignIn() {
                     </Typography>
                     <form noValidate style={{borderTop: '1px solid #F2C116', width: '100%', marginTop: '10px'}}>
                         <TextField
+                            style={{height: 50}}
                             margin="normal"
                             required
                             fullWidth
@@ -82,19 +99,32 @@ export default function SignIn() {
                             onClick={onClickEmail}
                         />
                         <TextField
-                            margin="normal"
+                            style={{height: 50}}
+                            margin={"normal"}
                             required
                             error={passError}
                             fullWidth
                             name="password"
                             label="Password"
-                            type="password"
+                            type={showPass ? 'text' : 'password'}
                             id="password"
-                            autoComplete="current-password"
                             helperText={passMes}
                             value={passValue}
                             onChange={passChange}
                             onClick={onClickPass}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={handleClickShowPassword}
+                                            onMouseDown={handleMouseDownPassword}
+                                        >
+                                            {showPass ? <Visibility /> : <VisibilityOff />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            }}
                         />
                         <Button
                             fullWidth
@@ -112,7 +142,12 @@ export default function SignIn() {
                                 </Link>
                             </Grid>
                         </Grid>
-                        {callServer && <AnswerOfServer obj={{email: emailValue, password: passValue}}/>}
+                        {/*{callServer && <AnswerOfServer obj={{email: emailValue, password: passValue}}/>}*/}
+                        { callServer &&
+                            <>
+                                <AnswerOfServer setCallServer={setCallServer} obj={{email: emailValue, password: passValue}}/>
+                            </>
+                        }
                     </form>
                 </div>
             </Container>
@@ -126,8 +161,9 @@ function ValidateEmail(email)
 }
 
 
-const AnswerOfServer = ({ obj }) => {
+const AnswerOfServer = ({ setCallServer,obj }) => {
     const [err, setErr] = React.useState(false)
+    const [open, setOpen] = React.useState(false)
     const [errNotFound, setErrNotFound] = React.useState(false)
 
     useEffect(() => {
@@ -139,12 +175,13 @@ const AnswerOfServer = ({ obj }) => {
             },
             body: JSON.stringify(obj)
         }).then(res => {
-            if (res.statusCode !== 200 && res.statusCode !== 304) {
-                if (res.statusCode === 404) {
+            if (res.status !== 200 && res.status !== 304) {
+                if (res.status === 404) {
                     setErrNotFound(true)
                 } else {
                     setErr(true)
                 }
+                setOpen(true)
                 throw Error(res.statusText);
             }
             return res.json()
@@ -156,10 +193,18 @@ const AnswerOfServer = ({ obj }) => {
         });
     },[])
 
+    const handleClose = () => {
+        setOpen(false)
+        setCallServer(false)
+    };
+
     return (
       <>
-          {err && 'Something went wrong, try again'}
-          {errNotFound && 'A user with this email does not exist'}
+          <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}>
+              <Alert onClose={handleClose} severity="error">
+                  {err ? 'Something went wrong, try again' : errNotFound ? 'A user with this email does not exist' : ''}
+              </Alert>
+          </Snackbar>
       </>
     )
 }

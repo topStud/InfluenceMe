@@ -243,7 +243,7 @@ const AnswerOfServer = ({ obj }) => {
     const [err, setErr] = React.useState(false)
 
     const handleReset = () => {
-        window.location('/newAccount')
+        window.location.href = '/newAccount'
     };
 
     const handleContinue = (userId) => {
@@ -251,7 +251,8 @@ const AnswerOfServer = ({ obj }) => {
     }
 
     useEffect(() => {
-        fetch(`api/register/`, {
+        console.log(JSON.stringify(obj))
+        fetch(`api/influencer/register/`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',

@@ -8,30 +8,42 @@ import Chip from '@material-ui/core/Chip';
 import PersonIcon from '@material-ui/icons/Person'
 import BusinessIcon from '@material-ui/icons/Business'
 import StepperAccountInfo from './components/newAccountSteps'
+import InputAdornment from '@material-ui/core/InputAdornment';
+import IconButton from '@material-ui/core/IconButton';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import {FormControl, Input, InputLabel} from "@material-ui/core";
+import './styles/globals.css'
+import {Link} from "react-router-dom";
+import styles from "./styles/Home.module.css";
 
 export default function SignUp() {
     const required_txt = 'This field is required'
-    // values
-    const [emailValue, setEmailValue] = React.useState('')
-    const [passValue, setPassValue] = React.useState('')
-    const [passVValue, setPassVValue] = React.useState('')
-    // set error
-    const [emailError, setEmailError] = React.useState(false)
-    const [passError, setPassError] = React.useState(false)
-    const [passVError, setPassVError] = React.useState(false)
-    // set message error
-    const [emailMes, setEmailMes] = React.useState('')
-    const [passMes, setPassMes] = React.useState('')
-    const [passVMes, setPassVMes] = React.useState('')
+    const [values, setValues] = React.useState({
+        email: '',
+        pass: '',
+        passV: '',
+        showPass: false
+    })
+    const [err, setErr] = React.useState({
+        emailErr: false,
+        passErr: false,
+        passVErr:false,
+        emailMsg: '',
+        passMsg: '',
+        passVMsg: ''
+    })
+
     // chips
     const [chipValue, setChipValue] = React.useState(1)
     const [variantInfluencerValue, setVariantInfluencerValue] = React.useState('default')
     const [variantCompanyValue, setVariantCompanyValue] = React.useState('outlined')
 
     const [registered, setRegistered] = React.useState(false)
+
     const values_obj = {
-        emailVal: emailValue,
-        passVal: passValue
+        emailVal: values.email,
+        passVal: values.pass
     }
 
     function handleInfluencerClick() {
@@ -46,65 +58,62 @@ export default function SignUp() {
         setVariantCompanyValue('default')
     }
 
-    function emailChange(e) {
-        setEmailValue(e.target.value)
-    }
-
-    function passChange(e) {
-        setPassValue(e.target.value)
-    }
-
-    function passVChange(e) {
-        setPassVValue(e.target.value)
-    }
-
     function SignUpClicked() {
-        let valid = true
-        if (passValue === '') {
-            setPassMes(required_txt)
-            setPassError(true)
-            valid = false
-        } else if (passValue !== passVValue) {
-            setPassVError(true)
-            setPassVMes('The passwords don\'t match')
-            valid = false
-            setPassVValue('')
-        }
-        if (passVValue === '') {
-            setPassVMes(required_txt)
-            setPassVError(true)
-            valid = false
-        }
-        if (!ValidateEmail(emailValue)) {
-            valid = false
-            setEmailError(true)
-            if (emailValue === '') {
-                setEmailMes(required_txt)
-            } else {
-                setEmailMes("The email entered is not in the correct format")
-                setEmailValue('')
-            }
-        }
-        // sends values to server for registration
-        if (valid) {
+        let passEmpty, passVEmpty, emailEmpty, badEmail
+
+        passEmpty = values.pass === ''
+        passVEmpty = values.passV === ''
+        emailEmpty = values.email === ''
+        badEmail = !ValidateEmail(values.email)
+        if (passEmpty || passVEmpty || emailEmpty || badEmail || (values.pass.length < 6) || (values.pass !== values.passV)) {
+            setErr({
+                passMsg: passEmpty ? (required_txt) : (values.pass.length < 6 ? 'Minimum length for a password is 6 characters' : ''),
+                passErr: passEmpty || values.pass.length < 6,
+                passVErr: passVEmpty || values.pass !== values.passV,
+                passVMsg: passVEmpty ? (required_txt) : (values.pass !== values.passV ? 'The passwords don\'t match' : ''),
+                emailErr: badEmail,
+                emailMsg: emailEmpty ? (required_txt) : (badEmail ? 'The email entered is not in the correct format' : '')
+            })
+        } else {
             setRegistered(true)
         }
     }
 
     function removeEmailError() {
-        setEmailError(false)
-        setEmailMes('')
+        setErr({
+            ...err,
+            emailMsg: '',
+            emailErr: false
+        })
     }
 
     function removePassError() {
-        setPassError(false)
-        setPassMes('')
+        setErr({
+            ...err,
+            passMsg: '',
+            passErr: false
+        })
     }
 
     function removePassVError() {
-        setPassVError(false)
-        setPassVMes('')
+        setErr({
+            ...err,
+            passVMsg: '',
+            passVErr: false
+        })
     }
+
+    const handleClickShowPassword = () => {
+        setValues({ ...values, showPass: !values.showPass});
+    };
+
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault();
+    };
+
+    const handleChange = (prop) => (event) => {
+        setValues({ ...values, [prop]: event.target.value });
+    };
 
     return (
         <Layout pageOption={1}>
@@ -121,7 +130,7 @@ export default function SignUp() {
                             </Typography>
                             <form style={{width: '100%', marginTop: '5%'}} noValidate>
                                 <Grid container spacing={2}>
-                                    <Grid item xs={12}>
+                                    <Grid item xs={12} style={{height: 70}}>
                                         <TextField
                                             required
                                             fullWidth
@@ -129,42 +138,67 @@ export default function SignUp() {
                                             label="Email Address"
                                             name="email"
                                             autoComplete="email"
-                                            value={emailValue}
-                                            onChange={emailChange}
-                                            error={emailError}
-                                            helperText={emailMes}
+                                            value={values.email}
+                                            onChange={handleChange('email')}
+                                            error={err.emailErr}
+                                            helperText={err.emailMsg}
                                             onClick={removeEmailError}
                                         />
                                     </Grid>
-                                    <Grid item xs={12}>
+                                    <Grid item xs={12} style={{height: 70}}>
                                         <TextField
                                             required
+                                            error={err.passErr}
                                             fullWidth
                                             name="password"
                                             label="Password"
-                                            type="password"
+                                            type={values.showPass ? 'text' : 'password'}
                                             id="password"
-                                            autoComplete="current-password"
-                                            value={passValue}
-                                            onChange={passChange}
-                                            error={passError}
-                                            helperText={passMes}
+                                            helperText={err.passMsg}
+                                            value={values.pass}
+                                            onChange={handleChange('pass')}
                                             onClick={removePassError}
+                                            InputProps={{
+                                                endAdornment: (
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            aria-label="toggle password visibility"
+                                                            onClick={handleClickShowPassword}
+                                                            onMouseDown={handleMouseDownPassword}
+                                                        >
+                                                            {values.showPass ? <Visibility /> : <VisibilityOff />}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                ),
+                                            }}
                                         />
                                     </Grid>
-                                    <Grid item xs={12}>
+                                    <Grid item xs={12} style={{height: 100}}>
                                         <TextField
                                             required
+                                            error={err.passVErr}
                                             fullWidth
-                                            name="password_v"
+                                            name="passwordV"
                                             label="Password Verification"
-                                            type="password"
-                                            id="password_v"
-                                            value={passVValue}
-                                            onChange={passVChange}
-                                            error={passVError}
-                                            helperText={passVMes}
+                                            type={values.showPass ? 'text' : 'password'}
+                                            id="passwordV"
+                                            helperText={err.passVMsg}
+                                            value={values.passV}
+                                            onChange={handleChange('passV')}
                                             onClick={removePassVError}
+                                            InputProps={{
+                                                endAdornment: (
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            aria-label="toggle password verification visibility"
+                                                            onClick={handleClickShowPassword}
+                                                            onMouseDown={handleMouseDownPassword}
+                                                        >
+                                                            {values.showPass ? <Visibility /> : <VisibilityOff />}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                ),
+                                            }}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
@@ -185,6 +219,13 @@ export default function SignUp() {
                                 >
                                     Sign Up
                                 </Button>
+                                <Grid container justifyContent="flex-end">
+                                    <Grid item>
+                                        <Link to='/' className={styles.link}>
+                                            Back to Log in
+                                        </Link>
+                                    </Grid>
+                                </Grid>
                             </form>
                         </div>
                     ):(

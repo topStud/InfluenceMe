@@ -1,7 +1,7 @@
 import TextField from '@material-ui/core/TextField';
 import Grid from "@material-ui/core/Grid";
 import React from "react";
-import {Fab} from "@material-ui/core";
+import {Avatar, Fab} from "@material-ui/core";
 import AddPhotoAlternateIcon from "@material-ui/icons/AddPhotoAlternate";
 import {blue} from "@material-ui/core/colors";
 import PhoneTextField from './phoneTextField'
@@ -15,16 +15,16 @@ export default function PersonalInfo(props) {
     const handleUploadClick = event => {
         let file = event.target.files[0];
         setImageName(file.name)
-        values.setter({
-            ...values.getter,
-            photo: file
-        })
-        // const reader = new FileReader();
-        // reader.readAsDataURL(file);
-        //
-        // reader.onloadend = function() {
-        //     setPhoto(reader.result)
-        // }
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+
+        reader.onloadend = function() {
+            values.setter({
+                ...values.getter,
+                photo: reader.result
+            })
+            console.log(reader.result)
+        }
     };
 
     function onFirstNameChange(e) {
@@ -107,7 +107,7 @@ export default function PersonalInfo(props) {
                     onChange={onDateChange}
                 />
             </Grid>
-            <Grid item xs={12} sm={6} style={{height:110}}>
+            <Grid item xs={12} sm={6} style={{height:10}}>
                 <input
                     accept="image/*"
                     style={{display:"none"}}
