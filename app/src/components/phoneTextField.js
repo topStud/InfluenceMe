@@ -7,6 +7,7 @@ export default class CreateUserDialog extends React.Component {
         super(props);
         this.handlePhoneChange = this.handlePhoneChange.bind(this);
     }
+    
     handlePhoneChange(value) {
         if (value) {
             this.props.val.setter({

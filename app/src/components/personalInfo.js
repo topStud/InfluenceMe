@@ -5,6 +5,7 @@ import {Avatar, Fab} from "@material-ui/core";
 import AddPhotoAlternateIcon from "@material-ui/icons/AddPhotoAlternate";
 import {blue} from "@material-ui/core/colors";
 import PhoneTextField from './phoneTextField'
+import Resizer from "react-image-file-resizer";
 
 export default function PersonalInfo(props) {
     // values
@@ -12,19 +13,28 @@ export default function PersonalInfo(props) {
     const errors = props.personalInfoValues.err
     const [imageName, setImageName] = React.useState('')
 
-    const handleUploadClick = event => {
+    const handleUploadClick = async event => {
         let file = event.target.files[0];
         setImageName(file.name)
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
 
-        reader.onloadend = function() {
-            values.setter({
-                ...values.getter,
-                photo: reader.result
-            })
-            console.log(reader.result)
-        }
+        // compress image
+        Resizer.imageFileResizer(
+            file,
+            300,
+            300,
+            'JPEG',
+            100,
+            0,
+            (uri) => {
+                values.setter({
+                    ...values.getter,
+                    photo: uri
+                })
+            },
+            'base64',
+            200,
+            200
+        );
     };
 
     function onFirstNameChange(e) {

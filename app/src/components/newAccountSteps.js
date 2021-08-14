@@ -252,7 +252,8 @@ const AnswerOfServer = ({ obj }) => {
 
     useEffect(() => {
         console.log(JSON.stringify(obj))
-        fetch(`/api/influencers/register`, {
+        fetch(`/api/register`, {
+        // fetch(`/api/influencers/register`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -282,7 +283,7 @@ const AnswerOfServer = ({ obj }) => {
                 </Alert>
                 <Button onClick={()=>handleContinue(id)} style={{alignSelf:"center"}}>Continue</Button>
             </div>}
-            {err && <div style={{display: "flex", flexDirection: "column", height:320}}>
+            {err && !id && <div style={{display: "flex", flexDirection: "column", height:320}}>
                 <Alert severity="error" style={{height: 150, fontSize:16, marginBottom: 50, width:'100%', lineHeight: '22pt'}}>
                     <AlertTitle style={{fontSize:28}}><strong>Note!</strong></AlertTitle>
                     Something went wrong!<br/>
