@@ -210,7 +210,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
                             lastName: valuesPersonalInfo.lastName,
                             date: valuesPersonalInfo.date,
                             photo: valuesPersonalInfo.photo,
-                            phone: valuesPersonalInfo.phone,
+                            phone: valuesPersonalInfo.phoneNum,
                             user: valuesInstaAccount.user,
                             followersAmount: valuesInstaAccount.followers,
                             instagramUrl: valuesInstaAccount.url,
@@ -252,7 +252,7 @@ const AnswerOfServer = ({ obj }) => {
 
     useEffect(() => {
         console.log(JSON.stringify(obj))
-        fetch(`/api/influencers/register`, {
+        fetch(`/api/register`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
