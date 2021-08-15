@@ -11,7 +11,7 @@ const InfluencerSchema = new mongoose.Schema({
     instagramUser: { type: String, required: true },
     followersAmount: { type: Number, required: true },
     instagramUrl: { type: String },
-    categories: { type: Array },
+    categories: { type: Array, required: true },
     bio: { type: String }
 })
 

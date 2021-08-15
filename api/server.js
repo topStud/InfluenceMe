@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const influencerRoutes = require('./routes/influencerRoutes')
+const commonRoutes = require('./routes/commonRoutes')
 
 // connect to the database
 mongoose.connect('mongodb://localhost/InfluenceMe',
@@ -25,10 +26,6 @@ app.use(morgan('dev'))
 app.use(bodyParser.urlencoded({extended:true}))
 app.use(bodyParser.json());
 
-// for the limit
-app.use(express.json({limit: '50mb'}));
-app.use(express.urlencoded({limit: '50mb'}));
-
 const PORT = process.env.PORT || '5000'
 
 app.listen(PORT, ()=>{
@@ -36,3 +33,4 @@ app.listen(PORT, ()=>{
 })
 
 app.use('/api/influencers', influencerRoutes)
+app.use('/api', commonRoutes)

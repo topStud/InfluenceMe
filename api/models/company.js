@@ -6,8 +6,9 @@ const CompanySchema = new mongoose.Schema({
     password: { type: String, required: true},
     name: { type: String, required: true },
     photo: { type: Buffer },
+    phone: { type: String },
     bio: { type: String }
 })
 
-const model = mongoose.model('CompanySchema', CompanySchema)
+const model = mongoose.model('Companies', CompanySchema)
 module.exports = model
