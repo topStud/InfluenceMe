@@ -1,6 +1,8 @@
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 const influencerModel = require('../models/influencer')
 
+const JWT_SECRET = 'gkdd462gfkbjfoh#$#54*jfdsdf&$&$#)fhdsadfkl676q3478dfcSgd'
 
 // show the list of infulencers
 const influencers = async (req, res) => {
@@ -52,7 +54,7 @@ const influencerRegister = async (req, res) => {
             categories,
             bio
         })
-        console.log('user created successfully' + response)
+        //console.log('user created successfully' + response)
     }catch (error) {
         if(error.code === 11000){
             return res.json({status: 'error', 'error': 'email already in use'})
@@ -61,7 +63,12 @@ const influencerRegister = async (req, res) => {
         //return res.json({status: 'error'})
     }
 
-    res.json({status: 'ok'})
+    // ask the user which entered now to get his id
+    const user = await influencerModel.findOne({ email: email }).lean()
+    const token = jwt.sign({
+        id: user._id
+    },JWT_SECRET)
+    return res.json({status: 'ok', data: token})
 }
 
 
