@@ -1,13 +1,24 @@
+import {TextField} from "@material-ui/core";
+
 export default function Bio(props) {
+    const errors = props.bioValues.err.getter
+
     function handleChange(e) {
         props.bioValues.val.setter(e.target.value)
     }
 
+    function onClick() {
+        if(errors.bioErr) {
+            props.bioValues.err.setter({
+                bioMsg: '',
+                bioErr: false
+            })
+        }
+    }
+
     return (
-        <textarea maxLength={3000} rows={1} style={{display: "block", maxHeight: '250px', width: '100%', height: '400px',
-            fontFamily: 'Rubik', fontWeight:300, fontSize:17, borderLeft:'7px solid #A64B28',
-            borderRight: '1px solid rgb(0,0,0,0.1)', borderTop: '1px solid rgb(0,0,0,0.1)',
-            borderBottom: '1px solid rgb(0,0,0,0.1)' , padding: 7}} placeholder={'Tell us about yourself here...\n(This information will be presented in front of the companies)'}
-            value={props.bioValues.val.getter} onChange={handleChange}/>
+        <TextField maxRows={12} minRows={15} variant={"outlined"} multiline fullWidth style={{display: "block", maxHeight: '250px', width: '100%', height: '400px',
+            fontFamily: 'Rubik', fontWeight:300, fontSize:17, padding: 7}} placeholder={'Tell us more about yourself here...'}
+            value={props.bioValues.val.getter} onChange={handleChange} error={errors.bioErr} helperText={errors.bioMsg} onClick={onClick}/>
     )
 }

@@ -7,10 +7,10 @@ import {blue} from "@material-ui/core/colors";
 import PhoneTextField from './phoneTextField'
 import Resizer from "react-image-file-resizer";
 
-export default function PersonalInfo(props) {
+export default function CompanyData(props) {
     // values
-    const values = props.personalInfoValues.val
-    const errors = props.personalInfoValues.err
+    const values = props.companyDataValues.val
+    const errors = props.companyDataValues.err
     const [imageName, setImageName] = React.useState('')
 
     const handleUploadClick = async event => {
@@ -37,84 +37,61 @@ export default function PersonalInfo(props) {
         );
     };
 
-    function onFirstNameChange(e) {
+    function onNameChange(e) {
         values.setter({
             ...values.getter,
-            firstName: e.target.value
+            companyName: e.target.value
         })
     }
 
-    function onLastNameChange(e) {
-        values.setter({
-            ...values.getter,
-            lastName: e.target.value
-        })
-    }
-
-    function onDateChange(e) {
-        values.setter({
-            ...values.getter,
-            date: e.target.value
-        })
-    }
-
-    function onFirstNameClick() {
+    function onURLClick() {
         errors.setter({
             ...errors.getter,
-            firstNameMsg: '',
-            firstNameErr: false
+            urlErr: false,
+            urlMsg: ''
         })
     }
 
-    function onLastNameClick() {
+    function onUrlChange(e) {
+        values.setter({
+            ...values.getter,
+            siteUrl: e.target.value
+        })
+    }
+
+    function onNameClick() {
         errors.setter({
             ...errors.getter,
-            lastNameMsg: '',
-            lastNameErr: false
+            companyNameMsg: '',
+            companyNameErr: false
         })
     }
 
     return (
         <Grid container spacing={4}>
-            <Grid item xs={12} sm={6} style={{height: 90, marginTop:10}}>
+            <Grid item xs={12} style={{height: 90, marginTop:10}}>
                 <TextField
-                    id="firstName"
-                    label="First Name"
+                    id="companyName"
+                    label="Company Name"
                     type="text"
                     fullWidth
-                    error={errors.getter.firstNameErr}
-                    helperText={errors.getter.firstNameMsg}
+                    error={errors.getter.companyNameErr}
+                    helperText={errors.getter.companyNameMsg}
                     required
-                    value={values.getter.firstName}
-                    onClick={onFirstNameClick}
-                    onChange={onFirstNameChange}
+                    value={values.getter.companyName}
+                    onClick={onNameClick}
+                    onChange={onNameChange}
                 />
             </Grid>
-            <Grid item xs={12} sm={6} style={{height: 90, marginTop:10}}>
+            <Grid item xs={12} style={{height: 90}}>
                 <TextField
-                    id="lastName"
-                    label="Last Name"
-                    type="text"
+                    value={values.getter.siteUrl}
+                    onChange={onUrlChange}
+                    error={errors.getter.urlErr}
+                    helperText={errors.getter.urlMsg}
                     fullWidth
-                    error={errors.getter.lastNameErr}
-                    helperText={errors.getter.lastNameMsg}
-                    onClick={onLastNameClick}
-                    required
-                    value={values.getter.lastName}
-                    onChange={onLastNameChange}
-                />
-            </Grid>
-            <Grid item xs={12} style={{height:90}}>
-                <TextField
-                    id="date"
-                    label="Birthday"
-                    type="date"
-                    fullWidth
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
-                    value={values.getter.date}
-                    onChange={onDateChange}
+                    label={'Company\'s site URL'}
+                    onClick={onURLClick}
                 />
             </Grid>
             <Grid item xs={12} sm={6} style={{height:10}}>
@@ -130,7 +107,7 @@ export default function PersonalInfo(props) {
                     <Fab component="span" style={{color: blue[900], margin: 10}}>
                         <AddPhotoAlternateIcon />
                     </Fab>
-                    {imageName !== '' ? (<span>{imageName}</span>) : (<span>Add a profile picture</span>)}
+                    {imageName !== '' ? (<span>{imageName}</span>) : (<span>Add company's logo here</span>)}
                 </label>
             </Grid>
             <Grid item xs={12} sm={6} style={{height:110}}>

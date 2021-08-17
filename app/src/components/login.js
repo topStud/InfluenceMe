@@ -137,12 +137,11 @@ export default function SignIn() {
                         </Button>
                         <Grid container justifyContent="flex-end">
                             <Grid item>
-                                <Link to='/newAccount' className={styles.link}>
+                                <Link to='/register' className={styles.link}>
                                     Create an account
                                 </Link>
                             </Grid>
                         </Grid>
-                        {/*{callServer && <AnswerOfServer obj={{email: emailValue, password: passValue}}/>}*/}
                         { callServer &&
                             <>
                                 <AnswerOfServer setCallServer={setCallServer} obj={{email: emailValue, password: passValue}}/>
@@ -162,9 +161,8 @@ function ValidateEmail(email)
 
 
 const AnswerOfServer = ({ setCallServer,obj }) => {
-    const [err, setErr] = React.useState(false)
     const [open, setOpen] = React.useState(false)
-    const [errNotFound, setErrNotFound] = React.useState(false)
+    const [errMsg, setErrMsg] = React.useState('')
 
     useEffect(() => {
         fetch('api/login', {
@@ -175,22 +173,20 @@ const AnswerOfServer = ({ setCallServer,obj }) => {
             },
             body: JSON.stringify(obj)
         }).then(res => {
-            if (res.status !== 200 && res.status !== 304) {
-                if (res.status === 404) {
-                    setErrNotFound(true)
-                } else {
-                    setErr(true)
-                }
+            if (!res.ok) {
                 setOpen(true)
-                throw Error(res.statusText);
+                setErrMsg('Connection problem')
             }
             return res.json()
         }).then(data => {
-            // moves to correct window
-            console.log('logged in successfully')
-        }).catch(function (error) {
-            console.log(error);
-        });
+            if (data.status === 'error') {
+                setOpen(true)
+                setErrMsg(data.error)
+            } else {
+                // moves to correct window
+                console.log(data.data)
+            }
+        })
     },[])
 
     const handleClose = () => {
@@ -199,12 +195,11 @@ const AnswerOfServer = ({ setCallServer,obj }) => {
     };
 
     return (
-      <>
-          <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}>
-              <Alert onClose={handleClose} severity="error">
-                  {err ? 'Something went wrong, try again' : errNotFound ? 'A user with this email does not exist' : ''}
-              </Alert>
-          </Snackbar>
-      </>
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}>
+          <Alert onClose={handleClose} severity="error" style={{fontSize:20, fontFamily:'Rubik'}}>
+              {/*Warning: findDOMNode is deprecated in StrictMode*/}
+              <div>{errMsg}</div>
+          </Alert>
+      </Snackbar>
     )
 }

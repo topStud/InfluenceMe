@@ -15,25 +15,38 @@ import InstagramInfo from './instagramInfo'
 import Bio from "./bio";
 import { Alert, AlertTitle } from '@material-ui/lab';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import BusinessIcon from '@material-ui/icons/Business'
+import CompanyData from "./CompanyData";
 
-function getSteps() {
-    return ['Personal information', 'instagram account', 'Bio'];
+function getSteps(userType) {
+    return userType === 'influencers' ? ['Personal information', 'instagram account', 'Bio'] : ['Company information', 'Bio'];
 }
 
-function getStepContent(stepIndex, values) {
+function getStepContentInfluencer(stepIndex, values) {
     switch (stepIndex) {
         case 0:
             return <PersonalInfo personalInfoValues={values.personalInfo}/>
         case 1:
             return <InstagramInfo instagramInfoValues={values.instagramInfo}/>
         case 2:
-            return <Bio bioValues={values.Bio}/>;
+            return <Bio bioValues={values.Bio}/>
         default:
             return 'Unknown stepIndex';
     }
 }
 
-function ColorLibStepIcon(props) {
+function getStepContentCompany(stepIndex, values) {
+    switch (stepIndex) {
+        case 0:
+            return <CompanyData companyDataValues={values.companyData}/>
+        case 1:
+            return <Bio bioValues={values.Bio}/>
+        default:
+            return 'Unknown stepIndex';
+    }
+}
+
+function ColorStepIconInfluencer(props) {
     const { active, completed } = props;
 
     const icons = {
@@ -54,37 +67,53 @@ function ColorLibStepIcon(props) {
     );
 }
 
-export default function HorizontalLabelPositionBelowStepper(props) {
+function ColorStepIconCompany(props) {
+    const { active, completed } = props;
+
+    const icons = {
+        1: <BusinessIcon/>,
+        2: <InfoIcon />,
+    };
+
+    return (
+        <div
+            className={clsx(classes.root_icon, {
+                [classes.active_icon]: active,
+                [classes.completed_icon]: completed,
+            })}
+        >
+            {icons[String(props.icon)]}
+        </div>
+    );
+}
+
+
+export default function ContentBelowStepper(props) {
     const required_txt = 'This field is required'
     const [userId, setUserId] = React.useState(0)
     const [activeStep, setActiveStep] = React.useState(0);
-    const steps = getSteps();
+    const userType = props.userType;
+    const steps = getSteps(userType);
 
-    // influencer variables for user inputs
-    // personal info
-    let currDate = new Date()
-    currDate = currDate.getFullYear() + '-' + String(currDate.getMonth() + 1).padStart(2, '0') + '-' +
-        String(currDate.getDate()).padStart(2, '0')
-    const [valuesPersonalInfo, setValuesPersonalInfo] = React.useState({
-        firstName: '',
-        lastName: '',
-        date: currDate,
-        phoneNum: '',
-        photo: null,
-    })
+    // influencer
+    const valuesPersonalInfo = props.profileValues.influencers.personal.getter
+    const setValuesPersonalInfo = props.profileValues.influencers.personal.setter
+    const valuesInstaAccount = props.profileValues.influencers.instagram.getter
+    const setValuesInstaAccount = props.profileValues.influencers.instagram.setter
+    const bioInfluencer = props.profileValues.influencers.bio.getter
+    const setBioInfluencer = props.profileValues.influencers.bio.setter
+
+    // company
+    const valuesCompany = props.profileValues.companies.info.getter
+    const setValuesCompany = props.profileValues.companies.info.setter
+    const bioCompany = props.profileValues.companies.bio.getter
+    const setBioCompany = props.profileValues.companies.bio.setter
+
     const [errPersonalInfo, setErrPersonalInfo] = React.useState({
         firstNameErr: false,
         lastNameErr: false,
         firstNameMsg: '',
         lastNameMsg: '',
-    })
-
-    // instagram info
-    const [valuesInstaAccount, setValuesInstaAccount] = React.useState({
-        user: '',
-        followers: '',
-        url: '',
-        categories: []
     })
     const [errInstaAccount, setErrInstaAccount] = React.useState({
         userErr: false,
@@ -95,7 +124,20 @@ export default function HorizontalLabelPositionBelowStepper(props) {
         followersMsg: '',
         urlMsg: '',
     })
-    const [bio, setBio] = React.useState('')
+    const [errCompanyData, setErrCompanyData] = React.useState({
+        companyNameErr: false,
+        companyNameMsg: '',
+        siteUrlErr: true,
+        siteUrlMsg: ''
+    })
+    const [errCompanyBio, setErrCompanyBio] = React.useState({
+        bioErr: false,
+        bioMsg: ''
+    })
+    const errInfluencerBio = {
+        bioErr: false,
+        bioMsg: ''
+    }
 
     const values_influencer = {
         personalInfo: {
@@ -120,18 +162,45 @@ export default function HorizontalLabelPositionBelowStepper(props) {
         },
         Bio:{
             val: {
-                getter: bio,
-                setter: setBio
+                getter: bioInfluencer,
+                setter: setBioInfluencer
+            },
+            err: {
+                getter: bioInfluencer
             }
         }
     }
+
+    const values_company = {
+        companyData: {
+            val: {
+                getter: valuesCompany,
+                setter: setValuesCompany,
+            },
+            err: {
+                getter: errCompanyData,
+                setter: setErrCompanyData,
+            },
+        },
+        Bio:{
+            val: {
+                getter: bioCompany,
+                setter: setBioCompany
+            },
+            err: {
+                getter: errCompanyBio,
+                setter: setErrCompanyBio
+            }
+        }
+    }
+
 
     const validateWebsiteUrl = websiteUrl => {
         const urlRegEx = new RegExp(/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=+$,\w]+@)?[A-Za-z0-9.-]+|(?:www\.|[-;:&=+$,\w]+@)[A-Za-z0-9.-]+)((?:\/[+~%/.\w\-_]*)?\??#?)?)/);
         return urlRegEx.test(String(websiteUrl).toLowerCase());
     };
 
-    const handleNext = () => {
+    const handleNextInfluencer = () => {
         let mayContinue = true
         // personal information
         if (activeStep === 0) {
@@ -152,9 +221,8 @@ export default function HorizontalLabelPositionBelowStepper(props) {
         else if (activeStep === 1) {
             let instaUserErr = valuesInstaAccount.user === ''
             let instaFollowersErr = valuesInstaAccount.followers === ''
-            let linkErr = valuesInstaAccount.url && !validateWebsiteUrl(valuesInstaAccount.url)
+            let linkErr = valuesInstaAccount.url !== '' && !validateWebsiteUrl(valuesInstaAccount.url)
             let categoryErr = valuesInstaAccount.categories.length === 0
-            console.log('check' + valuesInstaAccount.categories)
             if (linkErr || instaUserErr || instaFollowersErr || categoryErr) {
                 mayContinue = false
                 setErrInstaAccount({
@@ -172,7 +240,38 @@ export default function HorizontalLabelPositionBelowStepper(props) {
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
     };
 
-    const handleBackStandard = () => {
+    const handleNextCompany = () => {
+        let mayContinue = true
+        // personal information
+        if (activeStep === 0) {
+            let compNameErr = valuesCompany.companyName === ''
+            let linkErr = valuesCompany.siteUrl && !validateWebsiteUrl(valuesCompany.siteUrl)
+            if (compNameErr || linkErr) {
+                mayContinue = false
+            }
+            setErrCompanyData({
+                companyNameErr: compNameErr,
+                companyNameMsg: compNameErr ? required_txt : '',
+                siteUrlErr: linkErr,
+                siteUrlMsg: linkErr ? 'Url format is invalid' : ''
+            })
+        } else if (activeStep === 1) {
+            let bioEmpty = bioCompany === ''
+            if (bioEmpty) {
+                mayContinue = false
+            }
+            setErrCompanyBio({
+                bioErr: bioEmpty,
+                bioMsg: bioEmpty ? required_txt : ''
+            })
+        }
+        if (mayContinue) {
+            setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        }
+    };
+
+
+    const handleBackStandardInfluencer = () => {
         if(activeStep === 1) {
             setErrInstaAccount({
                 userErr: false,
@@ -187,8 +286,18 @@ export default function HorizontalLabelPositionBelowStepper(props) {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
+    const handleBackStandardCompany = () => {
+        if(activeStep === 1) {
+            setErrCompanyBio({
+                bioErr: false,
+                bioMsg: ''
+            })
+        }
+        setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    };
+
     const handleBackToRegister = () => {
-        props.register(false);
+        props.filledCorrectly(false);
     };
 
     return (
@@ -197,37 +306,51 @@ export default function HorizontalLabelPositionBelowStepper(props) {
             classes={{completed: classes.completed_conn, active: classes.active_conn, line: classes.line_conn}}/>}>
                 {steps.map((label) => (
                     <Step key={label}>
-                        <StepLabel StepIconComponent={ColorLibStepIcon}>{label}</StepLabel>
+                        <StepLabel StepIconComponent={props.userType === 'influencers' ? ColorStepIconInfluencer : ColorStepIconCompany}>{label}</StepLabel>
                     </Step>
                 ))}
             </Stepper>
             <div>
                 {activeStep === steps.length ? (
-                        <AnswerOfServer obj={{
-                            email: props.values.emailVal,
-                            password: props.values.passVal,
-                            firstName: valuesPersonalInfo.firstName,
-                            lastName: valuesPersonalInfo.lastName,
-                            date: valuesPersonalInfo.date,
-                            photo: valuesPersonalInfo.photo,
-                            phone: valuesPersonalInfo.phoneNum,
-                            instagramUser: valuesInstaAccount.user,
-                            followersAmount: valuesInstaAccount.followers,
-                            instagramUrl: valuesInstaAccount.url,
-                            categories: valuesInstaAccount.categories,
-                            bio: bio
-                        }}/>
+                    <AnswerOfServer obj={userType === 'influencers'? {
+                        email: props.regValues.email,
+                        password: props.regValues.pass,
+                        firstName: valuesPersonalInfo.firstName,
+                        lastName: valuesPersonalInfo.lastName,
+                        date: valuesPersonalInfo.date,
+                        photo: valuesPersonalInfo.photo,
+                        phone: valuesPersonalInfo.phoneNum,
+                        instagramUser: valuesInstaAccount.user,
+                        followersAmount: valuesInstaAccount.followers,
+                        instagramUrl: valuesInstaAccount.url,
+                        categories: valuesInstaAccount.categories,
+                        bio: bioInfluencer
+                    }:{
+                        email: props.regValues.email,
+                        password: props.regValues.pass,
+                        name: valuesCompany.companyName,
+                        siteUrl: valuesCompany.siteUrl,
+                        photo: valuesCompany.photo,
+                        phone: valuesCompany.phoneNum,
+                        bio: bioCompany
+                    }} filledCorrectly={props.filledCorrectly} userType={userType}/>
                 ) : (
                     <div style={{display:"flex", flexDirection:"column", justifyContent:"flex-end" , height:320}}>
-                        <div style={{marginBottom: 30}}>{getStepContent(activeStep, values_influencer)}</div>
+                        <div style={{marginBottom: 30}}>
+                            {userType === 'influencers' ?
+                                getStepContentInfluencer(activeStep, values_influencer) :
+                                getStepContentCompany(activeStep, values_company)}
+                        </div>
                         <div style={{display:"flex", justifyContent: "center"}}>
                             <Button
-                                onClick={activeStep === 0 ? handleBackToRegister : handleBackStandard}
+                                onClick={activeStep === 0 ? handleBackToRegister :
+                                    (userType === 'influencers' ? handleBackStandardInfluencer :
+                                        handleBackStandardCompany)}
                                 style={{marginRight: '4%'}}
                             >
                                 Back
                             </Button>
-                            <Button variant="contained" color="primary" onClick={handleNext}>
+                            <Button variant="contained" color="primary" onClick={userType === 'influencers' ? handleNextInfluencer : handleNextCompany}>
                                 {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                             </Button>
                         </div>
@@ -238,22 +361,30 @@ export default function HorizontalLabelPositionBelowStepper(props) {
     );
 }
 
-const AnswerOfServer = ({ obj }) => {
-    const [id, setId] = React.useState(null)
+const AnswerOfServer = ({obj, filledCorrectly, userType}) => {
+    const [id, setId] = React.useState(false)
     const [err, setErr] = React.useState(false)
+    const [errEmailExists, setErrEmailExists] = React.useState(false)
 
     const handleReset = () => {
-        window.location.href = '/newAccount'
+        window.location.href = '/register'
     };
 
     const handleContinue = (userId) => {
         // move to user's page
     }
 
+    const BackToLogIn = () => {
+        window.location.href = '/'
+    }
+
+    const ChangeEmail = () => {
+        filledCorrectly(false)
+    }
+
     useEffect(() => {
         console.log(JSON.stringify(obj))
-        fetch(`/api/register`, {
-        // fetch(`/api/influencers/register`, {
+        fetch(`/api/${userType}/register`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -267,7 +398,12 @@ const AnswerOfServer = ({ obj }) => {
             }
             return res.json()
         }).then(data=>{
-            setId(data)
+            if (data.status === 'error') {
+                setErrEmailExists(true)
+            } else {
+                // change to id after server is updated
+                setId(true)
+            }
         }).catch(function (error) {
             console.log(error);
         });
@@ -275,7 +411,7 @@ const AnswerOfServer = ({ obj }) => {
 
     return (
         <>
-            {id && <div style={{display: "flex", flexDirection: "column", height:320}}>
+            {id && !err && !errEmailExists && <div style={{display: "flex", flexDirection: "column", height:320}}>
                 <Alert severity="success" style={{height: 150, fontSize:16, marginBottom: 50, width:'100%', lineHeight: '22pt'}}>
                     <AlertTitle style={{fontSize:28}}><strong>Congrats!</strong></AlertTitle>
                     You registered successfully to our system.<br/>
@@ -283,7 +419,7 @@ const AnswerOfServer = ({ obj }) => {
                 </Alert>
                 <Button onClick={()=>handleContinue(id)} style={{alignSelf:"center"}}>Continue</Button>
             </div>}
-            {err && !id && <div style={{display: "flex", flexDirection: "column", height:320}}>
+            {err && !id && !errEmailExists && <div style={{display: "flex", flexDirection: "column", height:320}}>
                 <Alert severity="error" style={{height: 150, fontSize:16, marginBottom: 50, width:'100%', lineHeight: '22pt'}}>
                     <AlertTitle style={{fontSize:28}}><strong>Note!</strong></AlertTitle>
                     Something went wrong!<br/>
@@ -291,7 +427,19 @@ const AnswerOfServer = ({ obj }) => {
                 </Alert>
                 <Button onClick={handleReset} style={{alignSelf:"center"}}>reset registration</Button>
             </div>}
-            {!(id || err) && <div style={{display:"flex", justifyContent: "center", alignItems: "center", height:350}}><CircularProgress/></div>}
+            {errEmailExists && !id && !err && <div style={{display: "flex", flexDirection: "column", height:320}}>
+                <Alert severity="error" style={{height: 150, fontSize:16, marginBottom: 50, width:'100%', lineHeight: '22pt'}}>
+                    <AlertTitle style={{fontSize:28}}><strong>User exists!</strong></AlertTitle>
+                    Hi there,<br/>
+                    A user with the provided email already exists.
+                </Alert>
+
+                <div style={{display: "flex", justifyContent: "center" }}>
+                    <Button onClick={ChangeEmail} style={{alignSelf:"center", marginRight: '4%'}}>Change email</Button>
+                    <Button variant="contained" color="primary" onClick={BackToLogIn} style={{alignSelf:"center"}}>Log in</Button>
+                </div>
+            </div>}
+            {!(id || err || errEmailExists) && <div style={{display:"flex", justifyContent: "center", alignItems: "center", height:350}}><CircularProgress/></div>}
         </>
     )
 }
