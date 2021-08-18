@@ -134,7 +134,7 @@ export default function PersonalInfo(props) {
                 </label>
             </Grid>
             <Grid item xs={12} sm={6} style={{height:110}}>
-                <PhoneTextField val={values}/>
+                <PhoneTextField val={values} err={errors}/>
             </Grid>
         </Grid>
     )

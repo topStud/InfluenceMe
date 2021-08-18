@@ -6,6 +6,7 @@ export default class CreateUserDialog extends React.Component {
     constructor(props) {
         super(props);
         this.handlePhoneChange = this.handlePhoneChange.bind(this);
+        this.onClick = this.onClick.bind(this)
     }
     
     handlePhoneChange(value) {
@@ -16,6 +17,15 @@ export default class CreateUserDialog extends React.Component {
             })
         }
     }
+
+    onClick() {
+        this.props.err.setter({
+            ...this.props.err.getter,
+            phoneErr: false,
+            phoneMsg: ''
+        })
+    }
+
     render() {
         return (
             <MuiPhoneNumber
@@ -26,6 +36,9 @@ export default class CreateUserDialog extends React.Component {
                 defaultCountry={"il"}
                 value={this.props.val.getter.phoneNum}
                 onChange={this.handlePhoneChange}
+                error={this.props.err.getter.phoneErr}
+                helperText={this.props.err.getter.phoneMsg}
+                onClick={this.onClick}
             />
         );
     }

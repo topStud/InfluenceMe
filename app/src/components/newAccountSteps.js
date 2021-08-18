@@ -16,7 +16,9 @@ import Bio from "./bio";
 import { Alert, AlertTitle } from '@material-ui/lab';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import BusinessIcon from '@material-ui/icons/Business'
-import CompanyData from "./CompanyData";
+import CompanyData from "./companyData";
+import validator from 'validator';
+import isMobilePhone from "validator/es/lib/isMobilePhone";
 
 function getSteps(userType) {
     return userType === 'influencers' ? ['Personal information', 'instagram account', 'Bio'] : ['Company information', 'Bio'];
@@ -114,6 +116,8 @@ export default function ContentBelowStepper(props) {
         lastNameErr: false,
         firstNameMsg: '',
         lastNameMsg: '',
+        phoneErr: false,
+        phoneMsg: ''
     })
     const [errInstaAccount, setErrInstaAccount] = React.useState({
         userErr: false,
@@ -127,17 +131,15 @@ export default function ContentBelowStepper(props) {
     const [errCompanyData, setErrCompanyData] = React.useState({
         companyNameErr: false,
         companyNameMsg: '',
-        siteUrlErr: true,
-        siteUrlMsg: ''
+        siteUrlErr: false,
+        siteUrlMsg: '',
+        phoneErr: false,
+        phoneMsg: ''
     })
     const [errCompanyBio, setErrCompanyBio] = React.useState({
         bioErr: false,
         bioMsg: ''
     })
-    const errInfluencerBio = {
-        bioErr: false,
-        bioMsg: ''
-    }
 
     const values_influencer = {
         personalInfo: {
@@ -204,17 +206,19 @@ export default function ContentBelowStepper(props) {
         let mayContinue = true
         // personal information
         if (activeStep === 0) {
+            let phoneNumberErr = !(valuesPersonalInfo.phoneNum === '' || (valuesPersonalInfo.phoneNum.split(" ").length - 1) === 0 || isMobilePhone(valuesPersonalInfo.phoneNum.replace(/\s+/g, ''), 'any'))
             let fNameErr = valuesPersonalInfo.firstName === ''
             let lNameErr = valuesPersonalInfo.lastName === ''
-            if (fNameErr || lNameErr) {
+            if (fNameErr || lNameErr || mayContinue) {
                 mayContinue = false;
             }
             setErrPersonalInfo({
-                ...errPersonalInfo,
                 firstNameErr: fNameErr,
                 firstNameMsg: fNameErr ? required_txt : '',
                 lastNameErr: lNameErr,
                 lastNameMsg: lNameErr ? required_txt : '',
+                phoneErr: phoneNumberErr,
+                phoneMsg: phoneNumberErr ? 'Phone number is not valid' : ''
             })
         }
         // Instagram account
@@ -244,16 +248,19 @@ export default function ContentBelowStepper(props) {
         let mayContinue = true
         // personal information
         if (activeStep === 0) {
+            let phoneNumberErr = !(valuesCompany.phoneNum === '' || (valuesCompany.phoneNum.split(" ").length - 1) === 0 || isMobilePhone(valuesCompany.phoneNum.replace(/\s+/g, ''), 'any'))
             let compNameErr = valuesCompany.companyName === ''
-            let linkErr = valuesCompany.siteUrl && !validateWebsiteUrl(valuesCompany.siteUrl)
-            if (compNameErr || linkErr) {
+            let linkErr = valuesCompany.siteUrl !== '' && !validateWebsiteUrl(valuesCompany.siteUrl)
+            if (compNameErr || linkErr || phoneNumberErr) {
                 mayContinue = false
             }
             setErrCompanyData({
                 companyNameErr: compNameErr,
                 companyNameMsg: compNameErr ? required_txt : '',
                 siteUrlErr: linkErr,
-                siteUrlMsg: linkErr ? 'Url format is invalid' : ''
+                siteUrlMsg: linkErr ? 'Url format is invalid' : '',
+                phoneErr: phoneNumberErr,
+                phoneMsg: phoneNumberErr ? 'Phone number is not valid' : ''
             })
         } else if (activeStep === 1) {
             let bioEmpty = bioCompany === ''

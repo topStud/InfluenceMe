@@ -47,8 +47,8 @@ export default function CompanyData(props) {
     function onURLClick() {
         errors.setter({
             ...errors.getter,
-            urlErr: false,
-            urlMsg: ''
+            siteUrlErr: false,
+            siteUrlMsg: ''
         })
     }
 
@@ -87,8 +87,8 @@ export default function CompanyData(props) {
                 <TextField
                     value={values.getter.siteUrl}
                     onChange={onUrlChange}
-                    error={errors.getter.urlErr}
-                    helperText={errors.getter.urlMsg}
+                    error={errors.getter.siteUrlErr}
+                    helperText={errors.getter.siteUrlMsg}
                     fullWidth
                     label={'Company\'s site URL'}
                     onClick={onURLClick}
@@ -111,7 +111,7 @@ export default function CompanyData(props) {
                 </label>
             </Grid>
             <Grid item xs={12} sm={6} style={{height:110}}>
-                <PhoneTextField val={values}/>
+                <PhoneTextField val={values} err={errors}/>
             </Grid>
         </Grid>
     )
