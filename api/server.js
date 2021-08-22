@@ -5,6 +5,8 @@ const bodyParser = require('body-parser')
 const influencerRoutes = require('./routes/influencerRoutes')
 const commonRoutes = require('./routes/commonRoutes')
 const companyRoutes = require('./routes/companyRoutes')
+const collaborationsRoutes = require('./routes/collaborationsRoutes')
+
 
 // connect to the database
 mongoose.connect('mongodb://localhost/InfluenceMe',
@@ -36,3 +38,4 @@ app.listen(PORT, ()=>{
 app.use('/api/influencers', influencerRoutes)
 app.use('/api', commonRoutes)
 app.use('/api/companies', companyRoutes)
+app.use('/api/collaboration_proposals', collaborationsRoutes)
