@@ -1,14 +1,15 @@
 const mongoose = require('mongoose')
 
-//todo: change the fields
 const CollaborationSchema = new mongoose.Schema({
-    _id: { type: String, required: true, unique: true },
-    companyName: { type: String, required: true },
-    photo: { type: String },
+    companyID: { type: String, required: true },
+    title: {type: String, required: true, unique: true},
     phone: { type: String },
+    email: { type: String },
     categories: { type: Array, required: true },
-    bio: { type: String }
+    CollaborationsNumber: {type: Number},
+    description: { type: String , required: true},
+    requirements: {type: String }
 })
 
-const model = mongoose.model('Companies', CompanySchema)
+const model = mongoose.model('Collaborations', CollaborationSchema)
 module.exports = model

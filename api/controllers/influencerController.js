@@ -12,7 +12,7 @@ const influencers = async (req, res) => {
             //res.json({status: 'ok'})
         })
         .catch(error => {
-            return res.json({
+            return res.status(400).json({
                 status: 'error'
             })
         })
@@ -27,7 +27,7 @@ const influencer = async (req, res) => {
             //res.json({status: 'ok'})
         })
         .catch(error => {
-            return res.json({
+            return res.status(400).json({
                 status: 'error'
             })
         })
@@ -57,16 +57,15 @@ const influencerRegister = async (req, res) => {
         //console.log('user created successfully' + response)
     }catch (error) {
         if(error.code === 11000){
-            return res.json({status: 'error', 'error': 'email already in use'})
+            return res.status(400).json({status: 'error', 'error': 'email already in use'})
         }
-        throw error
-        //return res.json({status: 'error'})
+        return res.status(400).json({status: 'error'})
     }
 
-    // ask the user which entered now to get his id
-    const user = await influencerModel.findOne({ email: email }).lean()
+    // ask the influencer which entered now to get his id
+    const influencer = await influencerModel.findOne({ email: email }).lean()
     const token = jwt.sign({
-        id: user._id
+        id: influencer._id
     },JWT_SECRET)
     return res.json({status: 'ok', data: token})
 }

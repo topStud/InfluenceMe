@@ -13,7 +13,7 @@ const login = async (req,res,next) => {
     }
     // for error case
     if(!user){
-        return res.json({status: 'error', error: 'User does mot exist'})
+        return res.json({status: 'error', error: 'User does not exist'})
     }
     if(await bcrypt.compare(password, user.password)){
         const token = jwt.sign({
@@ -21,7 +21,7 @@ const login = async (req,res,next) => {
             },JWT_SECRET)
         return res.json({status: 'ok', data: token})
     } else {
-        return res.json({status: 'error', error: 'Invalid password'})
+        return res.json({status: 'error', error: 'Incorrect password'})
     }
 }
 
