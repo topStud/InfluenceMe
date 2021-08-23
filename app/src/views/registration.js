@@ -12,6 +12,10 @@ export default function Registration() {
         pass: '',
         passV: '',
     })
+    const values = {
+        getter: registrationValues,
+        setter: setRegistrationValues,
+    }
 
     // profile values - influencer
     let currDate = new Date()
@@ -87,8 +91,7 @@ export default function Registration() {
                 </Grid>
                 <Grid item xs={12} sm={8}>
                     {!filledRegistrationData ?
-                        (<Register filled={setFilledRegistrationData} values={registrationValues}
-                                       setValues={setRegistrationValues} setUserType={setUserType} chip={chip}/>) :
+                        (<Register filled={setFilledRegistrationData} values={values} setUserType={setUserType} chip={chip}/>) :
                         (<ProfileData profileValues={objProfileInfo} regValues={registrationValues}
                                       userType={userType} filledCorrectly={setFilledRegistrationData}/>)}
                 </Grid>

@@ -1,114 +1,39 @@
 import TextField from '@material-ui/core/TextField';
 import Grid from "@material-ui/core/Grid";
 import React from "react";
-import {Fab} from "@material-ui/core";
-import AddPhotoAlternateIcon from "@material-ui/icons/AddPhotoAlternate";
-import {blue} from "@material-ui/core/colors";
 import PhoneTextField from '../InputComponents/phoneTextField'
-import Resizer from "react-image-file-resizer";
+import InputImage from "../InputComponents/inputImage";
+import InputText from '../InputComponents/inputText';
 
 export default function CompanyData(props) {
     // values
     const values = props.companyDataValues.val
     const errors = props.companyDataValues.err
-    const [imageName, setImageName] = React.useState('')
 
-    const handleUploadClick = async event => {
-        let file = event.target.files[0];
-        setImageName(file.name)
-
-        // compress image
-        Resizer.imageFileResizer(
-            file,
-            480,
-            480,
-            'JPEG',
-            90,
-            0,
-            (uri) => {
-                values.setter({
-                    ...values.getter,
-                    photo: uri
-                })
-            },
-            'base64',
-            200,
-            200
-        );
-    };
-
-    function onNameChange(e) {
-        values.setter({
-            ...values.getter,
-            companyName: e.target.value
-        })
+    const nameObj = {
+        required: true,
+        id: 'companyName',
+        label: 'Company Name',
+        name: 'companyName'
     }
 
-    function onURLClick() {
-        errors.setter({
-            ...errors.getter,
-            siteUrlErr: false,
-            siteUrlMsg: ''
-        })
-    }
-
-    function onUrlChange(e) {
-        values.setter({
-            ...values.getter,
-            siteUrl: e.target.value
-        })
-    }
-
-    function onNameClick() {
-        errors.setter({
-            ...errors.getter,
-            companyNameMsg: '',
-            companyNameErr: false
-        })
+    const urlObj = {
+        required: false,
+        id: 'siteUrl',
+        label: 'Company\'s site URL',
+        name: 'siteUrl'
     }
 
     return (
         <Grid container spacing={4}>
             <Grid item xs={12} style={{height: 90, marginTop:10}}>
-                <TextField
-                    id="companyName"
-                    label="Company Name"
-                    type="text"
-                    fullWidth
-                    error={errors.getter.companyNameErr}
-                    helperText={errors.getter.companyNameMsg}
-                    required
-                    value={values.getter.companyName}
-                    onClick={onNameClick}
-                    onChange={onNameChange}
-                />
+                <InputText val={values} err={errors} info={nameObj}/>
             </Grid>
             <Grid item xs={12} style={{height: 90}}>
-                <TextField
-                    value={values.getter.siteUrl}
-                    onChange={onUrlChange}
-                    error={errors.getter.siteUrlErr}
-                    helperText={errors.getter.siteUrlMsg}
-                    fullWidth
-                    label={'Company\'s site URL'}
-                    onClick={onURLClick}
-                />
+                <InputText val={values} err={errors} info={urlObj}/>
             </Grid>
             <Grid item xs={12} sm={6} style={{height:10}}>
-                <input
-                    accept="image/*"
-                    style={{display:"none"}}
-                    id="contained-button-file"
-                    multiple
-                    type="file"
-                    onChange={handleUploadClick}
-                />
-                <label htmlFor="contained-button-file">
-                    <Fab component="span" style={{color: blue[900], margin: 10}}>
-                        <AddPhotoAlternateIcon />
-                    </Fab>
-                    {imageName !== '' ? (<span>{imageName}</span>) : (<span>Add company's logo here</span>)}
-                </label>
+                <InputImage val={values} info={{label: 'Add company\'s logo here'}}/>
             </Grid>
             <Grid item xs={12} sm={6} style={{height:110}}>
                 <PhoneTextField val={values} err={errors}/>

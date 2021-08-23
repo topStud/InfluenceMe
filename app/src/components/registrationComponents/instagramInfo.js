@@ -4,6 +4,7 @@ import React from "react";
 import NumberFormat from 'react-number-format';
 import PropTypes from 'prop-types';
 import {Checkbox, FormControlLabel, FormGroup, FormHelperText, FormLabel} from "@material-ui/core";
+import InputText from "../InputComponents/inputText";
 
 export default function InstagramInfo(props) {
     const values = props.instagramInfoValues.val
@@ -16,32 +17,10 @@ export default function InstagramInfo(props) {
         games: false
     })
 
-    function onUserClick() {
-        errors.setter({
-            ...errors.getter,
-            userErr: false,
-            userMsg: ''
-        })
-    }
-
-    function onUserChange(e) {
-        values.setter({
-            ...values.getter,
-            user: e.target.value
-        })
-    }
-
     function handleChangeFollowers(e) {
         values.setter({
             ...values.getter,
             followers: e.target.value
-        })
-    }
-
-    function onUrlChange(e) {
-        values.setter({
-            ...values.getter,
-            url: e.target.value
         })
     }
 
@@ -50,14 +29,6 @@ export default function InstagramInfo(props) {
             ...errors.getter,
             followersErr: false,
             followersMsg: ''
-        })
-    }
-
-    function onURLClick() {
-        errors.setter({
-            ...errors.getter,
-            urlErr: false,
-            urlMsg: ''
         })
     }
     
@@ -93,21 +64,24 @@ export default function InstagramInfo(props) {
         }
     }
 
+    const userObj = {
+        required: true,
+        id: 'instagramUser',
+        label: 'InstagramUser',
+        name: 'user'
+    }
+
+    const urlObj = {
+        required: false,
+        id: 'instagramUrl',
+        label: 'Instagram URL',
+        name: 'url'
+    }
+
     return (
         <Grid container spacing={4}>
             <Grid item xs={12} sm={6} style={{height: 90, marginTop:10}}>
-                <TextField
-                    id="user"
-                    label="Instagram user"
-                    type="text"
-                    fullWidth
-                    error={errors.getter.userErr}
-                    helperText={errors.getter.userMsg}
-                    required
-                    value={values.getter.user}
-                    onClick={onUserClick}
-                    onChange={onUserChange}
-                />
+                <InputText val={values} err={errors} info={userObj}/>
             </Grid>
             <Grid item xs={12} sm={6} style={{height: 90, marginTop:10}}>
                 <TextField
@@ -127,15 +101,7 @@ export default function InstagramInfo(props) {
                 />
             </Grid>
             <Grid item xs={12} style={{height: 90}}>
-                <TextField
-                    value={values.getter.url}
-                    onChange={onUrlChange}
-                    error={errors.getter.urlErr}
-                    helperText={errors.getter.urlMsg}
-                    fullWidth
-                    label={'instagram URL'}
-                    onClick={onURLClick}
-                />
+                <InputText val={values} err={errors} info={urlObj}/>
             </Grid>
             <Grid item xs={12} style={{height:110}}>
                 <FormLabel component="legend">Choose your categories</FormLabel>

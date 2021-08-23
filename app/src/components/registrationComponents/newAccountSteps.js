@@ -183,7 +183,7 @@ export default function ContentBelowStepper(props) {
                 setter: setErrCompanyData,
             },
         },
-        Bio:{
+        Bio: {
             val: {
                 getter: bioCompany,
                 setter: setBioCompany
@@ -208,7 +208,7 @@ export default function ContentBelowStepper(props) {
             let phoneNumberErr = !(valuesPersonalInfo.phoneNum === '' || (valuesPersonalInfo.phoneNum.split(" ").length - 1) === 0 || isMobilePhone(valuesPersonalInfo.phoneNum.replace(/\s+/g, ''), 'any'))
             let fNameErr = valuesPersonalInfo.firstName === ''
             let lNameErr = valuesPersonalInfo.lastName === ''
-            if (fNameErr || lNameErr || mayContinue) {
+            if (fNameErr || lNameErr || phoneNumberErr) {
                 mayContinue = false;
             }
             setErrPersonalInfo({
