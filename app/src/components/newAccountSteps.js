@@ -17,7 +17,6 @@ import { Alert, AlertTitle } from '@material-ui/lab';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import BusinessIcon from '@material-ui/icons/Business'
 import CompanyData from "./companyData";
-import validator from 'validator';
 import isMobilePhone from "validator/es/lib/isMobilePhone";
 
 function getSteps(userType) {

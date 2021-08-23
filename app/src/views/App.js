@@ -1,8 +1,8 @@
 import Grid from '@material-ui/core/Grid';
-import Login from './components/login'
-import Layout from "./components/layout";
-import './styles/globals.css';
-import pic from './images/home_photo.png'
+import Login from '../components/login'
+import Layout from "../components/layout";
+import '../styles/globals.css';
+import pic from '../images/home_photo.png'
 
 function App() {
   return (

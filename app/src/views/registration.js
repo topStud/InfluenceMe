@@ -1,9 +1,9 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
-import Layout from "./components/layout";
-import './styles/globals.css'
-import Register from './components/accountIinfo'
-import ProfileData from './components/newAccountSteps'
+import Layout from "../components/layout";
+import '../styles/globals.css'
+import Register from '../components/accountIinfo'
+import ProfileData from '../components/newAccountSteps'
 
 export default function Registration() {
     // registration values
