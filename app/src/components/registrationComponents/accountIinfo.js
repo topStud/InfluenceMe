@@ -10,9 +10,9 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import '../styles/globals.css'
+import '../../styles/globals.css'
 import {Link} from "react-router-dom";
-import styles from "../styles/Home.module.css";
+import styles from "../../styles/Home.module.css";
 
 export default function SignUp(props) {
     const values = props.values
@@ -25,7 +25,7 @@ export default function SignUp(props) {
         passVErr:false,
         emailMsg: '',
         passMsg: '',
-        passVMs: ''
+        passVMsg: ''
     })
 
     // chips
@@ -56,12 +56,12 @@ export default function SignUp(props) {
         badEmail = !ValidateEmail(values.email)
         if (passEmpty || passVEmpty || emailEmpty || badEmail || (values.pass.length < 6) || (values.pass !== values.passV)) {
             setErr({
-                passMsg: passEmpty ? (required_txt) : (values.pass.length < 6 ? 'Minimum length for a password is 6 characters' : ''),
+                passMsg: passEmpty ? required_txt : values.pass.length < 6 ? 'Minimum length for a password is 6 characters' : '',
                 passErr: passEmpty || values.pass.length < 6,
                 passVErr: passVEmpty || values.pass !== values.passV,
-                passVMsg: passVEmpty ? (required_txt) : (values.pass !== values.passV ? 'The passwords don\'t match' : ''),
+                passVMsg: passVEmpty ? required_txt : values.pass !== values.passV ? 'The passwords don\'t match' : '',
                 emailErr: badEmail,
-                emailMsg: emailEmpty ? (required_txt) : (badEmail ? 'The email entered is not in the correct format' : '')
+                emailMsg: emailEmpty ? required_txt : badEmail ? 'The email entered is not in the correct format' : ''
             })
         } else {
             props.filled(true)

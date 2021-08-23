@@ -7,8 +7,8 @@ import clsx from 'clsx';
 import PersonIcon from '@material-ui/icons/Person';
 import InstagramIcon from '@material-ui/icons/Instagram';
 import InfoIcon from '@material-ui/icons/Info';
-import classes from '../styles/Stepper.module.css'
-import '../styles/Stepper.module.css'
+import classes from '../../styles/Stepper.module.css'
+import '../../styles/Stepper.module.css'
 import {StepConnector} from "@material-ui/core";
 import PersonalInfo from "./personalInfo";
 import InstagramInfo from './instagramInfo'
