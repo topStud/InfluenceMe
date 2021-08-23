@@ -23,7 +23,7 @@ const addCollaborationProposal = async (req, res) => {
             phone: phone,
             email: email,
             categories: req.body.categories,
-            CollaborationsNumber: 0, // starting count from zero
+            collaborationsNumber: 0, // starting count from zero
             description: req.body.description,
             requirements: req.body.requirements
         }).then(( collaborationProposal) => {
@@ -74,9 +74,40 @@ const collaborationProposals = async (req, res) => {
         })
 }
 
+const specificCollaborationProposals = async (req, res) => {
+    await collaborationModel.find()
+        .then(response => {
+            return res.status(200).json({response})
+        })
+        .catch(error => {
+            return res.status(400).json({status: 'error'})
+        })
+}
+
+
+const collaborationProposalsOf = async (req, res) => {
+    const companyID = req.params.id
+    await companyModel.
+    findOne({ _id: companyID}, async (err, company) => {
+        if (err || company === null){
+            return res.status(400).json({status: 'error', 'error': 'company not exist'})
+        }
+        collaborationModel.find({
+            '_id': { $in: company.CollaborationProposals}
+        }, function(err, response){
+            if (err || company === null){
+                return res.status(400).json({status: 'error', 'error': 'can\'t find'})
+            }
+            return res.status(200).json({response})
+        })
+    })
+}
+
 
 module.exports = {
     addCollaborationProposal,
     deleteCollaborationProposal,
-    collaborationProposals
+    collaborationProposals,
+    specificCollaborationProposals,
+    collaborationProposalsOf
 }

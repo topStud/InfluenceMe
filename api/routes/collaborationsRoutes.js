@@ -3,9 +3,11 @@ const router = express.Router()
 
 const collaborationsController = require('../controllers/collaborationsController')
 
-router.post('/add', collaborationsController.addCollaborationProposal)
-router.delete('/delete/:id', collaborationsController.deleteCollaborationProposal)
+router.post('/', collaborationsController.addCollaborationProposal)
+router.delete('/:id', collaborationsController.deleteCollaborationProposal)
 router.get('/', collaborationsController.collaborationProposals)
+router.get('/:id', collaborationsController.specificCollaborationProposals)
+router.get('/company/:id', collaborationsController.collaborationProposalsOf)
 
 
 module.exports = router

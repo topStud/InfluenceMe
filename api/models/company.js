@@ -1,7 +1,5 @@
 const mongoose = require('mongoose')
-//const collaborationModel = require('collaboration')
 
-//todo: change the fields
 const CompanySchema = new mongoose.Schema({
     //_id: mongoose.Schema.Types.ObjectId,
     email: { type: String, required: true, unique: true },
@@ -11,7 +9,8 @@ const CompanySchema = new mongoose.Schema({
     photo: { type: String },
     phone: { type: String },
     bio: { type: String },
-    CollaborationProposals: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Collaborations' }]
+    CollaborationProposals: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Collaborations' }],
+    Contracts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Contracts' }]
 })
 
 const model = mongoose.model('Companies', CompanySchema)

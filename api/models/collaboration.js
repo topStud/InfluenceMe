@@ -6,7 +6,7 @@ const CollaborationSchema = new mongoose.Schema({
     phone: { type: String },
     email: { type: String },
     categories: { type: Array, required: true },
-    CollaborationsNumber: {type: Number},
+    collaborationsNumber: {type: Number},
     description: { type: String , required: true},
     requirements: {type: String }
 })
