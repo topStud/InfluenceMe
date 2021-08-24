@@ -14,7 +14,7 @@ const ContractSchema = new mongoose.Schema({
     details: { type: String, required: true },
     payment: {type: String},
     startDay:{type: Date, default: Date.now}, // need to know the time it working
-    endDey:{type: Date} // end time - when to remove the contract
+    endDay:{type: Date} // end time - when to remove the contract
 })
 
 const model = mongoose.model('Contracts', ContractSchema)

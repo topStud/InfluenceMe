@@ -8,8 +8,10 @@ const JWT_SECRET = 'gkdd462gfkbjfoh#$#54*jfdsdf&$&$#)fhdsadfkl676q3478dfcSgd'
 const login = async (req,res,next) => {
     const {email, password} = req.body
     let user = await influencer.findOne({ email: email }).lean()
+    let type = 'influencer'
     if(!user){
         user = await company.findOne({email}).lean()
+        type = 'company'
     }
     // for error case
     if(!user){
@@ -17,7 +19,8 @@ const login = async (req,res,next) => {
     }
     if(await bcrypt.compare(password, user.password)){
         const token = jwt.sign({
-                id: user._id
+                id: user._id,
+                type: type
             },JWT_SECRET)
         return res.json({status: 'ok', data: token})
     } else {
