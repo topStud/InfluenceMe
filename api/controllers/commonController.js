@@ -8,10 +8,10 @@ const JWT_SECRET = 'gkdd462gfkbjfoh#$#54*jfdsdf&$&$#)fhdsadfkl676q3478dfcSgd'
 const login = async (req,res,next) => {
     const {email, password} = req.body
     let user = await influencer.findOne({ email: email }).lean()
-    let type = 'influencer'
+    let type = 'influencers'
     if(!user){
         user = await company.findOne({email}).lean()
-        type = 'company'
+        type = 'companies'
     }
     // for error case
     if(!user){
