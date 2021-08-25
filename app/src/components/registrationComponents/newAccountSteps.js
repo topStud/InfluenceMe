@@ -18,6 +18,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import BusinessIcon from '@material-ui/icons/Business'
 import CompanyData from "./companyData";
 import isMobilePhone from "validator/es/lib/isMobilePhone";
+import {parseJwt} from '../../utilFunctions'
 
 function getSteps(userType) {
     return userType === 'influencers' ? ['Personal information', 'instagram account', 'Bio'] : ['Company information', 'Bio'];
@@ -91,7 +92,6 @@ function ColorStepIconCompany(props) {
 
 export default function ContentBelowStepper(props) {
     const required_txt = 'This field is required'
-    const [userId, setUserId] = React.useState(0)
     const [activeStep, setActiveStep] = React.useState(0);
     const userType = props.userType;
     const steps = getSteps(userType);
@@ -368,7 +368,7 @@ export default function ContentBelowStepper(props) {
 }
 
 const AnswerOfServer = ({obj, filledCorrectly, userType}) => {
-    const [id, setId] = React.useState(false)
+    const [id, setId] = React.useState('')
     const [err, setErr] = React.useState(false)
     const [errEmailExists, setErrEmailExists] = React.useState(false)
 
@@ -376,8 +376,8 @@ const AnswerOfServer = ({obj, filledCorrectly, userType}) => {
         window.location.href = '/register'
     };
 
-    const handleContinue = (userId) => {
-        // move to user's page
+    const handleContinue = () => {
+        window.location.href = `/${userType}/${id}`
     }
 
     const BackToLogIn = () => {
@@ -407,8 +407,8 @@ const AnswerOfServer = ({obj, filledCorrectly, userType}) => {
             if (data.status === 'error') {
                 setErrEmailExists(true)
             } else {
-                // change to id after server is updated
-                setId(true)
+                let idData = parseJwt(data.data)
+                setId(idData.id)
             }
         }).catch(function (error) {
             console.log(error);
@@ -417,13 +417,13 @@ const AnswerOfServer = ({obj, filledCorrectly, userType}) => {
 
     return (
         <>
-            {id && !err && !errEmailExists && <div style={{display: "flex", flexDirection: "column", height:320}}>
+            {id !== '' && !err && !errEmailExists && <div style={{display: "flex", flexDirection: "column", height:320}}>
                 <Alert severity="success" style={{height: 150, fontSize:16, marginBottom: 50, width:'100%', lineHeight: '22pt'}}>
                     <AlertTitle style={{fontSize:28}}><strong>Congrats!</strong></AlertTitle>
                     You registered successfully to our system.<br/>
                     We hope you'll find InfluenceMe helpful, enjoy!
                 </Alert>
-                <Button onClick={()=>handleContinue(id)} style={{alignSelf:"center"}}>Continue</Button>
+                <Button onClick={handleContinue} style={{alignSelf:"center"}}>Continue</Button>
             </div>}
             {err && !id && !errEmailExists && <div style={{display: "flex", flexDirection: "column", height:320}}>
                 <Alert severity="error" style={{height: 150, fontSize:16, marginBottom: 50, width:'100%', lineHeight: '22pt'}}>
@@ -449,4 +449,3 @@ const AnswerOfServer = ({obj, filledCorrectly, userType}) => {
         </>
     )
 }
-

@@ -22,7 +22,9 @@ export default function CompanyPage() {
         <MuiThemeProvider theme={theme}>
             <AppBar companyId={id}/>
             <Switch>
-                <Route path={`/companies/${id}/proposals`} component={ProposalsOfCompany}/>
+                <Route path={`/companies/${id}/proposals`}>
+                    <ProposalsOfCompany id={id}/>
+                </Route>
             </Switch>
         </MuiThemeProvider>
     )

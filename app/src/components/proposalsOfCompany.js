@@ -4,6 +4,7 @@ import Chip from "@material-ui/core/Chip";
 import BackDrop from '@material-ui/core/Backdrop';
 import {makeStyles} from "@material-ui/core/styles";
 import React from 'react'
+import CreateProposal from './createProposal'
 
 const useStyles = makeStyles((theme) => ({
     backdrop: {
@@ -12,16 +13,34 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function ProposalsOfCompany() {
+export default function ProposalsOfCompany({id}) {
     const classes = useStyles()
-    const [open, setOpen] = React.useState(false);
-
-    function onClickNewProposal() {
-        setOpen(true)
+    // for backdrop
+    const [openBackDrop, setOpenBackDrop] = React.useState(false);
+    const [openDialog, setOpenDialog] = React.useState(false);
+    const openCreateProposal = {
+        getter: openDialog,
+        setter: setOpenDialog
     }
 
-    function handleBackDropClose() {
-        setOpen(false)
+    // variables for creating new proposals
+    const [proposalValues, setProposalValues] = React.useState({
+        title: '',
+        addPhone: false,
+        addEmail: false,
+        categories: [],
+        description: '',
+        requirements: '',
+
+    })
+    const values = {
+        getter: proposalValues,
+        setter: setProposalValues
+    }
+
+    function onClickNewProposal() {
+        setOpenDialog(true)
+        setOpenBackDrop(true)
     }
 
     return (
@@ -33,8 +52,8 @@ export default function ProposalsOfCompany() {
                           style={{border: 'transparent'}} onClick={onClickNewProposal}/>
                 </Grid>
             </Grid>
-            <BackDrop className={classes.backdrop} open={open} onClick={handleBackDropClose}>
-
+            <BackDrop className={classes.backdrop} open={openBackDrop}>
+                <CreateProposal val={values} open={openCreateProposal} setBackDrop={setOpenBackDrop} id={id}/>
             </BackDrop>
         </>
     )

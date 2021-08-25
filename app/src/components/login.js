@@ -12,6 +12,7 @@ import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import {Snackbar} from "@material-ui/core";
 import {Alert} from "@material-ui/lab";
+import {parseJwt} from '../utilFunctions'
 
 export default function SignIn() {
     const [emailValue, setEmailValue] = React.useState('')
@@ -184,7 +185,8 @@ const AnswerOfServer = ({ setCallServer,obj }) => {
                 setErrMsg(data.error)
             } else {
                 // moves to correct window
-                console.log(data.data)
+                let dic = parseJwt(data.data)
+                window.location.href= `/${dic.type}/${dic.id}`
             }
         })
     },[])
