@@ -63,6 +63,26 @@ export default function CreateProposalDialog(props) {
     function onClickCancelFinish() {
         props.setBackDrop(false)
         props.open.setter(false)
+        props.val.setter({
+            title: '',
+            categories: [],
+            description: '',
+            requirements: ''
+        })
+        setAddToProposal({
+            addPhone: false,
+            addEmail: false
+        })
+        setErrProposals({
+            titleErr: false,
+            titleMsg: '',
+            descriptionMsg: '',
+            descriptionErr: false,
+            categoryErr: false,
+            requirementsMsg: '',
+            requirementsErr: false
+        })
+        setProposalAccepted(false)
     }
 
     const handleAddContactInfoChange = (event) => {
@@ -71,12 +91,12 @@ export default function CreateProposalDialog(props) {
 
     const objToServer = {
         companyID: props.id,
-        title: props.val.title,
+        title: props.val.getter.title,
         addPhone: addToProposal.addPhone,
         addEmail: addToProposal.addEmail,
-        description: props.val.description,
-        requirements: props.val.requirements,
-        categories: props.val.categories
+        description: props.val.getter.description,
+        requirements: props.val.getter.requirements,
+        categories: props.val.getter.categories
     }
 
     function onClickCreate() {
@@ -101,13 +121,6 @@ export default function CreateProposalDialog(props) {
         }
     }
 
-    function onDialogClick(e) {
-        // if (e.target.name !== 'create') {
-        //     console.log(e.target.name)
-        //     setSendToServer(false)
-        // }
-    }
-
     return (
         <>
             <Dialog
@@ -115,7 +128,6 @@ export default function CreateProposalDialog(props) {
                 TransitionComponent={Transition}
                 keepMounted
                 fullWidth
-                onClick={onDialogClick}
                 maxWidth={'sm'}
                 aria-labelledby="alert-dialog-slide-title"
                 aria-describedby="alert-dialog-slide-description"
@@ -188,10 +200,11 @@ export default function CreateProposalDialog(props) {
 const AnswerOfServer = ({ callServer,setCallServer,obj,setProposalAccepted, err }) => {
     const [open, setOpen] = React.useState(false)
     const [errMsg, setErrMsg] = React.useState('')
-    console.log('hi')
+    const [severity, setSeverity] = React.useState('error')
 
     useEffect(() => {
         if(callServer) {
+            console.log(obj)
             fetch('/api/collaboration_proposals', {
                 method: 'POST',
                 headers: {
@@ -217,7 +230,11 @@ const AnswerOfServer = ({ callServer,setCallServer,obj,setProposalAccepted, err 
                         })
                     }
                 } else {
+                    setSeverity('success')
+                    setErrMsg('Proposal created successfully')
                     setProposalAccepted(true)
+                    setCallServer(false)
+                    setOpen(true)
                 }
             })
         }
@@ -230,7 +247,7 @@ const AnswerOfServer = ({ callServer,setCallServer,obj,setProposalAccepted, err 
 
     return (
         <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}>
-            <Alert onClose={handleClose} severity="error" style={{fontSize:20, fontFamily:'Rubik'}}>
+            <Alert onClose={handleClose} severity={severity} style={{fontSize:20, fontFamily:'Rubik'}}>
                 {/*Warning: findDOMNode is deprecated in StrictMode*/}
                 <div>{errMsg}</div>
             </Alert>

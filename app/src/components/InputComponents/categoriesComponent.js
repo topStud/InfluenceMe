@@ -2,13 +2,6 @@ import {Checkbox, FormControlLabel, FormGroup, FormHelperText, FormLabel} from "
 import React from "react";
 
 export default function CategoriesComponent(props) {
-    const [checked, setChecked] = React.useState({
-        lifestyle: false,
-        travel: false,
-        gadgets: false,
-        games: false
-    })
-
     function handleCheckboxesChange(e) {
         // if checked, add to list
         if (e.target.checked) {
@@ -23,20 +16,12 @@ export default function CategoriesComponent(props) {
                 ...props.err.getter,
                 categoryErr: false
             })
-            setChecked({
-                ...checked,
-                [e.target.value]: true
-            })
         }
         // not checked, remove from list
         else {
             props.val.setter({
                 ...props.val.getter,
                 categories: props.val.getter.categories.filter((category) => category !== e.target.value)
-            })
-            setChecked({
-                ...checked,
-                [e.target.value]: false
             })
         }
     }
@@ -53,7 +38,7 @@ export default function CategoriesComponent(props) {
                             color="primary"
                             size={"small"}
                             value={'lifestyle'}
-                            checked={checked.lifestyle || props.val.getter.categories.includes('lifestyle')}
+                            checked={props.val.getter.categories.includes('lifestyle')}
                         />
                     }
                     label="lifestyle"
@@ -66,7 +51,7 @@ export default function CategoriesComponent(props) {
                             color="primary"
                             size={"small"}
                             value={'travel'}
-                            checked={checked.travel || props.val.getter.categories.includes('travel')}
+                            checked={props.val.getter.categories.includes('travel')}
                         />
                     }
                     label="travel"
@@ -79,7 +64,7 @@ export default function CategoriesComponent(props) {
                             color="primary"
                             size={"small"}
                             value={'games'}
-                            checked={checked.games || props.val.getter.categories.includes('games')}
+                            checked={props.val.getter.categories.includes('games')}
                         />
                     }
                     label="games"
@@ -92,7 +77,7 @@ export default function CategoriesComponent(props) {
                             color="primary"
                             size={"small"}
                             value={'gadgets'}
-                            checked={checked.gadgets || props.val.getter.categories.includes('gadgets')}
+                            checked={props.val.getter.categories.includes('gadgets')}
                         />
                     }
                     label="gadgets"
