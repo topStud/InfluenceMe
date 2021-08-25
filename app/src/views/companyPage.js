@@ -3,7 +3,7 @@ import AppBar from "../components/appBar";
 import React from "react";
 import {MuiThemeProvider} from "@material-ui/core";
 import {createTheme} from "@material-ui/core/styles";
-import ProposalsOfCompany from "../components/proposalsOfCompany";
+import ProposalsOfCompany from "../components/proposals/proposalsOfCompany";
 
 const theme = createTheme({
     palette: {

@@ -6,10 +6,10 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
-import InputText from './InputComponents/inputText'
+import InputText from '../InputComponents/inputText'
 import Grid from "@material-ui/core/Grid";
-import CategoriesComponent from "./InputComponents/categoriesComponent";
-import InputTextArea from "./InputComponents/InputTextArea";
+import CategoriesComponent from "../InputComponents/categoriesComponent";
+import InputTextArea from "../InputComponents/InputTextArea";
 import {Checkbox, FormControlLabel, FormGroup, Snackbar} from "@material-ui/core";
 import {Alert} from "@material-ui/lab";
 

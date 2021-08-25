@@ -1,15 +1,16 @@
 import {Checkbox, FormControlLabel, FormGroup, FormHelperText, FormLabel} from "@material-ui/core";
 import React from "react";
+import Chip from "@material-ui/core/Chip";
 
 export default function CategoriesComponent(props) {
-    function handleCheckboxesChange(e) {
+    function handleChipClick(label) {
         // if checked, add to list
-        if (e.target.checked) {
+        if (!props.val.getter.categories.includes(label)) {
             props.val.setter({
                 ...props.val.getter,
                 categories: [
                     ...props.val.getter.categories,
-                    e.target.value
+                    label
                 ]
             })
             props.err.setter({
@@ -21,66 +22,68 @@ export default function CategoriesComponent(props) {
         else {
             props.val.setter({
                 ...props.val.getter,
-                categories: props.val.getter.categories.filter((category) => category !== e.target.value)
+                categories: props.val.getter.categories.filter((category) => category !== label)
             })
         }
+        console.log(props.val.getter.categories)
     }
 
     return (
         <>
-            <FormLabel component="legend">Choose your categories</FormLabel>
+            <FormLabel component="legend" style={{marginBottom: 10}}>Choose your categories</FormLabel>
             <FormGroup row={true}>
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            onChange={handleCheckboxesChange}
-                            name="category"
-                            color="primary"
-                            size={"small"}
-                            value={'lifestyle'}
-                            checked={props.val.getter.categories.includes('lifestyle')}
-                        />
-                    }
-                    label="lifestyle"
+                <Chip
+                    onClick={()=>handleChipClick('Lifestyle')}
+                    name="category"
+                    color="default"
+                    label="Lifestyle"
+                    style={{margin: 5, width: 85}}
+                    variant={props.val.getter.categories.includes('Lifestyle')?'default':'outlined'}
                 />
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            onChange={handleCheckboxesChange}
-                            name="category"
-                            color="primary"
-                            size={"small"}
-                            value={'travel'}
-                            checked={props.val.getter.categories.includes('travel')}
-                        />
-                    }
-                    label="travel"
+                <Chip
+                    onClick={()=>handleChipClick('Travel')}
+                    name="category"
+                    color="default"
+                    value={'Travel'}
+                    label="Travel"
+                    style={{margin: 5, width: 70}}
+                    variant={props.val.getter.categories.includes('Travel')?'default':'outlined'}
                 />
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            onChange={handleCheckboxesChange}
-                            name="category"
-                            color="primary"
-                            size={"small"}
-                            value={'games'}
-                            checked={props.val.getter.categories.includes('games')}
-                        />
-                    }
-                    label="games"
+                <Chip
+                    onClick={()=>handleChipClick('Games')}
+                    name="category"
+                    color="default"
+                    value={'Games'}
+                    label="Games"
+                    style={{margin: 5, width: 70}}
+                    variant={props.val.getter.categories.includes('Games')?'default':'outlined'}
                 />
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            onChange={handleCheckboxesChange}
-                            name="category"
-                            color="primary"
-                            size={"small"}
-                            value={'gadgets'}
-                            checked={props.val.getter.categories.includes('gadgets')}
-                        />
-                    }
-                    label="gadgets"
+                <Chip
+                    onClick={()=>handleChipClick('Gadgets')}
+                    name="category"
+                    color="default"
+                    value={'Gadgets'}
+                    label="Gadgets"
+                    style={{margin: 5, width: 80}}
+                    variant={props.val.getter.categories.includes('Gadgets')?'default':'outlined'}
+                />
+                <Chip
+                    onClick={()=>handleChipClick('Clothing')}
+                    name="category"
+                    color="default"
+                    value={'Clothing'}
+                    label="Clothing"
+                    style={{margin: 5, width: 80}}
+                    variant={props.val.getter.categories.includes('Clothing')?'default':'outlined'}
+                />
+                <Chip
+                    onClick={()=>handleChipClick('Beauty')}
+                    name="category"
+                    color="default"
+                    value={'Beauty'}
+                    label="Beauty"
+                    style={{margin: 5, width: 70}}
+                    variant={props.val.getter.categories.includes('Beauty')?'default':'outlined'}
                 />
             </FormGroup>
             <FormHelperText hidden={!props.err.getter.categoryErr} error={props.err.getter.categoryErr}>Please select at least one category</FormHelperText>
