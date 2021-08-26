@@ -90,7 +90,7 @@ export default function CreateProposalDialog(props) {
     };
 
     const objToServer = {
-        companyID: props.id,
+        companyID: props.companyInfo._id,
         title: props.val.getter.title,
         addPhone: addToProposal.addPhone,
         addEmail: addToProposal.addEmail,
@@ -114,6 +114,7 @@ export default function CreateProposalDialog(props) {
                 requirementsErr: emptyRequirements,
                 requirementsMsg: emptyRequirements ? required_txt : ''
             })
+            console.log(emptyTitle)
         } else {
             // sends info to server
             console.log('hi')
@@ -142,13 +143,13 @@ export default function CreateProposalDialog(props) {
                         <Grid item xs={12} style={{maxHeight: 90}}>
                             <InputText val={props.val} err={errors} info={titleObj}/>
                         </Grid>
-                        <Grid item xs={12} style={{maxHeight: 90}}>
+                        <Grid item xs={12} style={{maxHeight: 100}}>
                             <CategoriesComponent val={props.val} err={errors}/>
                         </Grid>
-                        <Grid item xs={12} style={{maxHeight: 150, paddingLeft:0}}>
+                        <Grid item xs={12} style={{maxHeight: 145, paddingLeft:0}}>
                             <InputTextArea val={props.val} err={errors} info={descriptionObj}/>
                         </Grid>
-                        <Grid item xs={12} style={{maxHeight: 150, paddingLeft:0}}>
+                        <Grid item xs={12} style={{maxHeight: 145, paddingLeft:0}}>
                             <InputTextArea val={props.val} err={errors} info={requirementsObj}/>
                         </Grid>
                         <Grid item xs={12} style={{maxHeight: 90}}>
@@ -191,16 +192,27 @@ export default function CreateProposalDialog(props) {
                     </DialogActions>
                 }
                 <AnswerOfServer callServer={sentToServer} setCallServer={setSendToServer} obj={objToServer}
-                                setProposalAccepted={setProposalAccepted} err={errors}/>
+                                setProposalAccepted={setProposalAccepted} err={errors}
+                                proposalList={props.proposalList} companyObj={props.companyInfo}/>
             </Dialog>
         </>
     );
 }
 
-const AnswerOfServer = ({ callServer,setCallServer,obj,setProposalAccepted, err }) => {
+const AnswerOfServer = ({ callServer,setCallServer,obj,setProposalAccepted, err, proposalList, companyObj }) => {
     const [open, setOpen] = React.useState(false)
     const [errMsg, setErrMsg] = React.useState('')
     const [severity, setSeverity] = React.useState('error')
+
+    function createProposalObj(proposalInfo, companyInfo) {
+        proposalInfo.companyName = companyInfo.name
+        proposalInfo.companySite = companyInfo.siteUrl
+        proposalInfo.logo = companyInfo.photo
+        proposalInfo.bio = companyInfo.bio
+        return proposalInfo
+    }
+
+    const proposalObj = createProposalObj(obj, companyObj)
 
     useEffect(() => {
         if(callServer) {
@@ -233,6 +245,7 @@ const AnswerOfServer = ({ callServer,setCallServer,obj,setProposalAccepted, err 
                     setSeverity('success')
                     setErrMsg('Proposal created successfully')
                     setProposalAccepted(true)
+                    proposalList.setter(oldArray => [...oldArray, proposalObj])
                     setCallServer(false)
                     setOpen(true)
                 }
@@ -246,9 +259,8 @@ const AnswerOfServer = ({ callServer,setCallServer,obj,setProposalAccepted, err 
     };
 
     return (
-        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}>
-            <Alert onClose={handleClose} severity={severity} style={{fontSize:20, fontFamily:'Rubik'}}>
-                {/*Warning: findDOMNode is deprecated in StrictMode*/}
+        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}>
+            <Alert onClose={handleClose} severity={severity} style={{fontSize:14, fontFamily:'Rubik'}}>
                 <div>{errMsg}</div>
             </Alert>
         </Snackbar>

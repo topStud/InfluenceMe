@@ -25,7 +25,6 @@ export default function CategoriesComponent(props) {
                 categories: props.val.getter.categories.filter((category) => category !== label)
             })
         }
-        console.log(props.val.getter.categories)
     }
 
     return (

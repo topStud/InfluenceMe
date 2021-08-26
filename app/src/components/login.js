@@ -197,9 +197,8 @@ const AnswerOfServer = ({ setCallServer,obj }) => {
     };
 
     return (
-      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}>
-          <Alert onClose={handleClose} severity="error" style={{fontSize:20, fontFamily:'Rubik'}}>
-              {/*Warning: findDOMNode is deprecated in StrictMode*/}
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}>
+          <Alert onClose={handleClose} severity="error" style={{fontSize:14, fontFamily:'Rubik'}}>
               <div>{errMsg}</div>
           </Alert>
       </Snackbar>
