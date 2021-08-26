@@ -5,6 +5,7 @@ import {MuiThemeProvider} from "@material-ui/core";
 import {createTheme} from "@material-ui/core/styles";
 import ProposalsOfCompany from "../components/proposals/proposalsOfCompany";
 import {Alert, AlertTitle} from "@material-ui/lab";
+import Footer from "../components/footer";
 
 const theme = createTheme({
     palette: {
@@ -53,6 +54,7 @@ export default function CompanyPage() {
                     Something went wrong, The company's data couldn't be reached — <strong>try again!</strong>
                 </Alert>
                 }
+                <Footer/>
             </MuiThemeProvider>
     )
 }

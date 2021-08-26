@@ -57,6 +57,21 @@ export default function ProposalsOfCompany({companyInfo}) {
         setter: setProposalsList
     }
 
+    // pagination
+    let [page, setPage] = React.useState(1);
+    const [count ,setCount] = React.useState(1)
+    const PER_PAGE = 7;
+
+    const handleChange = (e, p) => {
+        setPage(p);
+    };
+
+    function currentData(data) {
+        const begin = (page - 1) * PER_PAGE;
+        const end = begin + PER_PAGE;
+        return data.slice(begin, end);
+    }
+
     useEffect(()=>{
             fetch(`/api/collaboration_proposals/company/${companyInfo._id}`).then(res => {
                 if (!res.ok) {
@@ -76,10 +91,17 @@ export default function ProposalsOfCompany({companyInfo}) {
                         return proposal
                     })
                     setProposalsList(proposals)
+                    setCount(Math.ceil(proposals.length / PER_PAGE))
                 }
             })
 
     }, [])
+
+    useEffect(()=>{
+        if (proposalsList !== null) {
+            setCount(Math.ceil(proposalsList.length / PER_PAGE))
+        }
+    }, [JSON.stringify(proposalsList)])
 
     return (
         <>
@@ -89,11 +111,18 @@ export default function ProposalsOfCompany({companyInfo}) {
                     <Chip label="NEW PROPOSAL" icon={<AddIcon />} color={"primary"} clickable variant="outlined"
                           style={{border: 'transparent'}} onClick={onClickNewProposal}/>
                 </Grid>
-                {proposalsList !== null && proposalsList.map((proposal)=>(
+                {proposalsList !== null && currentData(proposalsList).map((proposal) => (
                     <Grid item xs={12} sm={4} key={proposal._id}>
-                        <ProposalCard infoObj={proposal} setCallServer={setCallForServerForDelete} setDeleteProposal={setProposalForDelete}/>
+                        <ProposalCard infoObj={proposal} setCallServer={setCallForServerForDelete}
+                                      setDeleteProposal={setProposalForDelete}/>
                     </Grid>
                 ))}
+                {
+                    count > 1 &&
+                    <Grid item xs={12} sm={12} style={{display: "flex", justifyContent:"center"}}>
+                        <Pagination variant="outlined" color="secondary" count={count} page={page} onChange={handleChange}/>
+                    </Grid>
+                }
             </Grid>
             <BackDrop className={classes.backdrop} open={openBackDrop}>
                 <CreateProposal val={values} open={openCreateProposal} setBackDrop={setOpenBackDrop} companyInfo={companyInfo} proposalList={proposalListObj}/>

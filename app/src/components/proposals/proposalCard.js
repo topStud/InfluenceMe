@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -15,7 +15,7 @@ import BackDrop from '@material-ui/core/Backdrop';
 const useStyles = makeStyles((theme) => ({
     root: {
         maxWidth: 345,
-        margin:20
+        margin:20,
     },
     bullet: {
         display: 'inline-block',
@@ -105,13 +105,13 @@ export default function ProposalCard(props) {
                         {infoObj.description.substring(0,150)}
                         {infoObj.description.length > 100 ? '...' : ''}
                     </Typography>
-                    <div style={{marginTop:20, display:"flex",justifyContent: 'space-evenly', color: '#A68617'}}>
+                    <div style={{marginTop:20, display:"flex",justifyContent: 'center', flexWrap: 'wrap', color: '#A68617', alignItems: "center"}}>
                         {infoObj.categories.map((category, i)=>(
                             i < infoObj.categories.length - 1 ?
-                                <div key={i} style={{display:"flex", justifyContent: 'space-between', width:80}}>
-                                    <span>{category}</span>
-                                    <span>•</span>
-                                </div>
+                                <>
+                                    <span key={category}>{category}</span>
+                                    <span key={i} style={{marginRight: 15, marginLeft: 15}}>•</span>
+                                </>
                                 :
                                 <span key={i}>{category}</span>
                         ))}
