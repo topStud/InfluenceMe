@@ -6,6 +6,8 @@ const influencerRoutes = require('./routes/influencerRoutes')
 const commonRoutes = require('./routes/commonRoutes')
 const companyRoutes = require('./routes/companyRoutes')
 const collaborationsRoutes = require('./routes/collaborationsRoutes')
+const contractRoutes = require('./routes/contractRoutes')
+const notificationRoutes = require('./routes/notificationRoutes')
 
 
 // connect to the database
@@ -39,3 +41,5 @@ app.use('/api/influencers', influencerRoutes)
 app.use('/api', commonRoutes)
 app.use('/api/companies', companyRoutes)
 app.use('/api/collaboration_proposals', collaborationsRoutes)
+app.use('/api/contracts', contractRoutes)
+app.use('/api/notifications', notificationRoutes)

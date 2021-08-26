@@ -13,7 +13,9 @@ const InfluencerSchema = new mongoose.Schema({
     followersAmount: { type: Number, required: true },
     instagramUrl: { type: String },
     categories: { type: Array, required: true },
-    bio: { type: String }
+    bio: { type: String },
+    Contracts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Contracts' }],
+    Notifications: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notifications' }]
 })
 
 const model = mongoose.model('Influencers', InfluencerSchema)

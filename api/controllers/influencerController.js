@@ -34,8 +34,6 @@ const influencer = async (req, res) => {
 }
 
 const influencerRegister = async (req, res) => {
-    //for debug
-    console.log(req.body)
     const { email, password : plainTextPassword, firstName, lastName, date,
         photo, phone, instagramUser, followersAmount, instagramUrl, categories, bio } = req.body
     const password = await bcrypt.hash(plainTextPassword ,10)
@@ -69,7 +67,6 @@ const influencerRegister = async (req, res) => {
     },JWT_SECRET)
     return res.json({status: 'ok', data: token})
 }
-
 
 
 module.exports = {
