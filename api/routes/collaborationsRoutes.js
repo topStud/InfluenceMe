@@ -6,7 +6,7 @@ const collaborationsController = require('../controllers/collaborationsControlle
 router.post('/', collaborationsController.addCollaborationProposal)
 router.delete('/:id', collaborationsController.deleteCollaborationProposal)
 router.get('/', collaborationsController.collaborationProposals)
-router.get('/:id', collaborationsController.specificCollaborationProposals)
+router.get('/:id', collaborationsController.specificCollaborationProposal)
 router.get('/company/:id', collaborationsController.collaborationProposalsOf)
 
 

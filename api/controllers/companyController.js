@@ -1,31 +1,18 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const companyModel = require('../models/company')
-const collaborationModel = require('../models/collaboration')
+const commonController = require('./commonController')
 
 const JWT_SECRET = 'gkdd462gfkbjfoh#$#54*jfdsdf&$&$#)fhdsadfkl676q3478dfcSgd'
 
 // show the list of companies
 const companies = async (req, res) => {
-    await companyModel.find()
-    .then(response => {
-        return res.status(200).json({response})
-    })
-    .catch(error => {
-        return res.status(400).json({status: 'error'})
-    })
+    await commonController.findMany(companyModel, req, res)
 }
 
 // find specific company by id
 const company = async (req, res) => {
-    let companyID = req.params.id
-    await companyModel.findById(companyID)
-    .then(response => {
-        return res.json({response})
-    })
-    .catch(error => {
-        return res.status(400).json({status: 'error'})
-    })
+    await commonController.findOne(companyModel, req, res)
 }
 
 const companyRegister = async (req, res) => {
@@ -55,9 +42,15 @@ const companyRegister = async (req, res) => {
     return res.json({status: 'ok', data: token})
 }
 
+const update = async (req, res) => {
+    await commonController.update(companyModel, req, res)
+}
+
+
 
 module.exports = {
     companies,
     company,
-    companyRegister
+    companyRegister,
+    update
 }

@@ -28,6 +28,45 @@ const login = async (req,res,next) => {
     }
 }
 
+
+// Utils:
+
+async function update(model, req, res) {
+    try{
+        const result = await model.findByIdAndUpdate(req.params.id, req.body, {new: true})
+        if(result === null) return res.status(400).json({status: 'error', 'error': 'could not find user'})
+        return res.json({status: 'ok', data: result})
+    } catch (err){
+        return res.status(500).json({status: 'error'})
+    }
+}
+
+async function findMany(model, req, res) {
+    await model.find()
+    .then(response => {
+        return res.status(200).json({response})
+    })
+    .catch(error => {
+        return res.status(400).json({status: 'error'})
+    })
+
+}
+
+async function findOne(model, req, res) {
+    await model.findById(req.params.id)
+    .then(response => {
+        return res.json({response})
+    })
+    .catch(error => {
+        return res.status(400).json({status: 'error'})
+    })
+}
+
+
+
 module.exports = {
-    login
+    login,
+    update,
+    findMany,
+    findOne
 }

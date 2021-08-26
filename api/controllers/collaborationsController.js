@@ -1,5 +1,6 @@
 const companyModel = require('../models/company')
 const collaborationModel = require('../models/collaboration')
+const commonController = require('./commonController')
 
 
 // find company by company id and add a new collaboration proposal
@@ -65,23 +66,11 @@ const deleteCollaborationProposal = async (req, res) => {
 
 
 const collaborationProposals = async (req, res) => {
-    await collaborationModel.find()
-        .then(response => {
-            return res.status(200).json({response})
-        })
-        .catch(error => {
-            return res.status(400).json({status: 'error'})
-        })
+    await commonController.findMany(collaborationModel, req, res)
 }
 
-const specificCollaborationProposals = async (req, res) => {
-    await collaborationModel.find()
-        .then(response => {
-            return res.status(200).json({response})
-        })
-        .catch(error => {
-            return res.status(400).json({status: 'error'})
-        })
+const specificCollaborationProposal = async (req, res) => {
+    await commonController.findOne(collaborationModel, req, res)
 }
 
 
@@ -108,6 +97,6 @@ module.exports = {
     addCollaborationProposal,
     deleteCollaborationProposal,
     collaborationProposals,
-    specificCollaborationProposals,
+    specificCollaborationProposal,
     collaborationProposalsOf
 }

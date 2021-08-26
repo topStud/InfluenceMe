@@ -1,36 +1,18 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const influencerModel = require('../models/influencer')
+const commonController = require('./commonController')
 
 const JWT_SECRET = 'gkdd462gfkbjfoh#$#54*jfdsdf&$&$#)fhdsadfkl676q3478dfcSgd'
 
 // show the list of infulencers
 const influencers = async (req, res) => {
-    await influencerModel.find()
-        .then(response => {
-            return res.json({response})
-            //res.json({status: 'ok'})
-        })
-        .catch(error => {
-            return res.status(400).json({
-                status: 'error'
-            })
-        })
+    await commonController.findMany(influencerModel, req, res)
 }
 
 // find specific infulencer by id
 const influencer = async (req, res) => {
-    let infulencerID = req.params.id
-    await influencerModel.findById(infulencerID)
-        .then(response => {
-            return res.json({response})
-            //res.json({status: 'ok'})
-        })
-        .catch(error => {
-            return res.status(400).json({
-                status: 'error'
-            })
-        })
+    await commonController.findOne(influencerModel, req, res)
 }
 
 const influencerRegister = async (req, res) => {
@@ -52,7 +34,6 @@ const influencerRegister = async (req, res) => {
             categories,
             bio
         })
-        //console.log('user created successfully' + response)
     }catch (error) {
         if(error.code === 11000){
             return res.status(400).json({status: 'error', 'error': 'email already in use'})
@@ -69,8 +50,16 @@ const influencerRegister = async (req, res) => {
 }
 
 
+const update = async (req, res) => {
+    await commonController.update(influencerModel, req, res)
+}
+
+
+
+
 module.exports = {
     influencers,
     influencer,
-    influencerRegister
+    influencerRegister,
+    update
 }
