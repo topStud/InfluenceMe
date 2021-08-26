@@ -12,6 +12,8 @@ import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import Chip from "@material-ui/core/Chip";
 import {Link} from 'react-router-dom';
+import {Avatar} from "@material-ui/core";
+import BusinessIcon from '@material-ui/icons/Business';
 
 const useStyles = makeStyles((theme) => ({
     grow: {
@@ -52,6 +54,10 @@ const useStyles = makeStyles((theme) => ({
             display: 'flex',
         },
     },
+    small: {
+        width: theme.spacing(5),
+        height: theme.spacing(5),
+    },
     sectionMobile: {
         display: 'flex',
         [theme.breakpoints.up('md')]: {
@@ -60,30 +66,19 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function PrimarySearchAppBar({companyId}) {
+export default function PrimarySearchAppBar({userType, data}) {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
-    // const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
     const isMenuOpen = Boolean(anchorEl);
-    // const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
     };
 
-    // const handleMobileMenuClose = () => {
-    //     setMobileMoreAnchorEl(null);
-    // };
-
     const handleMenuClose = () => {
         setAnchorEl(null);
-        // handleMobileMenuClose();
     };
-
-    // const handleMobileMenuOpen = (event) => {
-    //     setMobileMoreAnchorEl(event.currentTarget);
-    // };
 
     const menuId = 'primary-search-account-menu';
     const renderMenu = (
@@ -99,7 +94,7 @@ export default function PrimarySearchAppBar({companyId}) {
             onClose={handleMenuClose}
         >
             <Typography style={{marginLeft:10, marginBottom:10}}>
-                Hi,<br/><strong>name_here</strong>
+                Hi,<br/><strong>{userType === 'influencers'? data.firstName : data.name}</strong>
             </Typography>
             <MenuItem onClick={handleMenuClose} className={classes.menuItem}>Past Collaborations</MenuItem>
             <MenuItem onClick={handleMenuClose} className={classes.menuItem}>Current Collaborations</MenuItem>
@@ -108,47 +103,6 @@ export default function PrimarySearchAppBar({companyId}) {
             <MenuItem onClick={handleMenuClose} className={classes.menuItem}>Log Out</MenuItem>
         </Menu>
     );
-
-    // const mobileMenuId = 'primary-search-account-menu-mobile';
-    // const renderMobileMenu = (
-    //     <Menu
-    //         anchorEl={mobileMoreAnchorEl}
-    //         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-    //         id={mobileMenuId}
-    //         keepMounted
-    //         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-    //         open={isMobileMenuOpen}
-    //         onClose={handleMobileMenuClose}
-    //     >
-    //         <MenuItem>
-    //             <IconButton aria-label="show 4 new mails" color="inherit">
-    //                 <Badge badgeContent={4} color="secondary">
-    //                     <MailIcon />
-    //                 </Badge>
-    //             </IconButton>
-    //             <p>Messages</p>
-    //         </MenuItem>
-    //         <MenuItem>
-    //             <IconButton aria-label="show 11 new notifications" color="inherit">
-    //                 <Badge badgeContent={11} color="secondary">
-    //                     <NotificationsIcon />
-    //                 </Badge>
-    //             </IconButton>
-    //             <p>Notifications</p>
-    //         </MenuItem>
-    //         <MenuItem onClick={handleProfileMenuOpen}>
-    //             <IconButton
-    //                 aria-label="account of current user"
-    //                 aria-controls="primary-search-account-menu"
-    //                 aria-haspopup="true"
-    //                 color="inherit"
-    //             >
-    //                 <AccountCircle />
-    //             </IconButton>
-    //             <p>Profile</p>
-    //         </MenuItem>
-    //     </Menu>
-    // );
 
     return (
         <div className={classes.grow} style={{marginBottom: 20}}>
@@ -160,10 +114,13 @@ export default function PrimarySearchAppBar({companyId}) {
                     </Typography>
                     <div className={classes.grow} />
                     <div className={classes.sectionDesktop}>
-                        <Link to={`/companies/${companyId}/proposals`} style={{marginRight: 20, alignSelf: 'center'}}>
-                            <Chip label="My Proposals" clickable variant="outlined"
-                            style={{color: "black", fontFamily: 'Rubik', fontWeight: 300, fontSize:'1.1em', border:'1px solid transparent'}}/>
-                        </Link>
+                        {
+                            userType === 'companies' &&
+                            <Link to={`/companies/${data._id}/proposals`} style={{marginRight: 20, alignSelf: 'center'}}>
+                                <Chip label="My Proposals" clickable variant="outlined"
+                                      style={{color: "black", fontFamily: 'Rubik', fontWeight: 300, fontSize:'1.1em', border:'1px solid transparent'}}/>
+                            </Link>
+                        }
                         <IconButton aria-label="show 4 new mails" color="inherit">
                             <Badge badgeContent={4} color="secondary">
                                 <MailIcon style={{color: "black"}}/>
@@ -182,23 +139,16 @@ export default function PrimarySearchAppBar({companyId}) {
                             onClick={handleProfileMenuOpen}
                             color="inherit"
                         >
-                            <AccountCircle style={{color: 'black'}}/>
+                            {
+                                data.photo !== null ?
+                                    <Avatar src={data.photo} alt={'avatar of user'} className={classes.small}/> :
+                                userType === 'influencers' ? <AccountCircle style={{color: 'black'}}/> :
+                                    <BusinessIcon style={{color: 'black'}}/>
+                            }
                         </IconButton>
                     </div>
-                    {/*<div className={classes.sectionMobile}>*/}
-                    {/*    <IconButton*/}
-                    {/*        aria-label="show more"*/}
-                    {/*        aria-controls={mobileMenuId}*/}
-                    {/*        aria-haspopup="true"*/}
-                    {/*        onClick={handleMobileMenuOpen}*/}
-                    {/*        color="inherit"*/}
-                    {/*    >*/}
-                    {/*        <MoreIcon />*/}
-                    {/*    </IconButton>*/}
-                    {/*</div>*/}
                 </Toolbar>
             </AppBar>
-            {/*{renderMobileMenu}*/}
             {renderMenu}
         </div>
     );

@@ -40,13 +40,15 @@ export default function CompanyPage() {
 
     return(
             <MuiThemeProvider theme={theme}>
-                <AppBar companyId={id}/>
                 {companyInfo !== null &&
-                    <Switch>
-                        <Route path={`/companies/${id}/proposals`}>
-                            <ProposalsOfCompany companyInfo={companyInfo}/>
-                        </Route>
-                    </Switch>
+                    <>
+                        <AppBar userType={'companies'} data={companyInfo}/>
+                        <Switch>
+                            <Route path={`/companies/${id}/proposals`}>
+                                <ProposalsOfCompany companyInfo={companyInfo}/>
+                            </Route>
+                        </Switch>
+                    </>
                 }
                 { errFetchCompanyData &&
                 <Alert severity="error" style={{margin:50, fontFamily: 'Rubik'}}>

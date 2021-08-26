@@ -8,9 +8,10 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import defaultCompanyLogo from '../../images/company_logo_default.jpg'
-import {Avatar, Menu, MenuItem} from "@material-ui/core";
+import {Avatar, CardActions, Menu, MenuItem} from "@material-ui/core";
 import GroupIcon from '@material-ui/icons/Group';
 import BackDrop from '@material-ui/core/Backdrop';
+import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -26,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
         height: 150,
         paddingTop: '40%'
     },
-    small: {
+    big: {
         width: theme.spacing(7),
         height: theme.spacing(7),
     },
@@ -70,10 +71,10 @@ export default function ProposalCard(props) {
             <Card className={classes.root}>
                 <CardHeader
                     avatar={
-                        <Avatar src={defaultCompanyLogo} alt={infoObj.className} className={classes.small}/>
+                        <Avatar src={defaultCompanyLogo} alt={infoObj.className} className={classes.big}/>
                     }
                     action={
-                        <>
+                        props.userType === 'companies' ? <>
                             <IconButton aria-label="delete" onClick={handleOptionsClick}>
                                 <MoreVertIcon/>
                             </IconButton>
@@ -87,19 +88,19 @@ export default function ProposalCard(props) {
                                 <MenuItem onClick={handleClose}>Edit</MenuItem>
                                 <MenuItem onClick={handleDeleteClick}>Delete</MenuItem>
                             </Menu>
-                        </>
+                        </> : <></>
                     }
                     title={infoObj.title}
                     subheader={infoObj.companyName}
                     subheaderTypographyProps={{style:{fontSize:'0.7em', fontFamily: 'Rubik', fontWeight: 200}}}
                     titleTypographyProps={{style:{fontSize:'1em', fontFamily: 'Rubik', fontWeight: 500, color: '#1F75A6'}}}
                 />
-                <CardContent style={{paddingTop:0, marginTop:-30, paddingBottom:10}}>
+                {props.userType === 'companies' && <CardContent style={{paddingTop:0, marginTop:-30, paddingBottom:10}}>
                     <div style={{display:"flex", alignItems: "center", justifyContent: 'flex-end'}}>
                         <span style={{marginRight:5, fontSize:'0.8em'}}>0</span>
                         <GroupIcon fontSize={'small'}/>
                     </div>
-                </CardContent>
+                </CardContent>}
                 <CardContent style={{paddingTop:5, paddingBottom:10}}>
                     <Typography variant="body2" color="textSecondary" component="p">
                         {infoObj.description.substring(0,150)}
@@ -108,18 +109,23 @@ export default function ProposalCard(props) {
                     <div style={{marginTop:20, display:"flex",justifyContent: 'center', flexWrap: 'wrap', color: '#A68617', alignItems: "center"}}>
                         {infoObj.categories.map((category, i)=>(
                             i < infoObj.categories.length - 1 ?
-                                <>
-                                    <span key={category}>{category}</span>
-                                    <span key={i} style={{marginRight: 15, marginLeft: 15}}>•</span>
-                                </>
+                                <div key={i} style={{display:"inline"}}>
+                                    <span>{category}</span>
+                                    <span style={{marginRight: 15, marginLeft: 15}}>•</span>
+                                </div>
                                 :
                                 <span key={i}>{category}</span>
                         ))}
                     </div>
                 </CardContent>
+                {props.userType === 'influencers' ?
+                    <CardActions style={{display: 'flex', justifyContent: 'flex-end'}}>
+                        <Button size="small" color={"secondary"}>Interested</Button>
+                    </CardActions> : <></>
+                }
             </Card>
             <BackDrop className={classes.backdrop} open={openBackDrop}>
-                <ConfirmationDialog popupObj={popupConfirmationObj} setCallServer={props.setCallServer} setDeleteProposal={props.setDeleteProposal}/>
+                <ConfirmationDialog popupObj={popupConfirmationObj} setCallServer={props.options.setCallServer} setDeleteProposal={props.options.setDeleteProposal}/>
             </BackDrop>
         </>
     )

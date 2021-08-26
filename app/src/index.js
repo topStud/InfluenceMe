@@ -5,6 +5,8 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Register from './views/registration'
 import CompanyPage from './views/companyPage'
 import NotFound from './views/notFoundPage'
+import InfluencerPage from './views/InfluencerPage'
+import './styles/globals.css'
 
 ReactDOM.render(
     <Router>
@@ -12,6 +14,7 @@ ReactDOM.render(
             <Route exact path='/' component={App}/>
             <Route exact path='/register' component={Register}/>
             <Route path='/companies/:id' component={CompanyPage}/>
+            <Route path='/influencers/:id' component={InfluencerPage}/>
             <Route component={NotFound}/>
         </Switch>
     </Router>,
