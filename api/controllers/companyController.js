@@ -25,6 +25,7 @@ const companyRegister = async (req, res) => {
             name,
             siteUrl,
             photo,
+            photoName,
             phone,
             bio
         })

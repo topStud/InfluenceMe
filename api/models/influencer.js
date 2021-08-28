@@ -8,6 +8,7 @@ const InfluencerSchema = new mongoose.Schema({
     lastName: { type: String, required: true },
     date: { type: Date },
     photo: { type: String },
+    photoName: { type: String },
     phone: { type: String },
     instagramUser: { type: String, required: true },
     followersAmount: { type: Number, required: true },

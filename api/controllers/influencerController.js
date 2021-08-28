@@ -27,6 +27,7 @@ const influencerRegister = async (req, res) => {
             lastName,
             date,
             photo,
+            photoName,
             phone,
             instagramUser,
             followersAmount,

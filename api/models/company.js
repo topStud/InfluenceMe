@@ -7,6 +7,7 @@ const CompanySchema = new mongoose.Schema({
     name: { type: String, required: true },
     siteUrl: { type: String },
     photo: { type: String },
+    photoName: { type: String },
     phone: { type: String },
     bio: { type: String },
     CollaborationProposals: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Collaborations' }],
