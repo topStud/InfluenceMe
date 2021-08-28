@@ -19,7 +19,7 @@ const useStyles = makeStyles(() => ({
 export default function MyDetailsInfluencer({setValue, influencerData}) {
     const classes = useStyles();
     const [callToServer, setCallToServer] = React.useState(false)
-    let objToServer
+    const [objToServer, setObjToServer] = React.useState({})
 
     // so the correct tab will be marked
     useEffect(()=>{
@@ -102,9 +102,7 @@ export default function MyDetailsInfluencer({setValue, influencerData}) {
         })
         // call to server to update info
         if (mayContinue) {
-            // objToServer = {...valuesMyDetails, bio:bio}
-            objToServer = {firstName: 'RONI'}
-            console.log(objToServer)
+            setObjToServer({...valuesMyDetails, bio:bio})
             setCallToServer(true)
         }
     }
