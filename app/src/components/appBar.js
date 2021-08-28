@@ -96,11 +96,21 @@ export default function PrimarySearchAppBar({userType, data}) {
             <Typography style={{marginLeft:10, marginBottom:10}}>
                 Hi,<br/><strong>{userType === 'influencers'? data.firstName : data.name}</strong>
             </Typography>
-            <MenuItem onClick={handleMenuClose} className={classes.menuItem}>Past Collaborations</MenuItem>
-            <MenuItem onClick={handleMenuClose} className={classes.menuItem}>Current Collaborations</MenuItem>
-            <MenuItem onClick={handleMenuClose} className={classes.menuItem}>My Details</MenuItem>
-            <MenuItem onClick={handleMenuClose} className={classes.menuItem}>My Account</MenuItem>
-            <MenuItem onClick={handleMenuClose} className={classes.menuItem}>Log Out</MenuItem>
+            <Link to={`/${userType}/${data._id}/personal/pastCollaborations`}>
+                <MenuItem onClick={handleMenuClose} className={classes.menuItem}>Past Collaborations</MenuItem>
+            </Link>
+            <Link to={`/${userType}/${data._id}/personal/currentCollaborations`}>
+                <MenuItem onClick={handleMenuClose} className={classes.menuItem}>Current Collaborations</MenuItem>
+            </Link>
+            <Link to={`/${userType}/${data._id}/personal/myDetails`}>
+                <MenuItem onClick={handleMenuClose} className={classes.menuItem}>My Details</MenuItem>
+            </Link>
+            <Link to={`/${userType}/${data._id}/personal/myAccount`}>
+                <MenuItem onClick={handleMenuClose} className={classes.menuItem}>My Account</MenuItem>
+            </Link>
+            <Link to={`/${userType}/${data._id}/personal/logOut`}>
+                <MenuItem onClick={handleMenuClose} className={classes.menuItem}>Log Out</MenuItem>
+            </Link>
         </Menu>
     );
 

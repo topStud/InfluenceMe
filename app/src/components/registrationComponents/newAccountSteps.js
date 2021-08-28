@@ -18,7 +18,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import BusinessIcon from '@material-ui/icons/Business'
 import CompanyData from "./companyData";
 import isMobilePhone from "validator/es/lib/isMobilePhone";
-import {parseJwt} from '../../utilFunctions'
+import {parseJwt} from '../../utils'
+import {required_txt, validateWebsiteUrl} from "../../utils";
 
 function getSteps(userType) {
     return userType === 'influencers' ? ['Personal information', 'instagram account', 'Bio'] : ['Company information', 'Bio'];
@@ -27,11 +28,11 @@ function getSteps(userType) {
 function getStepContentInfluencer(stepIndex, values) {
     switch (stepIndex) {
         case 0:
-            return <PersonalInfo personalInfoValues={values.personalInfo}/>
+            return <PersonalInfo values={values.personalInfo}/>
         case 1:
-            return <InstagramInfo instagramInfoValues={values.instagramInfo}/>
+            return <InstagramInfo values={values.instagramInfo}/>
         case 2:
-            return <Bio bioValues={values.Bio}/>
+            return <Bio values={values.Bio}/>
         default:
             return 'Unknown stepIndex';
     }
@@ -91,7 +92,6 @@ function ColorStepIconCompany(props) {
 
 
 export default function ContentBelowStepper(props) {
-    const required_txt = 'This field is required'
     const [activeStep, setActiveStep] = React.useState(0);
     const userType = props.userType;
     const steps = getSteps(userType);
@@ -119,13 +119,13 @@ export default function ContentBelowStepper(props) {
         phoneMsg: ''
     })
     const [errInstaAccount, setErrInstaAccount] = React.useState({
-        userErr: false,
+        instagramUserErr: false,
         followersErr: false,
-        urlErr: false,
+        instagramUrlErr: false,
         categoryErr: false,
-        userMsg: '',
+        instagramUserMsg: '',
         followersMsg: '',
-        urlMsg: '',
+        instagramUrlMsg: '',
     })
     const [errCompanyData, setErrCompanyData] = React.useState({
         companyNameErr: false,
@@ -166,9 +166,6 @@ export default function ContentBelowStepper(props) {
                 getter: bioInfluencer,
                 setter: setBioInfluencer
             },
-            err: {
-                getter: bioInfluencer
-            }
         }
     }
 
@@ -195,17 +192,11 @@ export default function ContentBelowStepper(props) {
         }
     }
 
-
-    const validateWebsiteUrl = websiteUrl => {
-        const urlRegEx = new RegExp(/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=+$,\w]+@)?[A-Za-z0-9.-]+|(?:www\.|[-;:&=+$,\w]+@)[A-Za-z0-9.-]+)((?:\/[+~%/.\w\-_]*)?\??#?)?)/);
-        return urlRegEx.test(String(websiteUrl).toLowerCase());
-    };
-
     const handleNextInfluencer = () => {
         let mayContinue = true
         // personal information
         if (activeStep === 0) {
-            let phoneNumberErr = !(valuesPersonalInfo.phoneNum === '' || (valuesPersonalInfo.phoneNum.split(" ").length - 1) === 0 || isMobilePhone(valuesPersonalInfo.phoneNum.replace(/\s+/g, ''), 'any'))
+            let phoneNumberErr = !(valuesPersonalInfo.phone === '' || (valuesPersonalInfo.phone.split(" ").length - 1) === 0 || isMobilePhone(valuesPersonalInfo.phone.replace(/\s+/g, ''), 'any'))
             let fNameErr = valuesPersonalInfo.firstName === ''
             let lNameErr = valuesPersonalInfo.lastName === ''
             if (fNameErr || lNameErr || phoneNumberErr) {
@@ -222,17 +213,17 @@ export default function ContentBelowStepper(props) {
         }
         // Instagram account
         else if (activeStep === 1) {
-            let instaUserErr = valuesInstaAccount.user === ''
-            let instaFollowersErr = valuesInstaAccount.followers === ''
-            let linkErr = valuesInstaAccount.url !== '' && !validateWebsiteUrl(valuesInstaAccount.url)
+            let instaUserErr = valuesInstaAccount.instagramUser === ''
+            let instaFollowersErr = valuesInstaAccount.followersAmount === ''
+            let linkErr = valuesInstaAccount.instagramUrl !== '' && !validateWebsiteUrl(valuesInstaAccount.instagramUrl)
             let categoryErr = valuesInstaAccount.categories.length === 0
             if (linkErr || instaUserErr || instaFollowersErr || categoryErr) {
                 mayContinue = false
                 setErrInstaAccount({
-                    urlErr: linkErr,
-                    urlMsg: linkErr ? 'Url format is invalid' : '',
-                    userErr: instaUserErr,
-                    userMsg: instaUserErr ? required_txt : '',
+                    instagramUrlErr: linkErr,
+                    instagramUrlMsg: linkErr ? 'Url format is invalid' : '',
+                    instagramUserErr: instaUserErr,
+                    instagramUserMsg: instaUserErr ? required_txt : '',
                     followersErr: instaFollowersErr,
                     followersMsg: instaFollowersErr ? required_txt : '',
                     categoryErr: categoryErr
@@ -276,16 +267,15 @@ export default function ContentBelowStepper(props) {
         }
     };
 
-
     const handleBackStandardInfluencer = () => {
         if(activeStep === 1) {
             setErrInstaAccount({
-                userErr: false,
-                userMsg: '',
+                instagramUserErr: false,
+                instagramUserMsg: '',
                 followersMsg: '',
                 followersErr: false,
-                urlErr: false,
-                urlMsg: '',
+                instagramUrlErr: false,
+                instagramUrlMsg: '',
                 categoryErr: false
             })
         }
@@ -307,7 +297,7 @@ export default function ContentBelowStepper(props) {
     };
 
     return (
-        <div style={{width: '100%', boxShadow: '1px 10px 10px gray', paddingRight:50, paddingLeft:50, paddingBottom:20, marginBottom: 20, height:480}} >
+        <div style={{width: '100%', boxShadow: '1px 10px 10px gray', paddingRight:50, paddingLeft:50, paddingBottom:20, marginBottom: 20, height:520}} >
             <Stepper activeStep={activeStep} alternativeLabel connector={<StepConnector style={{marginTop: '10px'}}
             classes={{completed: classes.completed_conn, active: classes.active_conn, line: classes.line_conn}}/>}>
                 {steps.map((label) => (
@@ -320,16 +310,9 @@ export default function ContentBelowStepper(props) {
                 {activeStep === steps.length ? (
                     <AnswerOfServer obj={userType === 'influencers'? {
                         email: props.regValues.email,
-                        password: props.regValues.pass,
-                        firstName: valuesPersonalInfo.firstName,
-                        lastName: valuesPersonalInfo.lastName,
-                        date: valuesPersonalInfo.date,
-                        photo: valuesPersonalInfo.photo,
-                        phone: valuesPersonalInfo.phoneNum,
-                        instagramUser: valuesInstaAccount.user,
-                        followersAmount: valuesInstaAccount.followers,
-                        instagramUrl: valuesInstaAccount.url,
-                        categories: valuesInstaAccount.categories,
+                        password: props.regValues.password,
+                        ...valuesPersonalInfo,
+                        ...valuesInstaAccount,
                         bio: bioInfluencer
                     }:{
                         email: props.regValues.email,
@@ -341,7 +324,7 @@ export default function ContentBelowStepper(props) {
                         bio: bioCompany
                     }} filledCorrectly={props.filledCorrectly} userType={userType}/>
                 ) : (
-                    <div style={{display:"flex", flexDirection:"column", justifyContent:"flex-end" , height:320}}>
+                    <div style={{display:"flex", flexDirection:"column", justifyContent:"flex-end" , height:350}}>
                         <div style={{marginBottom: 30}}>
                             {userType === 'influencers' ?
                                 getStepContentInfluencer(activeStep, values_influencer) :

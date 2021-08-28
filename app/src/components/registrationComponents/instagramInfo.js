@@ -7,13 +7,13 @@ import InputText from "../InputComponents/inputText";
 import CategoriesComponent from "../InputComponents/categoriesComponent";
 
 export default function InstagramInfo(props) {
-    const values = props.instagramInfoValues.val
-    const errors = props.instagramInfoValues.err
+    const values = props.values.val
+    const errors = props.values.err
 
     function handleChangeFollowers(e) {
         values.setter({
             ...values.getter,
-            followers: e.target.value
+            followersAmount: e.target.value
         })
     }
 
@@ -29,14 +29,14 @@ export default function InstagramInfo(props) {
         required: true,
         id: 'instagramUser',
         label: 'InstagramUser',
-        name: 'user'
+        name: 'instagramUser'
     }
 
     const urlObj = {
         required: false,
         id: 'instagramUrl',
         label: 'Instagram URL',
-        name: 'url'
+        name: 'instagramUrl'
     }
 
     return (
@@ -47,7 +47,7 @@ export default function InstagramInfo(props) {
             <Grid item xs={12} sm={6} style={{height: 90, marginTop:10}}>
                 <TextField
                     label="Followers number"
-                    value={values.getter.followers}
+                    value={values.getter.followersAmount}
                     onChange={handleChangeFollowers}
                     name="followers"
                     id="followers"
@@ -64,7 +64,7 @@ export default function InstagramInfo(props) {
             <Grid item xs={12} style={{height: 90}}>
                 <InputText val={values} err={errors} info={urlObj}/>
             </Grid>
-            <Grid item xs={12} style={{height:110}}>
+            <Grid item xs={12} style={{height:140}}>
                 <CategoriesComponent val={values} err={errors}/>
             </Grid>
         </Grid>

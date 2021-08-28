@@ -2,11 +2,14 @@ import AppBar from "../components/appBar";
 import React, {useEffect} from "react";
 import {MuiThemeProvider} from "@material-ui/core";
 import {createTheme} from "@material-ui/core/styles";
-import {useParams} from "react-router-dom";
+import {Route, Switch, useParams} from "react-router-dom";
 import {Alert, AlertTitle} from "@material-ui/lab";
 import Footer from "../components/footer";
 import Grid from "@material-ui/core/Grid";
 import Proposals from "../components/proposals/proposals";
+import ProposalsOfCompany from "../components/proposals/proposalsOfCompany";
+import '../styles/globals.css'
+import PersonalArea from "../components/personalArea/personalArea";
 
 const theme = createTheme({
     palette: {
@@ -40,6 +43,7 @@ export default function InfluencerPage() {
                 setErrFetchInfluencerData(true)
             } else {
                 setInfluencerData(influencerData.response)
+                console.log(influencerData.response)
             }
         })
         fetch('/api/companies').then(res => {
@@ -82,11 +86,18 @@ export default function InfluencerPage() {
             {influencerData &&
                 <>
                     <AppBar userType={'influencers'} data={influencerData}/>
-                    {proposalsList !== null &&
-                        <Grid container spacing={0}>
-                            <Proposals proposalsList={proposalsList} options={{}} userType={'influencers'}/>
-                        </Grid>
-                    }
+                    <Switch>
+                        <Route exact path={`/influencers/${id}`}>
+                            {proposalsList !== null &&
+                                <Grid container spacing={0}>
+                                    <Proposals proposalsList={proposalsList} options={{}} userType={'influencers'}/>
+                                </Grid>
+                            }
+                        </Route>
+                        <Route path={`/influencers/${id}/personal`}>
+                            <PersonalArea userType={'influencers'} influencerData={influencerData}/>
+                        </Route>
+                    </Switch>
                 </>
             }
             { errFetchInfluencerData &&

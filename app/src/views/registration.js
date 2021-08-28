@@ -9,8 +9,8 @@ export default function Registration() {
     // registration values
     const [registrationValues, setRegistrationValues] = React.useState({
         email: '',
-        pass: '',
-        passV: '',
+        password: '',
+        passwordV: '',
     })
     const values = {
         getter: registrationValues,
@@ -25,13 +25,13 @@ export default function Registration() {
         firstName: '',
         lastName: '',
         date: currDate,
-        phoneNum: '',
+        phone: '',
         photo: null,
     })
     const [valuesInstaAccount, setValuesInstaAccount] = React.useState({
-        user: '',
-        followers: '',
-        url: '',
+        instagramUser: '',
+        followersAmount: '',
+        instagramUrl: '',
         categories: []
     })
     const [bioInfluencer, setBioInfluencer] = React.useState('')

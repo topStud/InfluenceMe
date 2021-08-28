@@ -13,7 +13,7 @@ export default class CreateUserDialog extends React.Component {
         if (value) {
             this.props.val.setter({
                 ...this.props.val.getter,
-                phoneNum: value
+                phone: value
             })
         }
     }
@@ -34,7 +34,7 @@ export default class CreateUserDialog extends React.Component {
                 label="Phone Number"
                 data-cy="user-phone"
                 defaultCountry={"il"}
-                value={this.props.val.getter.phoneNum}
+                value={this.props.val.getter.phone}
                 onChange={this.handlePhoneChange}
                 error={this.props.err.getter.phoneErr}
                 helperText={this.props.err.getter.phoneMsg}

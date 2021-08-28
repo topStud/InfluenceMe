@@ -12,7 +12,7 @@ import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import {Snackbar} from "@material-ui/core";
 import {Alert} from "@material-ui/lab";
-import {parseJwt} from '../utilFunctions'
+import {parseJwt} from '../utils'
 
 export default function SignIn() {
     const [emailValue, setEmailValue] = React.useState('')

@@ -7,8 +7,8 @@ import InputImage from "../InputComponents/inputImage";
 
 export default function PersonalInfo(props) {
     // values
-    const values = props.personalInfoValues.val
-    const errors = props.personalInfoValues.err
+    const values = props.values.val
+    const errors = props.values.err
 
     function onDateChange(e) {
         values.setter({
@@ -52,10 +52,10 @@ export default function PersonalInfo(props) {
                     onChange={onDateChange}
                 />
             </Grid>
-            <Grid item xs={12} sm={6} style={{height:10}}>
+            <Grid item xs={12} sm={6} style={{height:140}}>
                 <InputImage val={values} info={{label: 'Add a profile picture'}}/>
             </Grid>
-            <Grid item xs={12} sm={6} style={{height:110}}>
+            <Grid item xs={12} sm={6} style={{height:140}}>
                 <PhoneTextField val={values} err={errors}/>
             </Grid>
         </Grid>

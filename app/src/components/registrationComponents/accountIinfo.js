@@ -10,10 +10,10 @@ import {Link} from "react-router-dom";
 import styles from "../../styles/Home.module.css";
 import InputText from '../InputComponents/inputText';
 import InputPassword from '../InputComponents/inputPassword'
+import {required_txt} from "../../utils";
 
 export default function SignUp(props) {
     const values = props.values
-    const required_txt = 'This field is required'
     const [err, setErr] = React.useState({
         emailErr: false,
         passErr: false,
@@ -49,16 +49,16 @@ export default function SignUp(props) {
 
     function SignUpClicked() {
         let passEmpty, passVEmpty, emailEmpty, badEmail
-        passEmpty = values.getter.pass === ''
-        passVEmpty = values.getter.passV === ''
+        passEmpty = values.getter.password === ''
+        passVEmpty = values.getter.passwordV === ''
         emailEmpty = values.getter.email === ''
         badEmail = !ValidateEmail(values.getter.email)
-        if (passEmpty || passVEmpty || emailEmpty || badEmail || (values.getter.pass.length < 6) || (values.getter.pass !== values.getter.passV)) {
+        if (passEmpty || passVEmpty || emailEmpty || badEmail || (values.getter.password.length < 6) || (values.getter.password !== values.getter.passwordV)) {
             setErr({
-                passMsg: passEmpty ? required_txt : values.getter.pass.length < 6 ? 'Minimum length for a password is 6 characters' : '',
-                passErr: passEmpty || values.getter.pass.length < 6,
-                passVErr: passVEmpty || values.getter.pass !== values.getter.passV,
-                passVMsg: passVEmpty ? required_txt : values.getter.pass !== values.getter.passV ? 'The passwords don\'t match' : '',
+                passMsg: passEmpty ? required_txt : values.getter.password.length < 6 ? 'Minimum length for a password is 6 characters' : '',
+                passErr: passEmpty || values.getter.password.length < 6,
+                passVErr: passVEmpty || values.getter.password !== values.getter.passwordV,
+                passVMsg: passVEmpty ? required_txt : values.getter.password !== values.getter.passwordV ? 'The passwords don\'t match' : '',
                 emailErr: badEmail,
                 emailMsg: emailEmpty ? required_txt : badEmail ? 'The email entered is not in the correct format' : ''
             })
@@ -77,13 +77,13 @@ export default function SignUp(props) {
     const passObj = {
         id: 'password',
         label: 'Password',
-        name: 'pass',
+        name: 'password',
     }
 
     const passVObj = {
         id: 'password-verification',
         label: 'Password Verification',
-        name: 'passV',
+        name: 'passwordV',
     }
 
     return (
