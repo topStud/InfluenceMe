@@ -27,6 +27,7 @@ export default function Registration() {
         date: currDate,
         phone: '',
         photo: null,
+        // photoName: ''
     })
     const [valuesInstaAccount, setValuesInstaAccount] = React.useState({
         instagramUser: '',

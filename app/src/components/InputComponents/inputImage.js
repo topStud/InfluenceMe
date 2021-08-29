@@ -25,7 +25,8 @@ export default function InputImage(props) {
             (uri) => {
                 props.val.setter({
                     ...props.val.getter,
-                    photo: uri
+                    photo: uri,
+                    // photoName: file.name
                 })
             },
             'base64',
@@ -48,8 +49,9 @@ export default function InputImage(props) {
                 <Fab component="span" style={{color: blue[900], margin: 10}}>
                     <AddPhotoAlternateIcon />
                 </Fab>
-                {imageName !== '' ? (<span>{imageName}</span>) : (<span>{props.info.label}</span>)}
+                {imageName ? (<span>{imageName}</span>) : (<span>{props.info.label}</span>)}
             </label>
         </>
     )
 }
+// {/*props.val.getter.photoName !== ''*/}

@@ -20,6 +20,11 @@ const theme = createTheme({
 
 export default function CompanyPage() {
     const {id} = useParams()
+    const [imageUpdated, setImageUpdated] = React.useState(null)
+    const imgUpdater = {
+        getter: imageUpdated,
+        setter: setImageUpdated
+    }
     const [companyInfo, setCompanyInfo] = React.useState(null)
     const [errFetchCompanyData, setErrFetchCompanyData] = React.useState(false)
 
@@ -42,7 +47,7 @@ export default function CompanyPage() {
             <MuiThemeProvider theme={theme}>
                 {companyInfo !== null &&
                     <>
-                        <AppBar userType={'companies'} data={companyInfo}/>
+                        <AppBar userType={'companies'} data={companyInfo} img={imageUpdated}/>
                         <Switch>
                             <Route path={`/companies/${id}/proposals`}>
                                 <ProposalsOfCompany companyInfo={companyInfo}/>

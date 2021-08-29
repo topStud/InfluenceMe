@@ -24,6 +24,11 @@ const theme = createTheme({
 
 export default function InfluencerPage() {
     const {id} = useParams()
+    const [imageUpdated, setImageUpdated] = React.useState(null)
+    const imgUpdater = {
+        getter: imageUpdated,
+        setter: setImageUpdated
+    }
 
     // current influencer data
     const [errFetchInfluencerData, setErrFetchInfluencerData] = React.useState(false)
@@ -43,6 +48,7 @@ export default function InfluencerPage() {
                 setErrFetchInfluencerData(true)
             } else {
                 setInfluencerData(influencerData.response)
+                setImageUpdated(influencerData.response.photo)
                 console.log(influencerData.response)
             }
         })
@@ -85,7 +91,7 @@ export default function InfluencerPage() {
         <MuiThemeProvider theme={theme}>
             {influencerData &&
                 <>
-                    <AppBar userType={'influencers'} data={influencerData}/>
+                    <AppBar userType={'influencers'} data={influencerData} img={imageUpdated}/>
                     <Switch>
                         <Route exact path={`/influencers/${id}`}>
                             {proposalsList !== null &&
@@ -95,7 +101,7 @@ export default function InfluencerPage() {
                             }
                         </Route>
                         <Route path={`/influencers/${id}/personal`}>
-                            <PersonalArea userType={'influencers'} influencerData={influencerData}/>
+                            <PersonalArea userType={'influencers'} influencerData={influencerData} img={imgUpdater}/>
                         </Route>
                     </Switch>
                 </>
