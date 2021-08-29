@@ -13,11 +13,21 @@ const InfluencerSchema = new mongoose.Schema({
     instagramUser: { type: String, required: true },
     followersAmount: { type: Number, required: true },
     instagramUrl: { type: String },
-    categories: { type: Array, required: true },
+    categories: { type: [String], required: true },
     bio: { type: String },
     Contracts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Contracts' }],
     Notifications: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notifications' }]
 })
+
+InfluencerSchema.index({
+    email: 'text',
+    firstName: 'text',
+    lastName: 'text',
+    instagramUser: 'text',
+    instagramUrl: 'text',
+    categories: 'text',
+    bio: 'text'});
+
 
 const model = mongoose.model('Influencers', InfluencerSchema)
 module.exports = model

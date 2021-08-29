@@ -55,12 +55,16 @@ const update = async (req, res) => {
     await commonController.update(influencerModel, req, res)
 }
 
-
+// accept string with ' ' delimiter
+const searchBy = async (req, res) => {
+    await commonController.search(influencerModel, req, res)
+}
 
 
 module.exports = {
     influencers,
     influencer,
     influencerRegister,
-    update
+    update,
+    searchBy
 }

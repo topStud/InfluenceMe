@@ -63,10 +63,19 @@ async function findOne(model, req, res) {
 }
 
 
+async function search(model, req, res) {
+    model.find({$text: {$search: req.params.searchString}})
+    /*.limit(10)*/
+    .exec(function(err, docs) {
+        if(err) return res.status(400).json({status: 'error', 'error': 'Search failed'})
+        return res.status(200).json({docs})
+    })
+}
 
 module.exports = {
     login,
     update,
     findMany,
-    findOne
+    findOne,
+    search
 }

@@ -10,7 +10,7 @@ const ContractSchema = new mongoose.Schema({
     influencerName: { type: String, required: true},
     influencerPhone:{ type: String },
     infliencerEmail:{ type: String, required: true },
-    categories: { type: Array, required: true },
+    categories: { type: [String], required: true },
     details: { type: String, required: true },
     payment: {type: String},
     startDay:{type: Date, default: Date.now}, // need to know the time it working
