@@ -1,11 +1,11 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 import MyDetailsInfluencer from "./myDetailsInfluencer";
-import {Link, Route, Switch, useRouteMatch} from "react-router-dom";
+import {Link, Route, Switch} from "react-router-dom";
 import {Avatar} from "@material-ui/core";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 
@@ -67,7 +67,7 @@ export default function PersonalArea({userType,influencerData,  img}) {
 
     return (
         <div className={classes.root}>
-            <div style={{display: "flex", flexDirection: "column"}}>
+            <div style={{display: "flex", flexDirection: "column", width: 250}}>
                 <div style={{padding:10, boxShadow: '-5px 3px 5px #A68617', marginBottom:5, width: '100%', display: "flex"}}>
                     {img.getter !== null ? <Avatar src={img.getter} className={classes.small}/> : <AccountCircle style={{color: 'black'}} className={classes.small}/>}
                     <div style={{display: "flex", flexDirection: "column"}}>

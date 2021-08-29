@@ -32,7 +32,7 @@ export default function MyDetailsInfluencer({setValue, influencerData, setImage}
         date: influencerData.date.substring(0,influencerData.date.indexOf('T')),
         phone: influencerData.phone,
         photo: influencerData.photo,
-        // photoName: influencerData.photoName,
+        photoName: influencerData.photoName,
         instagramUser: influencerData.instagramUser,
         followersAmount: influencerData.followersAmount,
         instagramUrl: influencerData.instagramUrl,

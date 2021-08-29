@@ -8,11 +8,8 @@ export default function InputImage(props) {
     // the data in info that needs to be sent:
     // label - text that will be shown next to upload image button.
 
-    const [imageName, setImageName] = React.useState('')
-
     const handleUploadClick = async event => {
         let file = event.target.files[0];
-        setImageName(file.name)
 
         // compress image
         Resizer.imageFileResizer(
@@ -26,7 +23,7 @@ export default function InputImage(props) {
                 props.val.setter({
                     ...props.val.getter,
                     photo: uri,
-                    // photoName: file.name
+                    photoName: file.name
                 })
             },
             'base64',
@@ -49,9 +46,8 @@ export default function InputImage(props) {
                 <Fab component="span" style={{color: blue[900], margin: 10}}>
                     <AddPhotoAlternateIcon />
                 </Fab>
-                {imageName ? (<span>{imageName}</span>) : (<span>{props.info.label}</span>)}
+                {props.val.getter.photoName !== '' ? (<span>{props.val.getter.photoName}</span>) : (<span>{props.info.label}</span>)}
             </label>
         </>
     )
 }
-// {/*props.val.getter.photoName !== ''*/}
