@@ -16,7 +16,7 @@ const company = async (req, res) => {
 }
 
 const companyRegister = async (req, res) => {
-    const { email, password : plainTextPassword, name, siteUrl, photo, phone, bio } = req.body
+    const { email, password : plainTextPassword, name, siteUrl, photo, photoName, phone, bio } = req.body
     const password = await bcrypt.hash(plainTextPassword ,10)
     try{
         const response = await companyModel.create({

@@ -1,4 +1,5 @@
 const companyModel = require('../models/company')
+const influencerModel = require('../models/influencer')
 const contractModel = require('../models/contract')
 
 
@@ -38,8 +39,38 @@ const addContract = async (req, res) => {
     })
 }
 
+const contractsOf = async (req, res) => {
+    await companyModel.
+    findOne({ _id: req.params.id}, async (err, company) => {
+        if (err || company === null){
+            await influencerModel.
+            findOne({ _id: req.params.id}, async (err, influencer) => {
+                if (err || influencer === null){
+                    return res.status(400).json({status: 'error', 'error': 'user not exist'})
+                }
+                // return influencer's notifications
+                await findContractsOf(influencer, req, res)
+            })
+        }
+        // return company's notifications
+        await findContractsOf(company, req, res)
+    })
+}
+
+async function findContractsOf(user, req, res) {
+    contractModel.find({
+        '_id': { $in: user.Contracts}
+    }, function(err, response){
+        if (err || user === null){
+            return res.status(400).json({status: 'error', 'error': 'can\'t find'})
+        }
+        return res.status(200).json({response})
+    })
+}
+
 
 
 module.exports = {
-    addContract
+    addContract,
+    contractsOf
 }

@@ -17,7 +17,7 @@ const influencer = async (req, res) => {
 
 const influencerRegister = async (req, res) => {
     const { email, password : plainTextPassword, firstName, lastName, date,
-        photo, phone, instagramUser, followersAmount, instagramUrl, categories, bio } = req.body
+        photo, photoName, phone, instagramUser, followersAmount, instagramUrl, categories, bio } = req.body
     const password = await bcrypt.hash(plainTextPassword ,10)
     try{
         const response = await influencerModel.create({

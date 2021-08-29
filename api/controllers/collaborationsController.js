@@ -75,9 +75,8 @@ const specificCollaborationProposal = async (req, res) => {
 
 
 const collaborationProposalsOf = async (req, res) => {
-    const companyID = req.params.id
     await companyModel.
-    findOne({ _id: companyID}, async (err, company) => {
+    findOne({ _id: req.params.id}, async (err, company) => {
         if (err || company === null){
             return res.status(400).json({status: 'error', 'error': 'company not exist'})
         }
@@ -93,10 +92,16 @@ const collaborationProposalsOf = async (req, res) => {
 }
 
 
+const update = async (req, res) => {
+    await commonController.update(collaborationModel, req, res)
+}
+
+
 module.exports = {
     addCollaborationProposal,
     deleteCollaborationProposal,
     collaborationProposals,
     specificCollaborationProposal,
-    collaborationProposalsOf
+    collaborationProposalsOf,
+    update
 }

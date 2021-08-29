@@ -46,12 +46,11 @@ async function createNotificationTo(user, req, res) {
 
 
 const notificationsOf = async (req, res) => {
-    const userID = req.params.id
     await companyModel.
-    findOne({ _id: userID}, async (err, company) => {
+    findOne({ _id: req.params.id}, async (err, company) => {
         if (err || company === null){
             await influencerModel.
-            findOne({ _id: userID}, async (err, influencer) => {
+            findOne({ _id: req.params.id}, async (err, influencer) => {
                 if (err || influencer === null){
                     return res.status(400).json({status: 'error', 'error': 'user not exist'})
                 }
