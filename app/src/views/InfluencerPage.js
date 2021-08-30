@@ -23,11 +23,11 @@ const theme = createTheme({
 
 export default function InfluencerPage() {
     const {id} = useParams()
-    const [imageUpdated, setImageUpdated] = React.useState(null)
-    const imgUpdater = {
-        getter: imageUpdated,
-        setter: setImageUpdated
-    }
+    // const [imageUpdated, setImageUpdated] = React.useState(null)
+    // const imgUpdater = {
+    //     getter: imageUpdated,
+    //     setter: setImageUpdated
+    // }
 
     // current influencer data
     const [errFetchInfluencerData, setErrFetchInfluencerData] = React.useState(false)
@@ -47,7 +47,7 @@ export default function InfluencerPage() {
                 setErrFetchInfluencerData(true)
             } else {
                 setInfluencerData(influencerData.response)
-                setImageUpdated(influencerData.response.photo)
+                // setImageUpdated(influencerData.response.photo)
                 console.log(influencerData.response)
             }
         })
@@ -91,7 +91,7 @@ export default function InfluencerPage() {
         <MuiThemeProvider theme={theme}>
             {influencerData &&
                 <>
-                    <AppBar userType={'influencers'} data={influencerData} img={imageUpdated}/>
+                    <AppBar userType={'influencers'} data={influencerData} />
                     <Switch>
                         <Route exact path={`/influencers/${id}`}>
                             {proposalsList !== null &&
@@ -101,7 +101,7 @@ export default function InfluencerPage() {
                             }
                         </Route>
                         <Route path={`/influencers/${id}/personal`}>
-                            <PersonalArea userType={'influencers'} influencerData={influencerData} img={imgUpdater}/>
+                            <PersonalArea userType={'influencers'} objData={influencerData} setObjData={setInfluencerData} />
                         </Route>
                     </Switch>
                 </>

@@ -67,3 +67,17 @@ export const AnswerOfServer = ({callServerObj, url, methodObj, sucMsg, failMsg, 
         </Snackbar>
     )
 }
+
+export function BadInputSnackbar({open, setOpen}) {
+    const handleClose = () => {
+        setOpen(false)
+    };
+
+    return (
+        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}>
+            <Alert onClose={handleClose} severity={'error'} style={{fontSize:14, fontFamily:'Rubik'}}>
+                <div>Bad input entered</div>
+            </Alert>
+        </Snackbar>
+    )
+}

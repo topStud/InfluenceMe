@@ -8,6 +8,7 @@ import {Alert, AlertTitle} from "@material-ui/lab";
 import Footer from "../components/footer";
 import Grid from "@material-ui/core/Grid";
 import CardsDisplay from "../components/Cards/cardsDisplay";
+import PersonalArea from "../components/personalArea/personalArea";
 
 const theme = createTheme({
     palette: {
@@ -64,7 +65,7 @@ export default function CompanyPage() {
             <MuiThemeProvider theme={theme}>
                 {companyInfo !== null &&
                     <>
-                        <AppBar userType={'companies'} data={companyInfo} img={imageUpdated}/>
+                        <AppBar userType={'companies'} data={companyInfo}/>
                         <Switch>
                             <Route exact path={`/companies/${id}`}>
                                 {influencersList !== null &&
@@ -75,6 +76,9 @@ export default function CompanyPage() {
                             </Route>
                             <Route path={`/companies/${id}/proposals`}>
                                 <ProposalsOfCompany companyInfo={companyInfo}/>
+                            </Route>
+                            <Route path={`/companies/${id}/personal`}>
+                                <PersonalArea userType={'companies'} objData={companyInfo} setObjData={setCompanyInfo} img={imgUpdater}/>
                             </Route>
                         </Switch>
                     </>

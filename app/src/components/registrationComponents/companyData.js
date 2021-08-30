@@ -1,4 +1,3 @@
-import TextField from '@material-ui/core/TextField';
 import Grid from "@material-ui/core/Grid";
 import React from "react";
 import PhoneTextField from '../InputComponents/phoneTextField'
@@ -7,14 +6,14 @@ import InputText from '../InputComponents/inputText';
 
 export default function CompanyData(props) {
     // values
-    const values = props.companyDataValues.val
-    const errors = props.companyDataValues.err
+    const values = props.values.val
+    const errors = props.values.err
 
     const nameObj = {
         required: true,
         id: 'companyName',
         label: 'Company Name',
-        name: 'companyName'
+        name: 'name'
     }
 
     const urlObj = {

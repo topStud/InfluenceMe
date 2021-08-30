@@ -39,9 +39,10 @@ export default function Registration() {
 
     // profile values - company
     const [valuesCompany, setValuesCompany] = React.useState({
-        companyName: '',
+        name: '',
         siteUrl: '',
-        phoneNum: '',
+        phone: '',
+        photoName: '',
         photo: null,
     })
     const [bioCompany, setBioCompany] = React.useState('')

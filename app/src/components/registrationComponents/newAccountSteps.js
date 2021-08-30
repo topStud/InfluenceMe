@@ -41,9 +41,9 @@ function getStepContentInfluencer(stepIndex, values) {
 function getStepContentCompany(stepIndex, values) {
     switch (stepIndex) {
         case 0:
-            return <CompanyData companyDataValues={values.companyData}/>
+            return <CompanyData values={values.companyData}/>
         case 1:
-            return <Bio bioValues={values.Bio}/>
+            return <Bio values={values.Bio}/>
         default:
             return 'Unknown stepIndex';
     }
@@ -238,8 +238,8 @@ export default function ContentBelowStepper(props) {
         let mayContinue = true
         // personal information
         if (activeStep === 0) {
-            let phoneNumberErr = !(valuesCompany.phoneNum === '' || (valuesCompany.phoneNum.split(" ").length - 1) === 0 || isMobilePhone(valuesCompany.phoneNum.replace(/\s+/g, ''), 'any'))
-            let compNameErr = valuesCompany.companyName === ''
+            let phoneNumberErr = !(valuesCompany.phone === '' || (valuesCompany.phone.split(" ").length - 1) === 0 || isMobilePhone(valuesCompany.phone.replace(/\s+/g, ''), 'any'))
+            let compNameErr = valuesCompany.name === ''
             let linkErr = valuesCompany.siteUrl !== '' && !validateWebsiteUrl(valuesCompany.siteUrl)
             if (compNameErr || linkErr || phoneNumberErr) {
                 mayContinue = false
@@ -317,10 +317,7 @@ export default function ContentBelowStepper(props) {
                     }:{
                         email: props.regValues.email,
                         password: props.regValues.pass,
-                        name: valuesCompany.companyName,
-                        siteUrl: valuesCompany.siteUrl,
-                        photo: valuesCompany.photo,
-                        phone: valuesCompany.phoneNum,
+                        ...valuesCompany,
                         bio: bioCompany
                     }} filledCorrectly={props.filledCorrectly} userType={userType}/>
                 ) : (

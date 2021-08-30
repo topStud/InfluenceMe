@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function PrimarySearchAppBar({userType, data, img}) {
+export default function PrimarySearchAppBar({userType, data}) {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -150,8 +150,8 @@ export default function PrimarySearchAppBar({userType, data, img}) {
                             color="inherit"
                         >
                             {
-                                img !== null ?
-                                    <Avatar src={img} alt={'avatar of user'} className={classes.small}/> :
+                                data.photo !== null ?
+                                    <Avatar src={data.photo} alt={'avatar of user'} className={classes.small}/> :
                                 userType === 'influencers' ? <AccountCircle style={{color: 'black'}}/> :
                                     <BusinessIcon style={{color: 'black'}}/>
                             }

@@ -16,14 +16,14 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
-export default function MyDetailsInfluencer({setValue, influencerData, setImage}) {
+export default function MyDetailsInfluencer({setValue, influencerData, index}) {
     const classes = useStyles();
     const [callToServer, setCallToServer] = React.useState(false)
     const [objToServer, setObjToServer] = React.useState({})
 
     // so the correct tab will be marked
     useEffect(()=>{
-        setValue(2)
+        setValue(index)
     })
     
     const [valuesMyDetails, setValuesMyDetails] = React.useState({
@@ -46,13 +46,13 @@ export default function MyDetailsInfluencer({setValue, influencerData, setImage}
         lastNameMsg: '',
         phoneErr: false,
         phoneMsg: '',
-        userErr: false,
+        instagramUserErr: false,
         followersErr: false,
-        urlErr: false,
+        instagramUrlErr: false,
         categoryErr: false,
-        userMsg: '',
+        instagramUserMsg: '',
         followersMsg: '',
-        urlMsg: '',
+        instagramUrlMsg: '',
     })
     const myDetailsObj={
         val:{
@@ -94,9 +94,9 @@ export default function MyDetailsInfluencer({setValue, influencerData, setImage}
             phoneErr: phoneNumberErr,
             phoneMsg: phoneNumberErr ? 'Phone number is not valid' : '',
             instagramUrlErr: linkErr,
-            urlMsg: linkErr ? 'Url format is invalid' : '',
+            instagramUrlMsg: linkErr ? 'Url format is invalid' : '',
             instagramUserErr: instaUserErr,
-            userMsg: instaUserErr ? required_txt : '',
+            instagramUserMsg: instaUserErr ? required_txt : '',
             followersErr: instaFollowersErr,
             followersMsg: instaFollowersErr ? required_txt : '',
             categoryErr: categoryErr
@@ -138,7 +138,7 @@ export default function MyDetailsInfluencer({setValue, influencerData, setImage}
                             url={`/api/influencers/${influencerData._id}`}
                             methodObj={{method: 'PUT', headers: {'Content-type': 'application/json; charset=UTF-8'}, body: JSON.stringify(objToServer)}}
                             sucMsg={'Changes saved successfully'} errMsg={'Save Failed'}
-                            sucFunc={()=>{setPrevBio(bio); setPrevMyDetailsData(valuesMyDetails); setImage(valuesMyDetails.photo)}}/>
+                            sucFunc={()=>{setPrevBio(bio); setPrevMyDetailsData(valuesMyDetails)}}/>
         </>
     );
 }
