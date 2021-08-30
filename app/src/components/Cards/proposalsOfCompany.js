@@ -5,7 +5,7 @@ import BackDrop from '@material-ui/core/Backdrop';
 import {makeStyles} from "@material-ui/core/styles";
 import React, {useEffect} from 'react'
 import CreateProposal from './createProposal'
-import Proposals from './proposals'
+import CardsDisplay from './cardsDisplay'
 import {AnswerOfServer} from "../../utils";
 
 const useStyles = makeStyles((theme) => ({
@@ -34,7 +34,7 @@ export default function ProposalsOfCompany({companyInfo}) {
         setter: setOpenDialog
     }
 
-    // variables for creating new proposals
+    // variables for creating new Cards
     const [proposalValues, setProposalValues] = React.useState({
         title: '',
         addPhone: false,
@@ -91,7 +91,7 @@ export default function ProposalsOfCompany({companyInfo}) {
                     <Chip label="NEW PROPOSAL" icon={<AddIcon />} color={"primary"} clickable variant="outlined"
                           style={{border: 'transparent'}} onClick={onClickNewProposal}/>
                 </Grid>
-                {proposalsList !== null && <Proposals proposalsList={proposalsList} options={menuObj} userType={'companies'}/>}
+                {proposalsList !== null && <CardsDisplay display={'Cards'} objList={proposalsList} options={menuObj} userType={'companies'}/>}
             </Grid>
             <BackDrop className={classes.backdrop} open={openBackDrop}>
                 <CreateProposal val={values} open={openCreateProposal} setBackDrop={setOpenBackDrop} companyInfo={companyInfo} proposalList={proposalListObj}/>

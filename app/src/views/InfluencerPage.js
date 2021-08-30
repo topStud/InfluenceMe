@@ -6,8 +6,7 @@ import {Route, Switch, useParams} from "react-router-dom";
 import {Alert, AlertTitle} from "@material-ui/lab";
 import Footer from "../components/footer";
 import Grid from "@material-ui/core/Grid";
-import Proposals from "../components/proposals/proposals";
-import ProposalsOfCompany from "../components/proposals/proposalsOfCompany";
+import CardsDisplay from "../components/Cards/cardsDisplay";
 import '../styles/globals.css'
 import PersonalArea from "../components/personalArea/personalArea";
 
@@ -69,7 +68,7 @@ export default function InfluencerPage() {
                     return res.json()
                 }).then(proposalsData => {
                     if ('status' in proposalsData) {
-                        console.log('couldn\'t get all proposals')
+                        console.log('couldn\'t get all Cards')
                     } else {
                         // setProposalsList(proposalsList.response)
                         let proposalsList = proposalsData.response.map((proposal)=> {
@@ -80,6 +79,7 @@ export default function InfluencerPage() {
                             proposal.bio = company.bio
                             return proposal
                         })
+                        console.log(proposalsList)
                         setProposalsList(proposalsList)
                     }
                 })
@@ -96,7 +96,7 @@ export default function InfluencerPage() {
                         <Route exact path={`/influencers/${id}`}>
                             {proposalsList !== null &&
                                 <Grid container spacing={0}>
-                                    <Proposals proposalsList={proposalsList} options={{}} userType={'influencers'}/>
+                                    <CardsDisplay display={'Cards'} objList={proposalsList} options={{}} userType={'influencers'}/>
                                 </Grid>
                             }
                         </Route>

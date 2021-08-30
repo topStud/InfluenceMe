@@ -16,6 +16,7 @@ import Button from "@material-ui/core/Button";
 const useStyles = makeStyles((theme) => ({
     root: {
         maxWidth: 345,
+        minHeight: 230,
         margin:20,
     },
     bullet: {
@@ -28,8 +29,8 @@ const useStyles = makeStyles((theme) => ({
         paddingTop: '40%'
     },
     big: {
-        width: theme.spacing(7),
-        height: theme.spacing(7),
+        width: theme.spacing(8),
+        height: theme.spacing(8),
     },
     backdrop: {
         zIndex: theme.zIndex.drawer + 1,
@@ -90,10 +91,11 @@ export default function ProposalCard(props) {
                             </Menu>
                         </> : <></>
                     }
+                    style={{height: 100}}
                     title={infoObj.title}
                     subheader={infoObj.companyName}
-                    subheaderTypographyProps={{style:{fontSize:'0.7em', fontFamily: 'Rubik', fontWeight: 200}}}
-                    titleTypographyProps={{style:{fontSize:'1em', fontFamily: 'Rubik', fontWeight: 500, color: '#1F75A6'}}}
+                    subheaderTypographyProps={{style:{fontSize:'1em', fontFamily: 'Rubik', fontWeight: 200}}}
+                    titleTypographyProps={{style:{fontSize:'1.2em', fontFamily: 'Rubik', fontWeight: 500, color: '#1F75A6'}}}
                 />
                 {props.userType === 'companies' && <CardContent style={{paddingTop:0, marginTop:-30, paddingBottom:10}}>
                     <div style={{display:"flex", alignItems: "center", justifyContent: 'flex-end'}}>
@@ -102,11 +104,12 @@ export default function ProposalCard(props) {
                     </div>
                 </CardContent>}
                 <CardContent style={{paddingTop:5, paddingBottom:10}}>
-                    <Typography variant="body2" color="textSecondary" component="p">
+                    <Typography variant="body2" color="textSecondary" component="p" style={{height:70}}>
                         {infoObj.description.substring(0,150)}
                         {infoObj.description.length > 100 ? '...' : ''}
                     </Typography>
-                    <div style={{marginTop:20, display:"flex",justifyContent: 'center', flexWrap: 'wrap', color: '#A68617', alignItems: "center"}}>
+                    <div style={{marginTop:20, display:"flex",justifyContent: 'center', flexWrap: 'wrap',
+                        color: '#A68617', alignItems: "center", fontSize: '0.8em', height: 40}}>
                         {infoObj.categories.map((category, i)=>(
                             i < infoObj.categories.length - 1 ?
                                 <div key={i} style={{display:"inline"}}>
@@ -119,7 +122,7 @@ export default function ProposalCard(props) {
                     </div>
                 </CardContent>
                 {props.userType === 'influencers' ?
-                    <CardActions style={{display: 'flex', justifyContent: 'flex-end'}}>
+                    <CardActions style={{display: 'flex', justifyContent: 'flex-end', marginTop:-15}}>
                         <Button size="small" color={"secondary"}>Interested</Button>
                     </CardActions> : <></>
                 }

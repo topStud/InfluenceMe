@@ -3,9 +3,11 @@ import AppBar from "../components/appBar";
 import React, {useEffect} from "react";
 import {MuiThemeProvider} from "@material-ui/core";
 import {createTheme} from "@material-ui/core/styles";
-import ProposalsOfCompany from "../components/proposals/proposalsOfCompany";
+import ProposalsOfCompany from "../components/Cards/proposalsOfCompany";
 import {Alert, AlertTitle} from "@material-ui/lab";
 import Footer from "../components/footer";
+import Grid from "@material-ui/core/Grid";
+import CardsDisplay from "../components/Cards/cardsDisplay";
 
 const theme = createTheme({
     palette: {
@@ -28,6 +30,8 @@ export default function CompanyPage() {
     const [companyInfo, setCompanyInfo] = React.useState(null)
     const [errFetchCompanyData, setErrFetchCompanyData] = React.useState(false)
 
+    const [influencersList, setInfluencersList] = React.useState(null)
+
     useEffect(()=>{
         fetch(`/api/companies/${id}`).then(res => {
             if (!res.ok) {
@@ -41,6 +45,19 @@ export default function CompanyPage() {
                 setCompanyInfo(companyData.response)
             }
         })
+        fetch('/api/influencers').then(res => {
+            if (!res.ok) {
+                setErrFetchCompanyData(true)
+            }
+            return res.json()
+        }).then(influencers => {
+            if ('status' in influencers) {
+                setErrFetchCompanyData(true)
+            } else {
+                console.log(influencers.response)
+                setInfluencersList(influencers.response)
+            }
+        })
     },[])
 
     return(
@@ -49,6 +66,13 @@ export default function CompanyPage() {
                     <>
                         <AppBar userType={'companies'} data={companyInfo} img={imageUpdated}/>
                         <Switch>
+                            <Route exact path={`/companies/${id}`}>
+                                {influencersList !== null &&
+                                    <Grid container spacing={0}>
+                                        <CardsDisplay objList={influencersList} display={'influencers'}/>
+                                    </Grid>
+                                }
+                            </Route>
                             <Route path={`/companies/${id}/proposals`}>
                                 <ProposalsOfCompany companyInfo={companyInfo}/>
                             </Route>

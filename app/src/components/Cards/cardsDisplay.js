@@ -2,12 +2,13 @@ import Grid from "@material-ui/core/Grid";
 import React, {useEffect} from 'react'
 import ProposalCard from "./proposalCard";
 import {Pagination} from "@material-ui/lab";
+import InfluencerCard from './influencerCard'
 
-export default function Proposals({proposalsList, options, userType}) {
+export default function CardsDisplay({objList, options, userType, display}) {
     // pagination
     let [page, setPage] = React.useState(1);
     const PER_PAGE = 7;
-    const [count ,setCount] = React.useState(Math.ceil(proposalsList.length / PER_PAGE))
+    const [count ,setCount] = React.useState(Math.ceil(objList.length / PER_PAGE))
 
     const handleChange = (e, p) => {
         setPage(p);
@@ -20,16 +21,17 @@ export default function Proposals({proposalsList, options, userType}) {
     }
 
     useEffect(()=>{
-        if (proposalsList !== null) {
-            setCount(Math.ceil(proposalsList.length / PER_PAGE))
+        if (objList !== null) {
+            setCount(Math.ceil(objList.length / PER_PAGE))
         }
-    }, [JSON.stringify(proposalsList)])
+    }, [JSON.stringify(objList)])
 
     return (
         <>
-            {currentData(proposalsList).map((proposal) => (
-                <Grid item xs={12} sm={4} key={proposal._id}>
-                    <ProposalCard infoObj={proposal} options={options} userType={userType}/>
+            {currentData(objList).map((obj) => (
+                <Grid item xs={12} sm={4} key={obj._id}>
+                    {display === 'Cards' && <ProposalCard infoObj={obj} options={options} userType={userType}/>}
+                    {display === 'influencers' && <InfluencerCard infoObj={obj}/>}
                 </Grid>
             ))}
             {
