@@ -47,11 +47,15 @@ const update = async (req, res) => {
     await commonController.update(companyModel, req, res)
 }
 
+const passwordUpdate = async (req, res) => {
+    await commonController.passwordUpdate(companyModel, req, res)
+}
 
 
 module.exports = {
     companies,
     company,
     companyRegister,
-    update
+    update,
+    passwordUpdate
 }

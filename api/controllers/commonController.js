@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const influencer = require('../models/influencer')
 const company = require('../models/company')
+const mailer = require('./mailer')
 
 const JWT_SECRET = 'gkdd462gfkbjfoh#$#54*jfdsdf&$&$#)fhdsadfkl676q3478dfcSgd'
 
@@ -72,10 +73,37 @@ async function search(model, req, res) {
     })
 }
 
+
+async function passwordUpdate(model, req, res) {
+    await model.
+    findOne({ _id: req.params.id}, async (err, user) => {
+        if (err || user === null){
+            return res.status(400).json({status: 'error', 'error': 'user not exist'})
+        }
+        if(await bcrypt.compare(req.body.password, user.password)){
+            return res.status(400).json({status: 'error',
+                'error': 'Hey! It looks like you’ve used this password before. Please choose a fresh one.'})
+        } else{
+            user.password = await bcrypt.hash(req.body.password ,10)
+            user.save().catch((err) => {
+                return res.status(500).json({status: 'error', 'error': 'could not save user'})
+            })
+
+            // send email about changing
+            await mailer.sendEmail(user.email)
+
+            return res.json({status: 'ok'})
+        }
+    })
+}
+
+
+
 module.exports = {
     login,
     update,
     findMany,
     findOne,
-    search
+    search,
+    passwordUpdate
 }

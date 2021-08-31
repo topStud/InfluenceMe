@@ -1,6 +1,8 @@
 const companyModel = require('../models/company')
 const notificationModel = require('../models/notification')
 const influencerModel = require('../models/influencer')
+const collaborationModel = require('../models/collaboration')
+const contractModel = require('../models/contract')
 
 const sendNotification = async (req, res) => {
     // The receiver is a company and the sender is an influencer
@@ -42,6 +44,26 @@ async function createNotificationTo(user, req, res) {
         }
         return res.status(500).json({status: 'error', 'error': 'could not save'})
     })
+    // todo: check if working
+    // add 1 influencer to collaboration proposal that match to the contract of that notification
+    if(req.body.messageType === 3){
+        await contractModel.
+        findOne({ _id: req.body.itemID }, async (err, contract) => {
+            if (err || contract === null){
+                return res.status(400).json({status: 'error', 'error': 'contract not exist'})
+            }
+            await collaborationModel.
+            findOne({ title: contract.title }, async (err, cp) => {
+                if (cp !== null){
+                    cp.collaborationsNumber++
+                    cp.save().catch((err) => {
+                        return res.status(500).json({status: 'error', 'error': 'could not save collaboration proposal'})
+                    })
+                    return res.json({status: 'ok'})
+                }
+            })
+        })
+    }
 }
 
 

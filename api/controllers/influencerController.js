@@ -60,11 +60,16 @@ const searchBy = async (req, res) => {
     await commonController.search(influencerModel, req, res)
 }
 
+const passwordUpdate = async (req, res) => {
+    await commonController.passwordUpdate(influencerModel, req, res)
+}
+
 
 module.exports = {
     influencers,
     influencer,
     influencerRegister,
     update,
-    searchBy
+    searchBy,
+    passwordUpdate
 }
