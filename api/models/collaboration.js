@@ -7,6 +7,7 @@ const CollaborationSchema = new mongoose.Schema({
     email: { type: String },
     categories: { type: [String], required: true },
     collaborationsNumber: {type: Number},
+    disabled: {type: Boolean, default: false},
     canEdit: {type: Boolean, default: true},
     description: { type: String , required: true},
     requirements: {type: String }

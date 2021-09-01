@@ -13,6 +13,7 @@ const addContract = async (req, res) => {
         await contractModel.create({
             companyID: req.body.companyID,
             title: req.body.title,
+            isApproved: req.body.isApproved,
             companyName: req.body.companyName,
             companyPhone: req.body.companyPhone,
             companyEmail: req.body.companyEmail,

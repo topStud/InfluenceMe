@@ -43,7 +43,7 @@ async function update(model, req, res) {
 }
 
 async function findMany(model, req, res) {
-    await model.find()
+    await model.find({disabled: false})
     .then(response => {
         return res.status(200).json({response})
     })
@@ -65,7 +65,7 @@ async function findOne(model, req, res) {
 
 
 async function search(model, req, res) {
-    model.find({$text: {$search: req.params.searchString}})
+    model.find({$and: [{$text: {$search: req.params.searchString}}, {disabled: false}]})
     /*.limit(10)*/
     .exec(function(err, docs) {
         if(err) return res.status(400).json({status: 'error', 'error': 'Search failed'})
@@ -97,6 +97,13 @@ async function passwordUpdate(model, req, res) {
     })
 }
 
+async function changeStatus(user, req, res, bool) {
+    user.disabled = bool
+    user.save().catch((err) => {
+        return res.status(500).json({status: 'error', 'error': 'could not save'})
+    })
+    return res.json({status: 'ok'})
+}
 
 
 module.exports = {
@@ -105,5 +112,6 @@ module.exports = {
     findMany,
     findOne,
     search,
-    passwordUpdate
+    passwordUpdate,
+    changeStatus
 }

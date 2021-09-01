@@ -26,6 +26,8 @@ const addCollaborationProposal = async (req, res) => {
             categories: req.body.categories,
             collaborationsNumber: 0, // starting count from zero
             description: req.body.description,
+            disabled: req.body.disabled,
+            canEdit: req.body.canEdit,
             requirements: req.body.requirements
         }).then(( collaborationProposal) => {
             company.CollaborationProposals.push(collaborationProposal)
@@ -83,7 +85,7 @@ const collaborationProposalsOf = async (req, res) => {
         collaborationModel.find({
             '_id': { $in: company.CollaborationProposals}
         }, function(err, response){
-            if (err || company === null){
+            if (err || response === null){
                 return res.status(400).json({status: 'error', 'error': 'can\'t find'})
             }
             return res.status(200).json({response})

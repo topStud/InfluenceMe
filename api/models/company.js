@@ -10,6 +10,7 @@ const CompanySchema = new mongoose.Schema({
     photoName: { type: String },
     phone: { type: String },
     bio: { type: String },
+    disabled: {type: Boolean, default: false},
     CollaborationProposals: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Collaborations' }],
     Contracts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Contracts' }],
     Notifications: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notifications' }]

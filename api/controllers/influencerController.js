@@ -64,6 +64,24 @@ const passwordUpdate = async (req, res) => {
     await commonController.passwordUpdate(influencerModel, req, res)
 }
 
+const makeDisabled = async (req, res) => {
+    await changeStatus(req, res, true)
+}
+
+const makeActive = async (req, res) => {
+    await changeStatus(req, res, false)
+}
+
+async function changeStatus(req, res, bool) {
+    await influencerModel.
+    findOne({ _id: req.params.id}, async (err, influencer) => {
+        if (err || influencer === null){
+            return res.status(400).json({status: 'error', 'error': 'influencer not exist'})
+        }
+        await commonController.changeStatus(influencer, req, res, bool)
+    })
+}
+
 
 module.exports = {
     influencers,
@@ -71,5 +89,7 @@ module.exports = {
     influencerRegister,
     update,
     searchBy,
-    passwordUpdate
+    passwordUpdate,
+    makeDisabled,
+    makeActive
 }

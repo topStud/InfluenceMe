@@ -31,7 +31,8 @@ async function createNotificationTo(user, req, res) {
     await notificationModel.create({
         senderID: req.body.senderID,
         itemID: req.body.itemID,
-        messageType: req.body.messageType
+        messageType: req.body.messageType,
+        seen:req.body.seen
     }).then((notification) => {
         user.Notifications.push(notification)
         user.save().catch((err) => {
