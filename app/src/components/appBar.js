@@ -118,10 +118,12 @@ export default function PrimarySearchAppBar({userType, data}) {
         <div className={classes.grow} style={{marginBottom: 20}}>
             <AppBar position="static">
                 <Toolbar style={{backgroundColor: "white", boxShadow: '1px 5px 10px #A68617'}}>
-                    <Typography className={classes.title} component={'h2'} variant="h2" noWrap
-                    style={{fontFamily: 'Rubik', fontWeight:800, color:'#1F75A6'}}>
-                        Influence<span style={{color:'#F27746'}}>Me</span>
-                    </Typography>
+                    <Link to={`/${userType}/${data._id}`}>
+                        <Typography className={classes.title} component={'h2'} variant="h2" noWrap
+                                    style={{fontFamily: 'Rubik', fontWeight:800, color:'#1F75A6',cursor: "pointer"}}>
+                            Influence<span style={{color:'#F27746'}}>Me</span>
+                        </Typography>
+                    </Link>
                     <div className={classes.grow} />
                     <div className={classes.sectionDesktop}>
                         {

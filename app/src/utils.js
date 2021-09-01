@@ -81,3 +81,10 @@ export function BadInputSnackbar({open, setOpen}) {
         </Snackbar>
     )
 }
+
+export function calculateAge(birthday) { // birthday is a date
+    birthday = new Date(birthday)
+    let ageDifMs = Date.now() - birthday.getTime();
+    let ageDate = new Date(ageDifMs); // miliseconds from epoch
+    return Math.abs(ageDate.getUTCFullYear() - 1970);
+}

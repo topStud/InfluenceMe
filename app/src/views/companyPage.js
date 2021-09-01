@@ -2,13 +2,14 @@ import {Route, Switch, useParams} from 'react-router-dom';
 import AppBar from "../components/appBar";
 import React, {useEffect} from "react";
 import {MuiThemeProvider} from "@material-ui/core";
-import {createTheme} from "@material-ui/core/styles";
+import {createTheme, makeStyles} from "@material-ui/core/styles";
 import ProposalsOfCompany from "../components/Cards/proposalsOfCompany";
 import {Alert, AlertTitle} from "@material-ui/lab";
 import Footer from "../components/footer";
-import Grid from "@material-ui/core/Grid";
 import CardsDisplay from "../components/Cards/cardsDisplay";
 import PersonalArea from "../components/personalArea/personalArea";
+import BackDrop from "@material-ui/core/Backdrop";
+import FullInfoInfluencer from '../components/Cards/fullInfoInfluencer'
 
 const theme = createTheme({
     palette: {
@@ -21,7 +22,16 @@ const theme = createTheme({
     }
 });
 
+const useStyles = makeStyles((theme) => ({
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
+    },
+}));
+
 export default function CompanyPage() {
+    const classes = useStyles()
+
     const {id} = useParams()
     const [imageUpdated, setImageUpdated] = React.useState(null)
     const imgUpdater = {
@@ -32,6 +42,15 @@ export default function CompanyPage() {
     const [errFetchCompanyData, setErrFetchCompanyData] = React.useState(false)
 
     const [influencersList, setInfluencersList] = React.useState(null)
+
+    // for backdrop
+    const [openBackDrop, setOpenBackDrop] = React.useState(false);
+    const backdropObj = {
+        getter: openBackDrop,
+        setter: setOpenBackDrop
+    }
+
+    const [influencerClickedForInfo, setInfluencerClickedForInfo] = React.useState(null)
 
     useEffect(()=>{
         fetch(`/api/companies/${id}`).then(res => {
@@ -69,10 +88,11 @@ export default function CompanyPage() {
                         <Switch>
                             <Route exact path={`/companies/${id}`}>
                                 {influencersList !== null &&
-                                    <Grid container spacing={0}>
-                                        <CardsDisplay objList={influencersList} display={'influencers'}/>
-                                    </Grid>
+                                     <CardsDisplay objList={influencersList} display={'influencers'} backdrop={backdropObj} setClickedProposal={setInfluencerClickedForInfo}/>
                                 }
+                                <BackDrop className={classes.backdrop} open={openBackDrop}>
+                                    {influencerClickedForInfo !== null && <FullInfoInfluencer backdrop={backdropObj} influencerObj={influencerClickedForInfo}/>}
+                                </BackDrop>
                             </Route>
                             <Route path={`/companies/${id}/proposals`}>
                                 <ProposalsOfCompany companyInfo={companyInfo}/>

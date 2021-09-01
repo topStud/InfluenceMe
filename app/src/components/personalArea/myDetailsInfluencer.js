@@ -16,7 +16,7 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
-export default function MyDetailsInfluencer({setValue, influencerData, index}) {
+export default function MyDetailsInfluencer({setValue, influencerData, setInfluencerData, index}) {
     const classes = useStyles();
     const [callToServer, setCallToServer] = React.useState(false)
     const [objToServer, setObjToServer] = React.useState({})
@@ -29,7 +29,7 @@ export default function MyDetailsInfluencer({setValue, influencerData, index}) {
     const [valuesMyDetails, setValuesMyDetails] = React.useState({
         firstName: influencerData.firstName,
         lastName: influencerData.lastName,
-        date: influencerData.date.substring(0,influencerData.date.indexOf('T')),
+        date: influencerData.date === undefined ? undefined : influencerData.date.substring(0,influencerData.date.indexOf('T')),
         phone: influencerData.phone,
         photo: influencerData.photo,
         photoName: influencerData.photoName,
@@ -138,7 +138,7 @@ export default function MyDetailsInfluencer({setValue, influencerData, index}) {
                             url={`/api/influencers/${influencerData._id}`}
                             methodObj={{method: 'PUT', headers: {'Content-type': 'application/json; charset=UTF-8'}, body: JSON.stringify(objToServer)}}
                             sucMsg={'Changes saved successfully'} errMsg={'Save Failed'}
-                            sucFunc={()=>{setPrevBio(bio); setPrevMyDetailsData(valuesMyDetails)}}/>
+                            sucFunc={()=>{setPrevBio(bio); setPrevMyDetailsData(valuesMyDetails); setInfluencerData({...influencerData,...valuesMyDetails, bio: bio}) }}/>
         </>
     );
 }

@@ -6,22 +6,20 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-export default function ConfirmationDialog({popupObj, setCallServer, setDeleteProposal}) {
+export default function ConfirmationDialog({backdrop, setCallServer, proposalName, setDialogOpen}) {
     const handleClose = () => {
-        popupObj.setOpenDialog(false);
-        popupObj.setOpenBackDrop(false);
+        backdrop.setter(false)
     };
 
     function handleDelete() {
-        popupObj.setOpenDialog(false);
-        popupObj.setOpenBackDrop(false);
+        backdrop.setter(false)
+        setDialogOpen(false)
         setCallServer(true)
-        setDeleteProposal(popupObj.proposalId)
     }
 
     return (
         <Dialog
-            open={popupObj.openDialog}
+            open={backdrop.getter}
             maxWidth={'xs'}
         >
             <DialogTitle style={{color: '#1F75A6'}} id="dialog-title">
@@ -29,7 +27,7 @@ export default function ConfirmationDialog({popupObj, setCallServer, setDeletePr
             </DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    Are you sure you want to delete the proposal of the name '{popupObj.nameOfProposal}'?
+                    Are you sure you want to delete the proposal of the name '{proposalName}'?
                 </DialogContentText>
             </DialogContent>
             <DialogActions>

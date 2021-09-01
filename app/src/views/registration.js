@@ -18,13 +18,10 @@ export default function Registration() {
     }
 
     // profile values - influencer
-    let currDate = new Date()
-    currDate = currDate.getFullYear() + '-' + String(currDate.getMonth() + 1).padStart(2, '0') + '-' +
-        String(currDate.getDate()).padStart(2, '0')
     const [valuesPersonalInfo, setValuesPersonalInfo] = React.useState({
         firstName: '',
         lastName: '',
-        date: currDate,
+        date: undefined,
         phone: '',
         photo: null,
         photoName: ''

@@ -10,6 +10,7 @@ import {Avatar} from "@material-ui/core";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import BusinessIcon from '@material-ui/icons/Business';
 import MyDetailsCompany from "./myDetailsComapny";
+import Grid from "@material-ui/core/Grid";
 
 function TabPanel(props) {
     const { children, setValue, ...other } = props;
@@ -75,65 +76,71 @@ export default function PersonalArea({userType, objData, setObjData}) {
     };
 
     return (
-        <div className={classes.root}>
-            <div style={{display: "flex", flexDirection: "column",marginLeft:20, width: 250}}>
-                <div style={{padding:10, boxShadow: '-5px 3px 5px #A68617', marginBottom:5, width: '100%', display: "flex"}}>
-                    {objData.photo !== null ?
-                        <Avatar src={objData.photo} className={classes.small}/> :
-                        userType === 'influencers' ?
-                            <AccountCircle style={{color: 'black'}} className={classes.small}/> :
-                            <BusinessIcon style={{color: 'black'}} className={classes.small}/>
-                    }
-                    <div style={{display: "flex", flexDirection: "column"}}>
-                        <h1 style={{marginBottom:0, marginTop:10, marginLeft:10}}>Hello,</h1>
-                        <h2 style={{marginTop:0, marginLeft:10}}>
-                            {userType === 'influencers' ? objData.firstName + ' ' + objData.lastName :
-                            objData.name}</h2>
+        <Grid container >
+            <Grid item sm={1}/>
+            <Grid item sm={10}>
+                <div className={classes.root}>
+                    <div style={{display: "flex", flexDirection: "column",marginLeft:20, width: 250}}>
+                        <div style={{padding:10, boxShadow: '-5px 3px 5px #A68617', marginBottom:5, width: '100%', display: "flex"}}>
+                            {objData.photo !== null ?
+                                <Avatar src={objData.photo} className={classes.small}/> :
+                                userType === 'influencers' ?
+                                    <AccountCircle style={{color: 'black'}} className={classes.small}/> :
+                                    <BusinessIcon style={{color: 'black'}} className={classes.small}/>
+                            }
+                            <div style={{display: "flex", flexDirection: "column"}}>
+                                <h1 style={{marginBottom:0, marginTop:10, marginLeft:10, fontSize:'1.5em'}}>Hello,</h1>
+                                <h2 style={{marginTop:0, marginLeft:10, fontSize: '1em'}}>
+                                    {userType === 'influencers' ? objData.firstName + ' ' + objData.lastName :
+                                        objData.name}</h2>
+                            </div>
+                        </div>
+                        <Tabs
+                            orientation="vertical"
+                            value={value}
+                            aria-label="Vertical tabs example"
+                            className={classes.tabs}
+                        >
+                            <Tab onClick={()=>handleChange(0)} style={{boxShadow: '1px 3px 5px #A68617', marginBottom:5, width: '100%'}} component={Link} to={`/${userType}/${objData._id}/personal/pastCollaborations`} label="Past Collaborations" {...a11yProps(0)} />
+                            <Tab onClick={()=>handleChange(1)} style={{boxShadow: '1px 3px 5px #A68617', marginBottom:5, width: '100%'}} component={Link} to={`/${userType}/${objData._id}/personal/currentCollaborations`} label="Current Collaborations" {...a11yProps(1)} />
+                            <Tab onClick={()=>handleChange(2)} style={{boxShadow: '1px 3px 5px #A68617', marginBottom:5, width: '100%'}} component={Link} to={`/${userType}/${objData._id}/personal/myDetails`} label="My Details" {...a11yProps(2)} />
+                            <Tab onClick={()=>handleChange(3)} style={{boxShadow: '1px 3px 5px #A68617', marginBottom:5, width: '100%'}} component={Link} to={`/${userType}/${objData._id}/personal/myAccount`} label="My account" {...a11yProps(3)} />
+                            <Tab onClick={()=>handleChange(4)} style={{boxShadow: '1px 3px 5px #A68617', marginBottom:5, width: '100%'}} component={Link} to={`/${userType}/${objData._id}/personal/logOut`} label="Log out" {...a11yProps(4)} />
+                        </Tabs>
                     </div>
+                    <Switch>
+                        <Route path={`/${userType}/${objData._id}/personal/myDetails`}>
+                            <TabPanel>
+                                {userType === 'influencers' ?
+                                    <MyDetailsInfluencer influencerData={objData} setInfluencerData={setObjData} setValue={setValue} index={2}/> :
+                                    <MyDetailsCompany companyData={objData} setCompanyData={setObjData} setValue={setValue} index={2}/>
+                                }
+                            </TabPanel>
+                        </Route>
+                        <Route path={`/${userType}/${objData._id}/personal/pastCollaborations`}>
+                            <TabPanel>
+                                Item One
+                            </TabPanel>
+                        </Route>
+                        <Route path={`/${userType}/${objData._id}/personal/currentCollaborations`}>
+                            <TabPanel>
+                                Item Two
+                            </TabPanel>
+                        </Route>
+                        <Route path={`/${userType}/${objData._id}/personal/myAccount`}>
+                            <TabPanel>
+                                Item Four
+                            </TabPanel>
+                        </Route>
+                        <Route path={`/${userType}/${objData._id}/personal/logOut`}>
+                            <TabPanel>
+                                Item Five
+                            </TabPanel>
+                        </Route>
+                    </Switch>
                 </div>
-                <Tabs
-                    orientation="vertical"
-                    value={value}
-                    aria-label="Vertical tabs example"
-                    className={classes.tabs}
-                >
-                    <Tab onClick={()=>handleChange(0)} style={{boxShadow: '1px 3px 5px #A68617', marginBottom:5, width: '100%'}} component={Link} to={`/${userType}/${objData._id}/personal/pastCollaborations`} label="Past Collaborations" {...a11yProps(0)} />
-                    <Tab onClick={()=>handleChange(1)} style={{boxShadow: '1px 3px 5px #A68617', marginBottom:5, width: '100%'}} component={Link} to={`/${userType}/${objData._id}/personal/currentCollaborations`} label="Current Collaborations" {...a11yProps(1)} />
-                    <Tab onClick={()=>handleChange(2)} style={{boxShadow: '1px 3px 5px #A68617', marginBottom:5, width: '100%'}} component={Link} to={`/${userType}/${objData._id}/personal/myDetails`} label="My Details" {...a11yProps(2)} />
-                    <Tab onClick={()=>handleChange(3)} style={{boxShadow: '1px 3px 5px #A68617', marginBottom:5, width: '100%'}} component={Link} to={`/${userType}/${objData._id}/personal/myAccount`} label="My account" {...a11yProps(3)} />
-                    <Tab onClick={()=>handleChange(4)} style={{boxShadow: '1px 3px 5px #A68617', marginBottom:5, width: '100%'}} component={Link} to={`/${userType}/${objData._id}/personal/logOut`} label="Log out" {...a11yProps(4)} />
-                </Tabs>
-            </div>
-            <Switch>
-                <Route path={`/${userType}/${objData._id}/personal/myDetails`}>
-                    <TabPanel>
-                        {userType === 'influencers' ?
-                            <MyDetailsInfluencer influencerData={objData} setInfluencerData={setObjData} setValue={setValue} index={2}/> :
-                            <MyDetailsCompany companyData={objData} setCompanyData={setObjData} setValue={setValue} index={2}/>
-                        }
-                    </TabPanel>
-                </Route>
-                <Route path={`/${userType}/${objData._id}/personal/pastCollaborations`}>
-                    <TabPanel>
-                        Item One
-                    </TabPanel>
-                </Route>
-                <Route path={`/${userType}/${objData._id}/personal/currentCollaborations`}>
-                    <TabPanel>
-                        Item Two
-                    </TabPanel>
-                </Route>
-                <Route path={`/${userType}/${objData._id}/personal/myAccount`}>
-                    <TabPanel>
-                        Item Four
-                    </TabPanel>
-                </Route>
-                <Route path={`/${userType}/${objData._id}/personal/logOut`}>
-                    <TabPanel>
-                        Item Five
-                    </TabPanel>
-                </Route>
-            </Switch>
-        </div>
+            </Grid>
+            <Grid item sm={1}/>
+        </Grid>
     );
 }

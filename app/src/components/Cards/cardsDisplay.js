@@ -1,13 +1,12 @@
 import Grid from "@material-ui/core/Grid";
 import React, {useEffect} from 'react'
-import ProposalCard from "./proposalCard";
 import {Pagination} from "@material-ui/lab";
-import InfluencerCard from './influencerCard'
+import HoverCard from "./hoverCard";
 
-export default function CardsDisplay({objList, options, userType, display}) {
+export default function CardsDisplay({objList, display, backdrop, setClickedProposal}) {
     // pagination
     let [page, setPage] = React.useState(1);
-    const PER_PAGE = 7;
+    const PER_PAGE = 6;
     const [count ,setCount] = React.useState(Math.ceil(objList.length / PER_PAGE))
 
     const handleChange = (e, p) => {
@@ -28,18 +27,26 @@ export default function CardsDisplay({objList, options, userType, display}) {
 
     return (
         <>
-            {currentData(objList).map((obj) => (
-                <Grid item xs={12} sm={4} key={obj._id}>
-                    {display === 'Cards' && <ProposalCard infoObj={obj} options={options} userType={userType}/>}
-                    {display === 'influencers' && <InfluencerCard infoObj={obj}/>}
+            <div style={{display:"grid", gridTemplateColumns: '75% 25%', gridTemplateRows: '1fr'}}>
+                <Grid container style={{marginLeft:30, width:'inherit', gridColumn: 1}}>
+                    {currentData(objList).map((obj) => (
+                        <Grid item style={{margin:10}} key={obj._id}>
+                            <HoverCard infoObj={obj} cardType={display} backdrop={backdrop} setClickedProposal={setClickedProposal}/>
+                        </Grid>
+                    ))}
+                    {
+                        count > 1 &&
+                        <Grid item sm={10} style={{display: "flex", justifyContent:"center"}}>
+                            <Pagination variant="outlined" color="secondary" count={count} page={page} onChange={handleChange}/>
+                        </Grid>
+                    }
                 </Grid>
-            ))}
-            {
-                count > 1 &&
-                <Grid item xs={12} sm={12} style={{display: "flex", justifyContent:"center"}}>
-                    <Pagination variant="outlined" color="secondary" count={count} page={page} onChange={handleChange}/>
+                <Grid container style={{gridColumn:2, gridRow:1}}>
+                    <Grid item>
+                        <h1>filtering options</h1>
+                    </Grid>
                 </Grid>
-            }
+            </div>
         </>
     )
 }

@@ -61,8 +61,8 @@ export default function CreateProposalDialog(props) {
     }
 
     function onClickCancelFinish() {
-        props.setBackDrop(false)
-        props.open.setter(false)
+        props.backdrop.setter(false)
+        // props.open.setter(false)
         props.val.setter({
             title: '',
             categories: [],
@@ -114,88 +114,85 @@ export default function CreateProposalDialog(props) {
                 requirementsErr: emptyRequirements,
                 requirementsMsg: emptyRequirements ? required_txt : ''
             })
-            console.log(emptyTitle)
         } else {
             // sends info to server
-            console.log('hi')
             setSendToServer(true)
         }
     }
 
     return (
-        <>
-            <Dialog
-                open={props.open.getter}
-                TransitionComponent={Transition}
-                keepMounted
-                fullWidth
-                maxWidth={'sm'}
-                aria-labelledby="alert-dialog-slide-title"
-                aria-describedby="alert-dialog-slide-description"
-            >
-                <DialogTitle id="proposal-dialog-slide-title"><span style={{fontFamily:'Rubik', fontWeight:800, color: '#1F75A6', fontSize:'1.5em'}}>Create New Proposal</span></DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-slide-description" style={{fontFamily:'Rubik'}}>
-                        Please fill in all the required field before creating your proposal.<br/>
-                        All the proposals will be shared with all users (not only influencers registered to this site).
-                    </DialogContentText>
-                    <Grid container spacing={3}>
-                        <Grid item xs={12} style={{maxHeight: 90}}>
-                            <InputText val={props.val} err={errors} info={titleObj}/>
-                        </Grid>
-                        <Grid item xs={12} style={{maxHeight: 100}}>
-                            <CategoriesComponent val={props.val} err={errors}/>
-                        </Grid>
-                        <Grid item xs={12} style={{maxHeight: 145, paddingLeft:0}}>
-                            <InputTextArea val={props.val} err={errors} info={descriptionObj}/>
-                        </Grid>
-                        <Grid item xs={12} style={{maxHeight: 145, paddingLeft:0}}>
-                            <InputTextArea val={props.val} err={errors} info={requirementsObj}/>
-                        </Grid>
-                        <Grid item xs={12} style={{maxHeight: 90}}>
-                            <FormGroup row>
-                                <FormControlLabel
-                                    control={<Checkbox checked={addToProposal.addPhone} onChange={handleAddContactInfoChange}
-                                                       name="addPhone" color="primary" value={true} size={"small"}/>}
-                                    label="Add company's phone to proposal"
-                                />
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={addToProposal.addEmail}
-                                            onChange={handleAddContactInfoChange}
-                                            name="addEmail"
-                                            color="primary"
-                                            size={"small"}
-                                            value={true}
-                                        />
-                                    }
-                                    label="Add company's email to proposal"
-                                />
-                            </FormGroup>
-                        </Grid>
+        <Dialog
+            open={props.backdrop.getter}
+            TransitionComponent={Transition}
+            keepMounted
+            fullWidth
+            maxWidth={'sm'}
+            aria-labelledby="alert-dialog-slide-title"
+            aria-describedby="alert-dialog-slide-description"
+        >
+            <DialogTitle id="proposal-dialog-slide-title"><span style={{fontFamily:'Rubik', fontWeight:800, color: '#1F75A6', fontSize:'1.5em'}}>Create New Proposal</span></DialogTitle>
+            <DialogContent>
+                <DialogContentText id="alert-dialog-slide-description" style={{fontFamily:'Rubik'}}>
+                    Please fill in all the required field before creating your proposal.<br/>
+                    All the proposals will be shared with all users (not only influencers registered to this site).
+                </DialogContentText>
+                <Grid container spacing={3}>
+                    <Grid item xs={12} style={{maxHeight: 90}}>
+                        <InputText val={props.val} err={errors} info={titleObj}/>
                     </Grid>
-                </DialogContent>
-                {!proposalAccepted ?
-                    <DialogActions>
-                        <Button color="primary" onClick={onClickCancelFinish}>
-                            Cancel
-                        </Button>
-                        <Button color="primary" name="create" onClick={onClickCreate}>
-                            Create
-                        </Button>
-                    </DialogActions> :
-                    <DialogActions>
-                        <Button color="primary" onClick={onClickCancelFinish}>
-                            Finish
-                        </Button>
-                    </DialogActions>
-                }
-                <AnswerOfServer callServer={sentToServer} setCallServer={setSendToServer} obj={objToServer}
-                                setProposalAccepted={setProposalAccepted} err={errors}
-                                proposalList={props.proposalList} companyObj={props.companyInfo}/>
-            </Dialog>
-        </>
+                    <Grid item xs={12} style={{maxHeight: 100}}>
+                        <CategoriesComponent val={props.val} err={errors}/>
+                    </Grid>
+                    <Grid item xs={12} style={{maxHeight: 145, paddingLeft:0}}>
+                        <InputTextArea val={props.val} err={errors} info={descriptionObj}/>
+                    </Grid>
+                    <Grid item xs={12} style={{maxHeight: 145, paddingLeft:0}}>
+                        <InputTextArea val={props.val} err={errors} info={requirementsObj}/>
+                    </Grid>
+                    <Grid item xs={12} style={{maxHeight: 90}}>
+                        <FormGroup row>
+                            <FormControlLabel
+                                control={<Checkbox checked={addToProposal.addPhone} onChange={handleAddContactInfoChange}
+                                                   name="addPhone" color="primary" value={true} size={"small"}/>}
+                                label="Add my company's phone to proposal"
+                            />
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={addToProposal.addEmail}
+                                        onChange={handleAddContactInfoChange}
+                                        name="addEmail"
+                                        color="primary"
+                                        size={"small"}
+                                        value={true}
+                                    />
+                                }
+                                label="Add my company's email to proposal"
+                            />
+                        </FormGroup>
+                    </Grid>
+                </Grid>
+            </DialogContent>
+            {!proposalAccepted ?
+                <DialogActions>
+                    <Button color="primary" onClick={onClickCancelFinish}>
+                        Cancel
+                    </Button>
+                    <Button color="primary" name="create" onClick={onClickCreate}>
+                        Create
+                    </Button>
+                </DialogActions> :
+                <DialogActions>
+                    <Button color="primary" onClick={onClickCancelFinish}>
+                        Finish
+                    </Button>
+                </DialogActions>
+            }
+            <AnswerOfServer callServer={sentToServer} setCallServer={setSendToServer} obj={objToServer}
+                            setProposalAccepted={setProposalAccepted} err={errors}
+                            proposalList={props.proposalList} companyObj={props.companyInfo}/>
+        </Dialog>
+
     );
 }
 

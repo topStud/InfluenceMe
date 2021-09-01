@@ -1,7 +1,7 @@
 import AppBar from "../components/appBar";
 import React, {useEffect} from "react";
 import {MuiThemeProvider} from "@material-ui/core";
-import {createTheme} from "@material-ui/core/styles";
+import {createTheme, makeStyles} from "@material-ui/core/styles";
 import {Route, Switch, useParams} from "react-router-dom";
 import {Alert, AlertTitle} from "@material-ui/lab";
 import Footer from "../components/footer";
@@ -9,6 +9,8 @@ import Grid from "@material-ui/core/Grid";
 import CardsDisplay from "../components/Cards/cardsDisplay";
 import '../styles/globals.css'
 import PersonalArea from "../components/personalArea/personalArea";
+import FullInfoProposal from "../components/Cards/fullInfoProposal";
+import BackDrop from "@material-ui/core/Backdrop";
 
 const theme = createTheme({
     palette: {
@@ -21,13 +23,25 @@ const theme = createTheme({
     }
 });
 
+const useStyles = makeStyles((theme) => ({
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
+    },
+}));
+
 export default function InfluencerPage() {
     const {id} = useParams()
-    // const [imageUpdated, setImageUpdated] = React.useState(null)
-    // const imgUpdater = {
-    //     getter: imageUpdated,
-    //     setter: setImageUpdated
-    // }
+    const classes = useStyles()
+
+    // for backdrop
+    const [openBackDrop, setOpenBackDrop] = React.useState(false);
+    const backdropObj = {
+        getter: openBackDrop,
+        setter: setOpenBackDrop
+    }
+
+    const [proposalClickedForInfo, setProposalClickedForInfo] = React.useState(null)
 
     // current influencer data
     const [errFetchInfluencerData, setErrFetchInfluencerData] = React.useState(false)
@@ -47,8 +61,6 @@ export default function InfluencerPage() {
                 setErrFetchInfluencerData(true)
             } else {
                 setInfluencerData(influencerData.response)
-                // setImageUpdated(influencerData.response.photo)
-                console.log(influencerData.response)
             }
         })
         fetch('/api/companies').then(res => {
@@ -96,9 +108,12 @@ export default function InfluencerPage() {
                         <Route exact path={`/influencers/${id}`}>
                             {proposalsList !== null &&
                                 <Grid container spacing={0}>
-                                    <CardsDisplay display={'Cards'} objList={proposalsList} options={{}} userType={'influencers'}/>
+                                    <CardsDisplay display={'proposals'} objList={proposalsList} backdrop={backdropObj} setClickedProposal={setProposalClickedForInfo}/>
                                 </Grid>
                             }
+                            <BackDrop className={classes.backdrop} open={openBackDrop}>
+                                {proposalClickedForInfo !== null && <FullInfoProposal backdrop={backdropObj} proposalObj={proposalClickedForInfo} userType={'influencers'}/>}
+                            </BackDrop>
                         </Route>
                         <Route path={`/influencers/${id}/personal`}>
                             <PersonalArea userType={'influencers'} objData={influencerData} setObjData={setInfluencerData} />

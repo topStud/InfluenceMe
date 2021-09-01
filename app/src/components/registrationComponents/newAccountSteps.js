@@ -238,9 +238,9 @@ export default function ContentBelowStepper(props) {
         let mayContinue = true
         // personal information
         if (activeStep === 0) {
-            let phoneNumberErr = !(valuesCompany.phone === '' || (valuesCompany.phone.split(" ").length - 1) === 0 || isMobilePhone(valuesCompany.phone.replace(/\s+/g, ''), 'any'))
-            let compNameErr = valuesCompany.name === ''
-            let linkErr = valuesCompany.siteUrl !== '' && !validateWebsiteUrl(valuesCompany.siteUrl)
+            let phoneNumberErr = !(valuesCompany.phone === '' || (valuesCompany.phone.split(" ").length - 1) === 0 || isMobilePhone(valuesCompany.phone.replace(/\s+/g, ''), 'any')),
+                compNameErr = valuesCompany.name === '',
+                linkErr = valuesCompany.siteUrl !== '' && !validateWebsiteUrl(valuesCompany.siteUrl);
             if (compNameErr || linkErr || phoneNumberErr) {
                 mayContinue = false
             }
