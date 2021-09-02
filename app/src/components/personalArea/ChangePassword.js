@@ -1,7 +1,7 @@
 import {makeStyles} from "@material-ui/core/styles";
 import InputPassword from "../InputComponents/inputPassword";
 import Button from "@material-ui/core/Button";
-import React from 'react'
+import React, {useEffect} from 'react'
 import Typography from "@material-ui/core/Typography";
 import {Divider} from "@material-ui/core";
 import {AnswerOfServer} from "../../utils";
@@ -16,10 +16,12 @@ const useStyles = makeStyles(() => ({
 
 ChangePassword.propTypes = {
     userType: PropTypes.oneOf(['influencers', 'companies']).isRequired,
-    infoObj: PropTypes.object.isRequired
+    infoObj: PropTypes.object.isRequired,
+    setValue: PropTypes.func.isRequired,
+    index: PropTypes.number.isRequired
 }
 
-export default function ChangePassword({userType, infoObj}) {
+export default function ChangePassword({userType, infoObj, setValue, index}) {
     const classes = useStyles();
     const [callToServer, setCallToServer] = React.useState(false)
 
@@ -57,6 +59,10 @@ export default function ChangePassword({userType, infoObj}) {
     function onClickChange() {
         setCallToServer(true)
     }
+
+    useEffect(()=>{
+      setValue(index)
+    })
 
     return(
         <div className={classes.container}>

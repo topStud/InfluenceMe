@@ -42,7 +42,7 @@ export default function InputPassword(props) {
             name= {props.info.name}
             label= {props.info.label}
             type={showPass ? 'text' : 'password'}
-            id="password"
+            id={props.info.id}
             helperText={props.err.getter[props.info.name+'Msg']}
             value={props.val.getter[props.info.name]}
             onChange={onPassChange}

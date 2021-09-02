@@ -130,7 +130,7 @@ export default function PersonalArea({userType, objData, setObjData}) {
                         </Route>
                         <Route path={`/${userType}/${objData._id}/personal/changePassword`}>
                             <TabPanel>
-                                <ChangePassword userType={userType} infoObj={objData}/>
+                                <ChangePassword userType={userType} infoObj={objData} setValue={setValue} index={3}/>
                             </TabPanel>
                         </Route>
                         <Route path={`/${userType}/${objData._id}/personal/logOut`}>
