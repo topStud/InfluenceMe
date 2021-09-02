@@ -11,6 +11,7 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import BusinessIcon from '@material-ui/icons/Business';
 import MyDetailsCompany from "./myDetailsComapny";
 import Grid from "@material-ui/core/Grid";
+import ChangePassword from "./ChangePassword";
 
 function TabPanel(props) {
     const { children, setValue, ...other } = props;
@@ -104,7 +105,7 @@ export default function PersonalArea({userType, objData, setObjData}) {
                             <Tab onClick={()=>handleChange(0)} style={{boxShadow: '1px 3px 5px #A68617', marginBottom:5, width: '100%'}} component={Link} to={`/${userType}/${objData._id}/personal/pastCollaborations`} label="Past Collaborations" {...a11yProps(0)} />
                             <Tab onClick={()=>handleChange(1)} style={{boxShadow: '1px 3px 5px #A68617', marginBottom:5, width: '100%'}} component={Link} to={`/${userType}/${objData._id}/personal/currentCollaborations`} label="Current Collaborations" {...a11yProps(1)} />
                             <Tab onClick={()=>handleChange(2)} style={{boxShadow: '1px 3px 5px #A68617', marginBottom:5, width: '100%'}} component={Link} to={`/${userType}/${objData._id}/personal/myDetails`} label="My Details" {...a11yProps(2)} />
-                            <Tab onClick={()=>handleChange(3)} style={{boxShadow: '1px 3px 5px #A68617', marginBottom:5, width: '100%'}} component={Link} to={`/${userType}/${objData._id}/personal/myAccount`} label="My account" {...a11yProps(3)} />
+                            <Tab onClick={()=>handleChange(3)} style={{boxShadow: '1px 3px 5px #A68617', marginBottom:5, width: '100%'}} component={Link} to={`/${userType}/${objData._id}/personal/changePassword`} label="Change Password" {...a11yProps(3)} />
                             <Tab onClick={()=>handleChange(4)} style={{boxShadow: '1px 3px 5px #A68617', marginBottom:5, width: '100%'}} component={Link} to={`/${userType}/${objData._id}/personal/logOut`} label="Log out" {...a11yProps(4)} />
                         </Tabs>
                     </div>
@@ -127,9 +128,9 @@ export default function PersonalArea({userType, objData, setObjData}) {
                                 Item Two
                             </TabPanel>
                         </Route>
-                        <Route path={`/${userType}/${objData._id}/personal/myAccount`}>
+                        <Route path={`/${userType}/${objData._id}/personal/changePassword`}>
                             <TabPanel>
-                                Item Four
+                                <ChangePassword userType={userType} infoObj={objData}/>
                             </TabPanel>
                         </Route>
                         <Route path={`/${userType}/${objData._id}/personal/logOut`}>

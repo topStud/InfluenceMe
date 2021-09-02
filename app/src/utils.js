@@ -50,7 +50,9 @@ export const AnswerOfServer = ({callServerObj, url, methodObj, sucMsg, failMsg, 
                         setErrMsg(failMsg)
                     }
                 }
-            })
+            }).catch((error) => {
+                console.log(error)
+            });
         }
     },[callServerObj.getter])
 

@@ -105,9 +105,6 @@ export default function PrimarySearchAppBar({userType, data}) {
             <Link to={`/${userType}/${data._id}/personal/myDetails`}>
                 <MenuItem onClick={handleMenuClose} className={classes.menuItem}>My Details</MenuItem>
             </Link>
-            <Link to={`/${userType}/${data._id}/personal/myAccount`}>
-                <MenuItem onClick={handleMenuClose} className={classes.menuItem}>My Account</MenuItem>
-            </Link>
             <Link to={`/${userType}/${data._id}/personal/logOut`}>
                 <MenuItem onClick={handleMenuClose} className={classes.menuItem}>Log Out</MenuItem>
             </Link>
