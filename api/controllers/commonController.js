@@ -80,20 +80,23 @@ async function passwordUpdate(model, req, res) {
         if (err || user === null){
             return res.status(400).json({status: 'error', 'error': 'user not exist'})
         }
-        if(await bcrypt.compare(req.body.password, user.password)){
+        if(!(await bcrypt.compare(req.body.currentPassword, user.password))) {
+            return res.status(400).json({status: 'error',
+                'error': 'current password doesn\'t match to real current password'})
+        }
+        if(await bcrypt.compare(req.body.newPassword, user.password)){
             return res.status(400).json({status: 'error',
                 'error': 'Hey! It looks like you’ve used this password before. Please choose a fresh one.'})
-        } else{
-            user.password = await bcrypt.hash(req.body.password ,10)
-            user.save().catch((err) => {
-                return res.status(500).json({status: 'error', 'error': 'could not save user'})
-            })
-
-            // send email about changing
-            await mailer.sendEmail(user.email)
-
-            return res.json({status: 'ok'})
         }
+        user.password = await bcrypt.hash(req.body.password ,10)
+        user.save().catch((err) => {
+            return res.status(500).json({status: 'error', 'error': 'could not save user'})
+        })
+
+        // send email about changing
+        await mailer.sendEmail(user.email)
+
+        return res.json({status: 'ok'})
     })
 }
 
