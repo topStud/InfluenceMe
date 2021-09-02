@@ -10,7 +10,7 @@ import PropTypes from 'prop-types'
 const useStyles = makeStyles(() => ({
     container: {
         boxShadow: '1px 5px 10px #A68617',
-        padding:20
+        padding:20,
     },
 }));
 
@@ -57,7 +57,21 @@ export default function ChangePassword({userType, infoObj, setValue, index}) {
     }
 
     function onClickChange() {
-        setCallToServer(true)
+        let mayContinue = true
+        let currShort = changePasswordValues.currentPassword.length < 6
+        let newShort = changePasswordValues.newPassword.length < 6
+        if (currShort || newShort) {
+            mayContinue = false
+            setErrChangePassword({
+                currentPasswordErr: currShort,
+                currentPasswordMsg: currShort ? 'Minimum length for a password is 6 characters' : '',
+                newPasswordErr: newShort,
+                newPasswordMsg: newShort ? 'Minimum length for a password is 6 characters' : '',
+            })
+        }
+        if (mayContinue) {
+            setCallToServer(true)
+        }
     }
 
     useEffect(()=>{
@@ -70,8 +84,12 @@ export default function ChangePassword({userType, infoObj, setValue, index}) {
                 Change Password
             </Typography>
             <Divider style={{marginBottom: 20}}/>
-            <InputPassword val={valuesObj} err={errObj} info={currPassInfo}/>
-            <InputPassword val={valuesObj} err={errObj} info={newPassInfo}/>
+            <div style={{height: 80}}>
+                <InputPassword val={valuesObj} err={errObj} info={currPassInfo}/>
+            </div>
+            <div style={{height: 80}}>
+                <InputPassword val={valuesObj} err={errObj} info={newPassInfo}/>
+            </div>
             <Button disabled={changePasswordValues.currentPassword === '' || changePasswordValues.newPassword === ''} color={"secondary"} style={{marginTop:20}} fullWidth variant={"contained"} onClick={onClickChange}>Change Password</Button>
             <AnswerOfServer callServerObj={{getter: callToServer, setter: setCallToServer}}
                             url={`/api/${userType}/change-password/${infoObj._id}`}

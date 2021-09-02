@@ -20,7 +20,7 @@ function TabPanel(props) {
         <div
             role="tabpanel"
             {...other}
-            style={{height: '100%'}}
+            style={{height: '100%', width: '100%'}}
         >
             <Box style={{marginLeft: 60, marginRight: 60, marginBottom: 40}}>
                 <div>{children}</div>
