@@ -12,6 +12,7 @@ import ConfirmationDialog from "./confirmationDialog";
 import BackDrop from "@material-ui/core/Backdrop";
 import {makeStyles} from "@material-ui/core/styles";
 import PropTypes from 'prop-types'
+import CreateProposalDialog from "./createProposal";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Zoom ref={ref} {...props} />;
@@ -28,7 +29,7 @@ FullInfoProposal.propTypes = {
     userType: PropTypes.oneOf(['influencers', 'companies'])
 }
 
-export default function FullInfoProposal({backdrop, proposalObj, setCallToServer, userType}) {
+export default function FullInfoProposal({backdrop, proposalObj, setCallToServer, userType, proposalList}) {
     const classes = useStyles()
     const [backdropConfirmation, setBackdropConfirmation] = React.useState(false)
     const backdropConfirmationObj = {
@@ -36,16 +37,36 @@ export default function FullInfoProposal({backdrop, proposalObj, setCallToServer
         setter: setBackdropConfirmation
     }
 
+    const [backdropEdit, setBackdropEdit] = React.useState(false)
+    const backdropEditObj = {
+        getter: backdropEdit,
+        setter: setBackdropEdit
+    }
+
+    const [proposalValues, setProposalValues] = React.useState({
+        title: proposalObj.title,
+        addPhone: proposalObj.phone !== null,
+        addEmail: proposalObj.email !== null,
+        categories: proposalObj.categories,
+        description: proposalObj.description,
+        requirements: proposalObj.requirements,
+        id: proposalObj._id
+    })
+    const values = {
+        getter: proposalValues,
+        setter: setProposalValues
+    }
+
     function onClickCancelFinish() {
         backdrop.setter(false)
     }
 
     const onEditClick = () => {
-        console.log('hi')
+        backdrop.setter(false)
+        setBackdropEdit(true)
     };
 
     const onDeleteClick = () => {
-        console.log('hi')
         setBackdropConfirmation(true)
     }
 
@@ -65,9 +86,9 @@ export default function FullInfoProposal({backdrop, proposalObj, setCallToServer
                         {proposalObj.title} <small style={{fontSize:'0.5em', color: '#F27746'}}>({proposalObj.companyName})</small>
                     </span>
                     {userType === 'companies' && <div style={{display: "flex", justifyContent: "flex-end", marginTop: -50}}>
-                        <IconButton aria-label="edit" onClick={onEditClick}>
-                            {proposalObj.canEdit === true && <EditIcon/>}
-                        </IconButton>
+                        {proposalObj.canEdit === true && <IconButton aria-label="edit" onClick={onEditClick}>
+                            <EditIcon/>
+                        </IconButton>}
                         <IconButton aria-label="delete" onClick={onDeleteClick}>
                             <DeleteIcon/>
                         </IconButton>
@@ -87,7 +108,6 @@ export default function FullInfoProposal({backdrop, proposalObj, setCallToServer
                     </div>
                     <h3 style={{color: '#A68617'}}>Some information about the company</h3>
                     <p style={{whiteSpace: "pre-line"}}>{proposalObj.bio}</p>
-                    {/*<p>The proposal belongs to the following categories: {proposalObj.categories.join(', ')}</p>*/}
                     <h3 style={{color: '#A68617', margin:0}}>Some information about the proposal</h3>
                     <p style={{whiteSpace: "pre-line"}}>{proposalObj.description}</p>
                     <h4 style={{color: '#796211'}}>Requirements</h4>
@@ -121,6 +141,9 @@ export default function FullInfoProposal({backdrop, proposalObj, setCallToServer
             </Dialog>
             <BackDrop className={classes.backdrop} open={backdropConfirmation}>
                 <ConfirmationDialog backdrop={backdropConfirmationObj} setCallServer={setCallToServer} proposalName={proposalObj.title} setDialogOpen={backdrop.setter}/>
+            </BackDrop>
+            <BackDrop open={backdropEdit} className={classes.backdrop}>
+                <CreateProposalDialog val={values} proposalList={proposalList} backdrop={backdropEditObj} option={'edit'}/>
             </BackDrop>
         </>
     )

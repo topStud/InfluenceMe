@@ -121,7 +121,7 @@ export default function MyDetailsCompany({companyData, setCompanyData,index, set
             <AnswerOfServer callServerObj={{getter: callToServer, setter: setCallToServer}}
                             url={`/api/companies/${companyData._id}`}
                             methodObj={{method: 'PUT', headers: {'Content-type': 'application/json; charset=UTF-8'}, body: JSON.stringify(objToServer)}}
-                            sucMsg={'Changes saved successfully'} errMsg={'Save Failed'}
+                            sucMsg={'Changes saved successfully'} failMsg={'Save Failed'}
                             sucFunc={()=>{setPrevBio(bio); setPrevMyDetailsData(myDetailsValues); setCompanyData({...companyData,...myDetailsValues, bio: bio})}}/>
             <BadInputSnackbar open={inputErr} setOpen={setInputErr}/>
         </>

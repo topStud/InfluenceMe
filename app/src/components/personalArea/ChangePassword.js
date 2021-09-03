@@ -94,7 +94,7 @@ export default function ChangePassword({userType, infoObj, setValue, index}) {
             <AnswerOfServer callServerObj={{getter: callToServer, setter: setCallToServer}}
                             url={`/api/${userType}/change-password/${infoObj._id}`}
                             methodObj={{method: 'PUT', headers: {'Content-type': 'application/json; charset=UTF-8'}, body: JSON.stringify(changePasswordValues)}}
-                            sucMsg={'Changes saved successfully'} errMsg={'Save Failed'}
+                            sucMsg={'Changes saved successfully'} failMsg={'Save Failed'}
                             sucFunc={()=>{setChangePasswordValues({currentPassword: '', newPassword: ''})}}/>
         </div>
     )

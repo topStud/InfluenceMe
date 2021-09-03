@@ -137,7 +137,7 @@ export default function MyDetailsInfluencer({setValue, influencerData, setInflue
             <AnswerOfServer callServerObj={{getter: callToServer, setter: setCallToServer}}
                             url={`/api/influencers/${influencerData._id}`}
                             methodObj={{method: 'PUT', headers: {'Content-type': 'application/json; charset=UTF-8'}, body: JSON.stringify(objToServer)}}
-                            sucMsg={'Changes saved successfully'} errMsg={'Save Failed'}
+                            sucMsg={'Changes saved successfully'} failMsg={'Save Failed'}
                             sucFunc={()=>{setPrevBio(bio); setPrevMyDetailsData(valuesMyDetails); setInfluencerData({...influencerData,...valuesMyDetails, bio: bio}) }}/>
         </>
     );

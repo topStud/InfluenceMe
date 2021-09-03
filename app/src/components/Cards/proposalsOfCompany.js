@@ -22,17 +22,17 @@ export default function ProposalsOfCompany({companyInfo}) {
     const [callServerForDelete, setCallForServerForDelete] = React.useState(false)
 
     // for backdrop - new proposal
-    const [openBackDropNewProposal, setOpenBackDropNewProposal] = React.useState(false);
+    const [openBackdropNewProposal, setOpenBackdropNewProposal] = React.useState(false);
     const backdropObjNewProposal = {
-        getter: openBackDropNewProposal,
-        setter: setOpenBackDropNewProposal
+        getter: openBackdropNewProposal,
+        setter: setOpenBackdropNewProposal
     }
 
     // backdrop - full info of proposal
-    const [openBackDropFullInfo, setOpenBackDropFullInfo] = React.useState(false);
+    const [openBackdropFullInfo, setOpenBackdropFullInfo] = React.useState(false);
     const backdropObjFullInfo = {
-        getter: openBackDropFullInfo,
-        setter: setOpenBackDropFullInfo
+        getter: openBackdropFullInfo,
+        setter: setOpenBackdropFullInfo
     }
 
     const [proposalClickedForInfo, setProposalClickedForInfo] = React.useState(null)
@@ -45,7 +45,6 @@ export default function ProposalsOfCompany({companyInfo}) {
         categories: [],
         description: '',
         requirements: '',
-
     })
     const values = {
         getter: proposalValues,
@@ -53,7 +52,7 @@ export default function ProposalsOfCompany({companyInfo}) {
     }
 
     function onClickNewProposal() {
-        setOpenBackDropNewProposal(true)
+        setOpenBackdropNewProposal(true)
     }
 
     const [proposalsList, setProposalsList] = React.useState(null)
@@ -73,11 +72,16 @@ export default function ProposalsOfCompany({companyInfo}) {
                 console.log('there is an error')
             } else {
                 let proposals = proposalData.response.map(proposal => {
+                    console.log('hi')
+                    console.log(proposal)
                     proposal.companyName = companyInfo.name
                     proposal.companySite = companyInfo.siteUrl
-                    proposal.email = companyInfo.email
                     proposal.logo = companyInfo.photo
                     proposal.bio = companyInfo.bio
+                    proposal.contact = {
+                        phone: companyInfo.phone,
+                        email: companyInfo.email
+                    }
                     return proposal
                 })
                 console.log(proposals)
@@ -94,17 +98,17 @@ export default function ProposalsOfCompany({companyInfo}) {
             </div>
             {proposalsList !== null && <CardsDisplay display={'proposals'} objList={proposalsList} backdrop={backdropObjFullInfo} setClickedProposal={setProposalClickedForInfo}/>}
             {/*backdrop for creating new proposal*/}
-            <BackDrop className={classes.backdrop} open={openBackDropNewProposal}>
-                <CreateProposal val={values} backdrop={backdropObjNewProposal} companyInfo={companyInfo} proposalList={proposalListObj}/>
+            <BackDrop className={classes.backdrop} open={openBackdropNewProposal}>
+                <CreateProposal val={values} backdrop={backdropObjNewProposal} companyInfo={companyInfo} proposalList={proposalListObj} option={'create'}/>
             </BackDrop>
             {/*backdrop for showing full information*/}
-            <BackDrop className={classes.backdrop} open={openBackDropFullInfo}>
-                {proposalClickedForInfo !== null && <FullInfoProposal backdrop={backdropObjFullInfo} proposalObj={proposalClickedForInfo} setCallToServer={setCallForServerForDelete} userType={'companies'}/>}
+            <BackDrop className={classes.backdrop} open={openBackdropFullInfo}>
+                {proposalClickedForInfo !== null && <FullInfoProposal backdrop={backdropObjFullInfo} proposalList={proposalListObj} proposalObj={proposalClickedForInfo} setCallToServer={setCallForServerForDelete} userType={'companies'}/>}
             </BackDrop>
             {proposalClickedForInfo !== null &&
             <AnswerOfServer callServerObj={{getter: callServerForDelete, setter: setCallForServerForDelete}}
                             url={`/api/collaboration_proposals/${proposalClickedForInfo._id}`} methodObj={{method: 'DELETE'}}
-                            sucMsg={'Proposal deleted successfully'} errMsg={'Deletion Failed'}
+                            sucMsg={'Proposal deleted successfully'} failMsg={'Deletion Failed'}
                             sucFunc={()=>{proposalListObj.setter(proposalListObj.getter.filter(proposal=> proposal._id !== proposalClickedForInfo._id))}}/>
             }
         </>

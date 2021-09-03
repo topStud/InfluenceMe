@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -10,21 +10,32 @@ import InputText from '../InputComponents/inputText'
 import Grid from "@material-ui/core/Grid";
 import CategoriesComponent from "../InputComponents/categoriesComponent";
 import InputTextArea from "../InputComponents/InputTextArea";
-import {Checkbox, FormControlLabel, FormGroup, Snackbar} from "@material-ui/core";
-import {Alert} from "@material-ui/lab";
+import {Checkbox, FormControlLabel, FormGroup, TextField} from "@material-ui/core";
+import PropTypes from 'prop-types'
+import {AnswerOfServer} from "../../utils";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
+CreateProposalDialog.propTypes = {
+    val: PropTypes.object.isRequired,
+    backdrop: PropTypes.object.isRequired,
+    companyInfo: PropTypes.object,
+    proposalList: PropTypes.object.isRequired,
+    option: PropTypes.oneOf(['create', 'edit']).isRequired
+}
+
 export default function CreateProposalDialog(props) {
     const required_txt = 'This field is required'
-    const [sentToServer, setSendToServer] = React.useState(false)
+    const [sendToServerCreate, setSendToServerCreate] = React.useState(false)
+    const [sendToServerEdit, setSendToServerEdit] = React.useState(false)
     const [proposalAccepted, setProposalAccepted] = React.useState(false)
-    const [addToProposal, setAddToProposal] = React.useState({
-        addPhone: false,
-        addEmail: false
-    })
+    const [proposalEdited, setProposalEdited] = React.useState(false)
+
+    // values in field before change
+    const [prevValues, setPrevValues] = React.useState(props.val.getter)
+
     const [errProposals, setErrProposals] = React.useState({
         titleErr: false,
         titleMsg: '',
@@ -62,44 +73,35 @@ export default function CreateProposalDialog(props) {
 
     function onClickCancelFinish() {
         props.backdrop.setter(false)
-        // props.open.setter(false)
-        props.val.setter({
-            title: '',
-            categories: [],
-            description: '',
-            requirements: ''
-        })
-        setAddToProposal({
-            addPhone: false,
-            addEmail: false
-        })
-        setErrProposals({
-            titleErr: false,
-            titleMsg: '',
-            descriptionMsg: '',
-            descriptionErr: false,
-            categoryErr: false,
-            requirementsMsg: '',
-            requirementsErr: false
-        })
-        setProposalAccepted(false)
+        if (props.option === 'create') {
+            props.val.setter({
+                title: '',
+                categories: [],
+                description: '',
+                requirements: '',
+                addPhone: false,
+                addEmail: false
+            })
+            setErrProposals({
+                titleErr: false,
+                titleMsg: '',
+                descriptionMsg: '',
+                descriptionErr: false,
+                categoryErr: false,
+                requirementsMsg: '',
+                requirementsErr: false
+            })
+            setProposalAccepted(false)
+        } else {
+            setProposalEdited(false)
+        }
     }
 
     const handleAddContactInfoChange = (event) => {
-        setAddToProposal({ ...addToProposal, [event.target.name]: event.target.checked });
+        props.val.setter({ ...props.val.getter, [event.target.name]: event.target.checked});
     };
 
-    const objToServer = {
-        companyID: props.companyInfo._id,
-        title: props.val.getter.title,
-        addPhone: addToProposal.addPhone,
-        addEmail: addToProposal.addEmail,
-        description: props.val.getter.description,
-        requirements: props.val.getter.requirements,
-        categories: props.val.getter.categories
-    }
-
-    function onClickCreate() {
+    function onClickCreateEdit() {
         let emptyTitle = props.val.getter.title === ''
         let categoriesErr = props.val.getter.categories.length === 0
         let emptyDescription = props.val.getter.description === ''
@@ -116,7 +118,11 @@ export default function CreateProposalDialog(props) {
             })
         } else {
             // sends info to server
-            setSendToServer(true)
+            if (props.option === 'create') {
+                setSendToServerCreate(true)
+            } else {
+                setSendToServerEdit(true)
+            }
         }
     }
 
@@ -130,15 +136,19 @@ export default function CreateProposalDialog(props) {
             aria-labelledby="alert-dialog-slide-title"
             aria-describedby="alert-dialog-slide-description"
         >
-            <DialogTitle id="proposal-dialog-slide-title"><span style={{fontFamily:'Rubik', fontWeight:800, color: '#1F75A6', fontSize:'1.5em'}}>Create New Proposal</span></DialogTitle>
+            <DialogTitle id="proposal-dialog-slide-title"><span style={{fontFamily:'Rubik', fontWeight:800,
+                color: '#1F75A6', fontSize:'1.5em'}}>{props.option === 'create' ? 'Create New Proposal' : 'Edit '
+                + props.val.getter.title}</span></DialogTitle>
             <DialogContent>
-                <DialogContentText id="alert-dialog-slide-description" style={{fontFamily:'Rubik'}}>
+                {props.option === 'create' && <DialogContentText id="alert-dialog-slide-description" style={{fontFamily:'Rubik'}}>
                     Please fill in all the required field before creating your proposal.<br/>
                     All the proposals will be shared with all users (not only influencers registered to this site).
-                </DialogContentText>
+                </DialogContentText>}
                 <Grid container spacing={3}>
                     <Grid item xs={12} style={{maxHeight: 90}}>
-                        <InputText val={props.val} err={errors} info={titleObj}/>
+                        {props.option === 'create' ? <InputText val={props.val} err={errors} info={titleObj}/> :
+                         <TextField disabled={true} fullWidth label={'Title'} id={'disabled-title'}
+                                    value={props.val.getter.title}/>}
                     </Grid>
                     <Grid item xs={12} style={{maxHeight: 100}}>
                         <CategoriesComponent val={props.val} err={errors}/>
@@ -152,14 +162,14 @@ export default function CreateProposalDialog(props) {
                     <Grid item xs={12} style={{maxHeight: 90}}>
                         <FormGroup row>
                             <FormControlLabel
-                                control={<Checkbox checked={addToProposal.addPhone} onChange={handleAddContactInfoChange}
+                                control={<Checkbox checked={props.val.getter.addPhone} onChange={handleAddContactInfoChange}
                                                    name="addPhone" color="primary" value={true} size={"small"}/>}
                                 label="Add my company's phone to proposal"
                             />
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        checked={addToProposal.addEmail}
+                                        checked={props.val.getter.addEmail}
                                         onChange={handleAddContactInfoChange}
                                         name="addEmail"
                                         color="primary"
@@ -173,12 +183,12 @@ export default function CreateProposalDialog(props) {
                     </Grid>
                 </Grid>
             </DialogContent>
-            {!proposalAccepted ?
+            {props.option === 'create' ? (!proposalAccepted ?
                 <DialogActions>
                     <Button color="primary" onClick={onClickCancelFinish}>
                         Cancel
                     </Button>
-                    <Button color="primary" name="create" onClick={onClickCreate}>
+                    <Button color="primary" name="create" onClick={onClickCreateEdit}>
                         Create
                     </Button>
                 </DialogActions> :
@@ -186,80 +196,122 @@ export default function CreateProposalDialog(props) {
                     <Button color="primary" onClick={onClickCancelFinish}>
                         Finish
                     </Button>
+                </DialogActions>) : (
+                !proposalEdited ? <DialogActions>
+                    <Button color="primary" onClick={onClickCancelFinish}>
+                        Cancel
+                    </Button>
+                    <Button disabled={JSON.stringify(prevValues) === JSON.stringify(props.val.getter)} color="primary" variant={"contained"} onClick={onClickCreateEdit}>
+                        Edit
+                    </Button>
+                </DialogActions> :
+                <DialogActions>
+                    <Button color="primary" onClick={onClickCancelFinish}>
+                        Finish
+                    </Button>
                 </DialogActions>
+            )}
+            {props.option === 'create' ?
+                <AnswerOfServer callServerObj={{getter: sendToServerCreate, setter: setSendToServerCreate}}
+                                url={'/api/collaboration_proposals'} methodObj={{method: 'POST',
+                                headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+                                body: JSON.stringify({...props.val.getter, companyID: props.companyInfo._id})}}
+                                sucMsg={'Proposal created successfully'} failMsg={'Failed to creat the proposal'}
+                                sucFunc={()=>{
+                                    setProposalAccepted(true);
+                                    const {addPhone: phoneVal, addEmail: emailVal,...otherKeys} = props.val.getter;
+                                    props.proposalList.setter(oldArray => [...oldArray, {...otherKeys,
+                                        companyID: props.companyInfo._id, companyName: props.companyInfo.name,
+                                        companySite: props.companyInfo.siteUrl, logo: props.companyInfo.photo,
+                                        bio: props.companyInfo.bio, email: emailVal ? props.companyInfo.email : null,
+                                        phone: phoneVal ? props.companyInfo.phone : null, contact:
+                                            {phone: props.companyInfo.phone, email: props.companyInfo.email}}]);
+                                }}/> :
+                <AnswerOfServer callServerObj={{getter: sendToServerEdit, setter: setSendToServerEdit}}
+                                url={`/api/collaboration_proposals/${props.val.getter.id}`}
+                                methodObj={{method: 'PUT', headers: {'Content-type': 'application/json; charset=UTF-8'},
+                                body: JSON.stringify({...props.val.getter})}} sucMsg={'Proposal edited successfully'}
+                                failMsg={'Edit failed'} sucFunc={()=>{
+                                    setProposalEdited(true);
+                                    let proposal = props.proposalList.getter.find(proposal => proposal._id === props.val.getter.id);
+                                    let newArr = props.proposalList.getter.filter(o=>o._id !== proposal._id);
+                                    let index = props.proposalList.getter.indexOf(proposal)
+                                    newArr.splice(index,0, {...proposal, ...props.val.getter,
+                                        phone: props.val.getter.addPhone ? proposal.contact.phone : null,
+                                        email: props.val.getter.addEmail ? proposal.contact.email : null})
+                                    props.proposalList.setter(newArr);
+                                    setPrevValues(props.val.getter)
+                }}/>
             }
-            <AnswerOfServer callServer={sentToServer} setCallServer={setSendToServer} obj={objToServer}
-                            setProposalAccepted={setProposalAccepted} err={errors}
-                            proposalList={props.proposalList} companyObj={props.companyInfo}/>
         </Dialog>
 
     );
 }
 
-const AnswerOfServer = ({ callServer,setCallServer,obj,setProposalAccepted, err, proposalList, companyObj }) => {
-    const [open, setOpen] = React.useState(false)
-    const [errMsg, setErrMsg] = React.useState('')
-    const [severity, setSeverity] = React.useState('error')
-
-    function createProposalObj(proposalInfo, companyInfo) {
-        proposalInfo.companyName = companyInfo.name
-        proposalInfo.companySite = companyInfo.siteUrl
-        proposalInfo.logo = companyInfo.photo
-        proposalInfo.bio = companyInfo.bio
-        return proposalInfo
-    }
-
-    const proposalObj = createProposalObj(obj, companyObj)
-
-    useEffect(() => {
-        if(callServer) {
-            console.log(obj)
-            fetch('/api/collaboration_proposals', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(obj)
-            }).then(res => {
-                if (!res.ok) {
-                    setOpen(true)
-                    setErrMsg('Connection problem')
-                }
-                return res.json()
-            }).then(data => {
-                if (data.status === 'error') {
-                    setOpen(true)
-                    setErrMsg(data.error)
-                    if (data.error === 'title already in use') {
-                        err.setter({
-                            ...err.getter,
-                            titleErr: true,
-                            titleMsg: 'Title already in use'
-                        })
-                    }
-                } else {
-                    setSeverity('success')
-                    setErrMsg('Proposal created successfully')
-                    setProposalAccepted(true)
-                    proposalList.setter(oldArray => [...oldArray, proposalObj])
-                    setCallServer(false)
-                    setOpen(true)
-                }
-            })
-        }
-    },[callServer])
-
-    const handleClose = () => {
-        setOpen(false)
-        setCallServer(false)
-    };
-
-    return (
-        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}>
-            <Alert onClose={handleClose} severity={severity} style={{fontSize:14, fontFamily:'Rubik'}}>
-                <div>{errMsg}</div>
-            </Alert>
-        </Snackbar>
-    )
-}
+// const AnswerOfServer = ({ callServer,setCallServer,obj,setProposalAccepted, err, proposalList, companyObj }) => {
+//     const [open, setOpen] = React.useState(false)
+//     const [errMsg, setErrMsg] = React.useState('')
+//     const [severity, setSeverity] = React.useState('error')
+//
+//     function createProposalObj(proposalInfo, companyInfo) {
+//         proposalInfo.companyName = companyInfo.name
+//         proposalInfo.companySite = companyInfo.siteUrl
+//         proposalInfo.logo = companyInfo.photo
+//         proposalInfo.bio = companyInfo.bio
+//         return proposalInfo
+//     }
+//
+//     const proposalObj = createProposalObj(obj, companyObj)
+//
+//     useEffect(() => {
+//         if(callServer) {
+//             console.log(obj)
+//             fetch('/api/collaboration_proposals', {
+//                 method: 'POST',
+//                 headers: {
+//                     'Accept': 'application/json',
+//                     'Content-Type': 'application/json'
+//                 },
+//                 body: JSON.stringify(obj)
+//             }).then(res => {
+//                 if (!res.ok) {
+//                     setOpen(true)
+//                     setErrMsg('Connection problem')
+//                 }
+//                 return res.json()
+//             }).then(data => {
+//                 if (data.status === 'error') {
+//                     setOpen(true)
+//                     setErrMsg(data.error)
+//                     if (data.error === 'title already in use') {
+//                         err.setter({
+//                             ...err.getter,
+//                             titleErr: true,
+//                             titleMsg: 'Title already in use'
+//                         })
+//                     }
+//                 } else {
+//                     setSeverity('success')
+//                     setErrMsg('Proposal created successfully')
+//                     setProposalAccepted(true)
+//                     proposalList.setter(oldArray => [...oldArray, proposalObj])
+//                     setCallServer(false)
+//                     setOpen(true)
+//                 }
+//             })
+//         }
+//     },[callServer])
+//
+//     const handleClose = () => {
+//         setOpen(false)
+//         setCallServer(false)
+//     };
+//
+//     return (
+//         <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}>
+//             <Alert onClose={handleClose} severity={severity} style={{fontSize:14, fontFamily:'Rubik'}}>
+//                 <div>{errMsg}</div>
+//             </Alert>
+//         </Snackbar>
+//     )
+// }
