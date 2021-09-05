@@ -18,24 +18,25 @@ const useStyles = makeStyles((theme) => ({
 export default function ProposalsOfCompany({companyInfo, filterStringObj, filteredListObj}) {
     const classes = useStyles()
 
-    // for deleting a proposal
+    // decides when to call the server for deleting a proposal
     const [callServerForDelete, setCallServerForDelete] = React.useState(false)
 
-    // for backdrop - new proposal
+    // backdrop for creating new proposal dialog
     const [openBackdropNewProposal, setOpenBackdropNewProposal] = React.useState(false);
     const backdropObjNewProposal = {
         getter: openBackdropNewProposal,
         setter: setOpenBackdropNewProposal
     }
 
-    // backdrop - full info of proposal
+    // backdrop for displaying full info of proposal
     const [openBackdropFullInfo, setOpenBackdropFullInfo] = React.useState(false);
     const backdropObjFullInfo = {
         getter: openBackdropFullInfo,
         setter: setOpenBackdropFullInfo
     }
 
-    const [proposalClickedForInfo, setProposalClickedForInfo] = React.useState(null)
+    // the proposal the company chose and is fully open
+    const [proposalClicked, setProposalClicked] = React.useState(null)
 
     // variables for creating new Cards
     const [proposalValues, setProposalValues] = React.useState({
@@ -51,10 +52,12 @@ export default function ProposalsOfCompany({companyInfo, filterStringObj, filter
         setter: setProposalValues
     }
 
+    // user clicked on the button 'new proposal'
     function onClickNewProposal() {
         setOpenBackdropNewProposal(true)
     }
 
+    // the original list from the DB
     const [proposalsList, setProposalsList] = React.useState(null)
     const proposalListObj = {
         getter: proposalsList,
@@ -62,6 +65,7 @@ export default function ProposalsOfCompany({companyInfo, filterStringObj, filter
     }
 
     useEffect(()=>{
+        // getting all proposals of current company
         fetch(`/api/collaboration_proposals/company/${companyInfo._id}`).then(res => {
             if (!res.ok) {
                 console.log('problem in connection with server')
@@ -71,6 +75,7 @@ export default function ProposalsOfCompany({companyInfo, filterStringObj, filter
             if ('status' in proposalData) {
                 console.log('there is an error')
             } else {
+                // creating object of proposal
                 let proposals = proposalData.response.map(proposal => {
                     proposal.companyName = companyInfo.name
                     proposal.companySite = companyInfo.siteUrl
@@ -83,7 +88,9 @@ export default function ProposalsOfCompany({companyInfo, filterStringObj, filter
                     return proposal
                 })
                 console.log(proposals)
+                // sets original list of proposals
                 setProposalsList(proposals)
+                // sets filtered list of proposals
                 filteredListObj.setter(proposals)
             }
         })
@@ -96,21 +103,22 @@ export default function ProposalsOfCompany({companyInfo, filterStringObj, filter
                       style={{border: 'transparent', fontSize:15}} onClick={onClickNewProposal}/>
             </div>
             {proposalsList !== null && <FilteringCards display={'proposals'} objList={proposalsList}
-                    backdrop={backdropObjFullInfo} setClickedProposal={setProposalClickedForInfo}
+                    backdrop={backdropObjFullInfo} setClickedProposal={setProposalClicked}
                     filterStringObj={filterStringObj} filteredListObj={filteredListObj}/>}
             {/*backdrop for creating new proposal*/}
             <BackDrop className={classes.backdrop} open={openBackdropNewProposal}>
-                <CreateProposal val={values} backdrop={backdropObjNewProposal} companyInfo={companyInfo} proposalList={proposalListObj} option={'create'}/>
+                <CreateProposal val={values} backdrop={backdropObjNewProposal} companyInfo={companyInfo}
+                                proposalList={proposalListObj} option={'create'} />
             </BackDrop>
             {/*backdrop for showing full information*/}
             <BackDrop className={classes.backdrop} open={openBackdropFullInfo}>
-                {proposalClickedForInfo !== null && <FullInfoProposal backdrop={backdropObjFullInfo} proposalList={proposalListObj} proposalObj={proposalClickedForInfo} setCallToServer={setCallServerForDelete} userType={'companies'}/>}
+                {proposalClicked !== null && <FullInfoProposal backdrop={backdropObjFullInfo} proposalList={proposalListObj} proposalObj={proposalClicked} setCallToServer={setCallServerForDelete} userType={'companies'}/>}
             </BackDrop>
-            {proposalClickedForInfo !== null &&
+            {proposalClicked !== null &&
             <AnswerOfServer callServerObj={{getter: callServerForDelete, setter: setCallServerForDelete}}
-                            url={`/api/collaboration_proposals/${proposalClickedForInfo._id}`} methodObj={{method: 'DELETE'}}
+                            url={`/api/collaboration_proposals/${proposalClicked._id}`} methodObj={{method: 'DELETE'}}
                             sucMsg={'Proposal deleted successfully'} failMsg={'Deletion Failed'}
-                            sucFunc={()=>{proposalListObj.setter(proposalListObj.getter.filter(proposal=> proposal._id !== proposalClickedForInfo._id))}}/>
+                            sucFunc={()=>{proposalListObj.setter(proposalListObj.getter.filter(proposal=> proposal._id !== proposalClicked._id))}}/>
             }
         </>
     )

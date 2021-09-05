@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
@@ -105,7 +105,16 @@ export default function PermanentDrawerRight({objList, display, backdrop, setCli
             Clothing: false,
             Beauty: false
         })
+        filteredListObj.setter(objList)
     }
+
+    useEffect(()=>{
+        if (filterStringObj.getter === '') {
+            filteredListObj.setter(objList)
+        } else {
+            setCallServerFilter(true)
+        }
+    },[JSON.stringify(objList)])
 
     function onCategoryClick(text) {
         let searchString, chosenCategories

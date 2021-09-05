@@ -12,7 +12,7 @@ import CategoriesComponent from "../InputComponents/categoriesComponent";
 import InputTextArea from "../InputComponents/InputTextArea";
 import {Checkbox, FormControlLabel, FormGroup, TextField} from "@material-ui/core";
 import PropTypes from 'prop-types'
-import {AnswerOfServer} from "../../utils";
+import {AnswerOfServer, required_txt} from "../../utils";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -27,7 +27,6 @@ CreateProposalDialog.propTypes = {
 }
 
 export default function CreateProposalDialog(props) {
-    const required_txt = 'This field is required'
     const [sendToServerCreate, setSendToServerCreate] = React.useState(false)
     const [sendToServerEdit, setSendToServerEdit] = React.useState(false)
     const [proposalAccepted, setProposalAccepted] = React.useState(false)
@@ -247,71 +246,3 @@ export default function CreateProposalDialog(props) {
 
     );
 }
-
-// const AnswerOfServer = ({ callServer,setCallServer,obj,setProposalAccepted, err, proposalList, companyObj }) => {
-//     const [open, setOpen] = React.useState(false)
-//     const [errMsg, setErrMsg] = React.useState('')
-//     const [severity, setSeverity] = React.useState('error')
-//
-//     function createProposalObj(proposalInfo, companyInfo) {
-//         proposalInfo.companyName = companyInfo.name
-//         proposalInfo.companySite = companyInfo.siteUrl
-//         proposalInfo.logo = companyInfo.photo
-//         proposalInfo.bio = companyInfo.bio
-//         return proposalInfo
-//     }
-//
-//     const proposalObj = createProposalObj(obj, companyObj)
-//
-//     useEffect(() => {
-//         if(callServer) {
-//             console.log(obj)
-//             fetch('/api/collaboration_proposals', {
-//                 method: 'POST',
-//                 headers: {
-//                     'Accept': 'application/json',
-//                     'Content-Type': 'application/json'
-//                 },
-//                 body: JSON.stringify(obj)
-//             }).then(res => {
-//                 if (!res.ok) {
-//                     setOpen(true)
-//                     setErrMsg('Connection problem')
-//                 }
-//                 return res.json()
-//             }).then(data => {
-//                 if (data.status === 'error') {
-//                     setOpen(true)
-//                     setErrMsg(data.error)
-//                     if (data.error === 'title already in use') {
-//                         err.setter({
-//                             ...err.getter,
-//                             titleErr: true,
-//                             titleMsg: 'Title already in use'
-//                         })
-//                     }
-//                 } else {
-//                     setSeverity('success')
-//                     setErrMsg('Proposal created successfully')
-//                     setProposalAccepted(true)
-//                     proposalList.setter(oldArray => [...oldArray, proposalObj])
-//                     setCallServer(false)
-//                     setOpen(true)
-//                 }
-//             })
-//         }
-//     },[callServer])
-//
-//     const handleClose = () => {
-//         setOpen(false)
-//         setCallServer(false)
-//     };
-//
-//     return (
-//         <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}>
-//             <Alert onClose={handleClose} severity={severity} style={{fontSize:14, fontFamily:'Rubik'}}>
-//                 <div>{errMsg}</div>
-//             </Alert>
-//         </Snackbar>
-//     )
-// }

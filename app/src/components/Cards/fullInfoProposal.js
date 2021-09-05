@@ -12,7 +12,7 @@ import ConfirmationDialog from "./confirmationDialog";
 import BackDrop from "@material-ui/core/Backdrop";
 import {makeStyles} from "@material-ui/core/styles";
 import PropTypes from 'prop-types'
-import CreateProposalDialog from "./createProposal";
+import EditDialog from "./createProposal";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Zoom ref={ref} {...props} />;
@@ -143,7 +143,7 @@ export default function FullInfoProposal({backdrop, proposalObj, setCallToServer
                 <ConfirmationDialog backdrop={backdropConfirmationObj} setCallServer={setCallToServer} proposalName={proposalObj.title} setDialogOpen={backdrop.setter}/>
             </BackDrop>
             <BackDrop open={backdropEdit} className={classes.backdrop}>
-                <CreateProposalDialog val={values} proposalList={proposalList} backdrop={backdropEditObj} option={'edit'}/>
+                <EditDialog val={values} proposalList={proposalList} backdrop={backdropEditObj} option={'edit'}/>
             </BackDrop>
         </>
     )
