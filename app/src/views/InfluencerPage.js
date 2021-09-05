@@ -5,8 +5,7 @@ import {createTheme, makeStyles} from "@material-ui/core/styles";
 import {Route, Switch, useParams} from "react-router-dom";
 import {Alert, AlertTitle} from "@material-ui/lab";
 import Footer from "../components/footer";
-import Grid from "@material-ui/core/Grid";
-import CardsDisplay from "../components/Cards/cardsDisplay";
+import FilteringCards from '../components/Cards/filteringCards'
 import '../styles/globals.css'
 import PersonalArea from "../components/personalArea/personalArea";
 import FullInfoProposal from "../components/Cards/fullInfoProposal";
@@ -33,6 +32,23 @@ const useStyles = makeStyles((theme) => ({
 export default function InfluencerPage() {
     const {id} = useParams()
     const classes = useStyles()
+
+    // filtering string
+    const [filterString, setFilterString] = React.useState('')
+    const filterStringObj = {
+        getter: filterString,
+        setter: setFilterString
+    }
+
+    // search string
+    const [searchString, setSearchString] = React.useState('')
+    const searchStringObj = {
+        getter: searchString,
+        setter: setSearchString
+    }
+
+    // filtered object list according to search field, categories
+    const [filteredList, setFilteredList] = React.useState([])
 
     // for backdrop
     const [openBackDrop, setOpenBackDrop] = React.useState(false);
@@ -93,6 +109,7 @@ export default function InfluencerPage() {
                         })
                         console.log(proposalsList)
                         setProposalsList(proposalsList)
+                        setFilteredList(proposalsList)
                     }
                 })
             }
@@ -103,13 +120,14 @@ export default function InfluencerPage() {
         <MuiThemeProvider theme={theme}>
             {influencerData &&
                 <>
-                    <AppBar userType={'influencers'} data={influencerData} />
+                    <AppBar userType={'influencers'} data={influencerData} filterString={filterString}
+                            searchObj={searchStringObj} setFilteredList={setFilteredList}/>
                     <Switch>
                         <Route exact path={`/influencers/${id}`}>
                             {proposalsList !== null &&
-                                <Grid container spacing={0}>
-                                    <CardsDisplay display={'proposals'} objList={proposalsList} backdrop={backdropObj} setClickedProposal={setProposalClickedForInfo}/>
-                                </Grid>
+                                    <FilteringCards display={'proposals'} objList={proposalsList} backdrop={backdropObj} setClickedProposal={setProposalClickedForInfo}
+                                                    filterStringObj={filterStringObj} filteredListObj={{getter: filteredList, setter: setFilteredList}}/>
+
                             }
                             <BackDrop className={classes.backdrop} open={openBackDrop}>
                                 {proposalClickedForInfo !== null && <FullInfoProposal backdrop={backdropObj} proposalObj={proposalClickedForInfo} userType={'influencers'}/>}
