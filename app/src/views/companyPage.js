@@ -31,16 +31,14 @@ const useStyles = makeStyles((theme) => ({
 
 export default function CompanyPage() {
     const classes = useStyles()
-
+    // gets id of company from url
     const {id} = useParams()
-    const [imageUpdated, setImageUpdated] = React.useState(null)
-    const imgUpdater = {
-        getter: imageUpdated,
-        setter: setImageUpdated
-    }
+
+    // the data of the current company
     const [companyInfo, setCompanyInfo] = React.useState(null)
     const [errFetchCompanyData, setErrFetchCompanyData] = React.useState(false)
 
+    // influencers to display the company
     const [influencersList, setInfluencersList] = React.useState(null)
 
     // for backdrop
@@ -50,9 +48,28 @@ export default function CompanyPage() {
         setter: setOpenBackDrop
     }
 
+    // filtering string
+    const [filterString, setFilterString] = React.useState('')
+    const filterStringObj = {
+        getter: filterString,
+        setter: setFilterString
+    }
+
+    // search string
+    const [searchString, setSearchString] = React.useState('')
+    const searchStringObj = {
+        getter: searchString,
+        setter: setSearchString
+    }
+
+    // filtered object list according to search field, categories
+    const [filteredList, setFilteredList] = React.useState([])
+    // an influencer that the company wants to get more information about
     const [influencerClickedForInfo, setInfluencerClickedForInfo] = React.useState(null)
 
+    // at first render, we fetch the info of the current company and all the influencers in DB
     useEffect(()=>{
+        // current company
         fetch(`/api/companies/${id}`).then(res => {
             if (!res.ok) {
                 setErrFetchCompanyData(true)
@@ -65,6 +82,7 @@ export default function CompanyPage() {
                 setCompanyInfo(companyData.response)
             }
         })
+        // all influencers
         fetch('/api/influencers').then(res => {
             if (!res.ok) {
                 setErrFetchCompanyData(true)
@@ -84,7 +102,7 @@ export default function CompanyPage() {
             <MuiThemeProvider theme={theme}>
                 {companyInfo !== null &&
                     <>
-                        <AppBar userType={'companies'} data={companyInfo}/>
+                        <AppBar userType={'companies'} data={companyInfo} filterString={filterString} searchObj={searchStringObj} setFilteredList={setFilteredList}/>
                         <Switch>
                             <Route exact path={`/companies/${id}`}>
                                 {influencersList !== null &&
@@ -95,10 +113,10 @@ export default function CompanyPage() {
                                 </BackDrop>
                             </Route>
                             <Route path={`/companies/${id}/proposals`}>
-                                <ProposalsOfCompany companyInfo={companyInfo}/>
+                                <ProposalsOfCompany companyInfo={companyInfo} filterStringObj={filterStringObj} filteredListObj={{getter: filteredList, setter: setFilteredList}}/>
                             </Route>
                             <Route path={`/companies/${id}/personal`}>
-                                <PersonalArea userType={'companies'} objData={companyInfo} setObjData={setCompanyInfo} img={imgUpdater}/>
+                                <PersonalArea userType={'companies'} objData={companyInfo} setObjData={setCompanyInfo}/>
                             </Route>
                         </Switch>
                     </>

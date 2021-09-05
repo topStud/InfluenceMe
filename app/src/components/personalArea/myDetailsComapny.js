@@ -1,7 +1,7 @@
 import {makeStyles} from "@material-ui/core/styles";
 import React, {useEffect} from "react";
 import isMobilePhone from "validator/es/lib/isMobilePhone";
-import {AnswerOfServer, BadInputSnackbar, required_txt, validateWebsiteUrl} from "../../utils";
+import {AnswerOfServer, ErrorSnackbar, required_txt, validateWebsiteUrl} from "../../utils";
 import Typography from "@material-ui/core/Typography";
 import {Divider} from "@material-ui/core";
 import Bio from "../registrationComponents/bio";
@@ -123,7 +123,7 @@ export default function MyDetailsCompany({companyData, setCompanyData,index, set
                             methodObj={{method: 'PUT', headers: {'Content-type': 'application/json; charset=UTF-8'}, body: JSON.stringify(objToServer)}}
                             sucMsg={'Changes saved successfully'} failMsg={'Save Failed'}
                             sucFunc={()=>{setPrevBio(bio); setPrevMyDetailsData(myDetailsValues); setCompanyData({...companyData,...myDetailsValues, bio: bio})}}/>
-            <BadInputSnackbar open={inputErr} setOpen={setInputErr}/>
+            <ErrorSnackbar open={inputErr} setOpen={setInputErr}/>
         </>
     )
 }

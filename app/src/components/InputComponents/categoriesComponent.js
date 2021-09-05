@@ -1,4 +1,4 @@
-import {Checkbox, FormControlLabel, FormGroup, FormHelperText, FormLabel} from "@material-ui/core";
+import {FormGroup, FormHelperText, FormLabel} from "@material-ui/core";
 import React from "react";
 import Chip from "@material-ui/core/Chip";
 

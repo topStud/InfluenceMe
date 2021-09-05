@@ -4,7 +4,7 @@ import BackDrop from '@material-ui/core/Backdrop';
 import {makeStyles} from "@material-ui/core/styles";
 import React, {useEffect} from 'react'
 import CreateProposal from './createProposal'
-import CardsDisplay from './cardsDisplay'
+import FilteringCards from './filteringCards'
 import {AnswerOfServer} from "../../utils";
 import FullInfoProposal from "./fullInfoProposal";
 
@@ -15,11 +15,11 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function ProposalsOfCompany({companyInfo}) {
+export default function ProposalsOfCompany({companyInfo, filterStringObj, filteredListObj}) {
     const classes = useStyles()
 
     // for deleting a proposal
-    const [callServerForDelete, setCallForServerForDelete] = React.useState(false)
+    const [callServerForDelete, setCallServerForDelete] = React.useState(false)
 
     // for backdrop - new proposal
     const [openBackdropNewProposal, setOpenBackdropNewProposal] = React.useState(false);
@@ -72,8 +72,6 @@ export default function ProposalsOfCompany({companyInfo}) {
                 console.log('there is an error')
             } else {
                 let proposals = proposalData.response.map(proposal => {
-                    console.log('hi')
-                    console.log(proposal)
                     proposal.companyName = companyInfo.name
                     proposal.companySite = companyInfo.siteUrl
                     proposal.logo = companyInfo.photo
@@ -86,6 +84,7 @@ export default function ProposalsOfCompany({companyInfo}) {
                 })
                 console.log(proposals)
                 setProposalsList(proposals)
+                filteredListObj.setter(proposals)
             }
         })
     }, [])
@@ -96,17 +95,19 @@ export default function ProposalsOfCompany({companyInfo}) {
                 <Chip label="NEW PROPOSAL" icon={<AddIcon />} color={"primary"} clickable variant="outlined"
                       style={{border: 'transparent', fontSize:15}} onClick={onClickNewProposal}/>
             </div>
-            {proposalsList !== null && <CardsDisplay display={'proposals'} objList={proposalsList} backdrop={backdropObjFullInfo} setClickedProposal={setProposalClickedForInfo}/>}
+            {proposalsList !== null && <FilteringCards display={'proposals'} objList={proposalsList}
+                    backdrop={backdropObjFullInfo} setClickedProposal={setProposalClickedForInfo}
+                    filterStringObj={filterStringObj} filteredListObj={filteredListObj}/>}
             {/*backdrop for creating new proposal*/}
             <BackDrop className={classes.backdrop} open={openBackdropNewProposal}>
                 <CreateProposal val={values} backdrop={backdropObjNewProposal} companyInfo={companyInfo} proposalList={proposalListObj} option={'create'}/>
             </BackDrop>
             {/*backdrop for showing full information*/}
             <BackDrop className={classes.backdrop} open={openBackdropFullInfo}>
-                {proposalClickedForInfo !== null && <FullInfoProposal backdrop={backdropObjFullInfo} proposalList={proposalListObj} proposalObj={proposalClickedForInfo} setCallToServer={setCallForServerForDelete} userType={'companies'}/>}
+                {proposalClickedForInfo !== null && <FullInfoProposal backdrop={backdropObjFullInfo} proposalList={proposalListObj} proposalObj={proposalClickedForInfo} setCallToServer={setCallServerForDelete} userType={'companies'}/>}
             </BackDrop>
             {proposalClickedForInfo !== null &&
-            <AnswerOfServer callServerObj={{getter: callServerForDelete, setter: setCallForServerForDelete}}
+            <AnswerOfServer callServerObj={{getter: callServerForDelete, setter: setCallServerForDelete}}
                             url={`/api/collaboration_proposals/${proposalClickedForInfo._id}`} methodObj={{method: 'DELETE'}}
                             sucMsg={'Proposal deleted successfully'} failMsg={'Deletion Failed'}
                             sucFunc={()=>{proposalListObj.setter(proposalListObj.getter.filter(proposal=> proposal._id !== proposalClickedForInfo._id))}}/>

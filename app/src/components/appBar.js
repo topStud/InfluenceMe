@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { alpha, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -8,12 +8,14 @@ import Badge from '@material-ui/core/Badge';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import Chip from "@material-ui/core/Chip";
 import {Link} from 'react-router-dom';
 import {Avatar} from "@material-ui/core";
 import BusinessIcon from '@material-ui/icons/Business';
+import SearchIcon from '@material-ui/icons/Search';
+import InputBase from '@material-ui/core/InputBase';
+import {GetFilteredList} from "../utils";
 
 const useStyles = makeStyles((theme) => ({
     grow: {
@@ -41,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
     inputInput: {
         padding: theme.spacing(1, 1, 1, 0),
         // vertical padding + font size from searchIcon
-        paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+        marginLeft: `calc(1em + ${theme.spacing(4)}px)`,
         transition: theme.transitions.create('width'),
         width: '100%',
         [theme.breakpoints.up('md')]: {
@@ -64,21 +66,58 @@ const useStyles = makeStyles((theme) => ({
             display: 'none',
         },
     },
+    searchIcon: {
+        padding: theme.spacing(1, 1),
+        height: 'inherit',
+        position: 'absolute',
+        display: 'flex',
+        justifyContent: 'center',
+    },
+    search: {
+        position: 'relative',
+        borderRadius: '20px',
+        backgroundColor: alpha(theme.palette.common.white, 0.15),
+        '&:hover': {
+            backgroundColor: alpha('#A64B28', 0.05),
+        },
+        marginRight: theme.spacing(2),
+        marginLeft: 0,
+        width: '100%',
+        [theme.breakpoints.up('sm')]: {
+            marginLeft: theme.spacing(3),
+            width: 'auto',
+        },
+    },
 }));
 
-export default function PrimarySearchAppBar({userType, data}) {
+export default function PrimarySearchAppBar({userType, data, filterString, setFilteredList, searchObj}) {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
-
+    const [searchValue, setSearchValue] = React.useState('')
+    const [callServerSearch, setCallServerSearch] = React.useState(false)
     const isMenuOpen = Boolean(anchorEl);
 
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
     };
 
+    const onChangeSearchContent = (event) => {
+        setSearchValue(event.target.value)
+    }
+
     const handleMenuClose = () => {
         setAnchorEl(null);
     };
+
+    function onClickSearch() {
+        if (searchValue !== '') {
+            setCallServerSearch(true)
+            // nullifies search string (displayed to user)
+            setSearchValue('')
+        }
+        // saves search value of user
+        searchObj.setter(searchValue)
+    }
 
     const menuId = 'primary-search-account-menu';
     const renderMenu = (
@@ -122,6 +161,23 @@ export default function PrimarySearchAppBar({userType, data}) {
                         </Typography>
                     </Link>
                     <div className={classes.grow} />
+                    <div className={classes.search}>
+                        <InputBase
+                            placeholder="Key words…"
+                            classes={{
+                                root: classes.inputRoot,
+                                input: classes.inputInput,
+                            }}
+                            value={searchValue}
+                            onChange={onChangeSearchContent}
+                            style={{color: '#1F75A6', border:'1px solid #F27746', backgroundColor:'rgba(242,119,70,0.05)', borderRadius: '20px'}}
+                            inputProps={{ 'aria-label': 'search' }}
+                            startAdornment={<IconButton onClick={onClickSearch} className={classes.searchIcon}>
+                                <SearchIcon style={{color:'#F27746', height:20, width:20}}/>
+                            </IconButton>}
+                        />
+                    </div>
+                    <div className={classes.grow} />
                     <div className={classes.sectionDesktop}>
                         {
                             userType === 'companies' &&
@@ -130,12 +186,7 @@ export default function PrimarySearchAppBar({userType, data}) {
                                       style={{color: "black", fontFamily: 'Rubik', fontWeight: 300, fontSize:'1.1em', border:'1px solid transparent'}}/>
                             </Link>
                         }
-                        <IconButton aria-label="show 4 new mails" color="inherit">
-                            <Badge badgeContent={4} color="secondary">
-                                <MailIcon style={{color: "black"}}/>
-                            </Badge>
-                        </IconButton>
-                        <IconButton aria-label="show 17 new notifications" color="inherit">
+                        <IconButton aria-label="show 17 new notifications" color="inherit" style={{height: '80%', alignSelf:"center"}}>
                             <Badge badgeContent={17} color="secondary">
                                 <NotificationsIcon style={{color: 'black'}}/>
                             </Badge>
@@ -157,6 +208,8 @@ export default function PrimarySearchAppBar({userType, data}) {
                         </IconButton>
                     </div>
                 </Toolbar>
+                <GetFilteredList callServerObj={{getter: callServerSearch, setter: setCallServerSearch}}
+                                 filterString={filterString+' '+searchObj.getter} setFilteredList={setFilteredList}/>
             </AppBar>
             {renderMenu}
         </div>

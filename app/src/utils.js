@@ -38,7 +38,6 @@ export const AnswerOfServer = ({callServerObj, url, methodObj, sucMsg, failMsg, 
                     setSeverity('success')
                     setErrMsg(sucMsg)
                     sucFunc()
-                    console.log(response)
                     callServerObj.setter(false)
                     setOpen(true)
                 } else {
@@ -70,7 +69,7 @@ export const AnswerOfServer = ({callServerObj, url, methodObj, sucMsg, failMsg, 
     )
 }
 
-export function BadInputSnackbar({open, setOpen}) {
+export function ErrorSnackbar({open, setOpen}) {
     const handleClose = () => {
         setOpen(false)
     };
@@ -79,6 +78,46 @@ export function BadInputSnackbar({open, setOpen}) {
         <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}>
             <Alert onClose={handleClose} severity={'error'} style={{fontSize:14, fontFamily:'Rubik'}}>
                 <div>Bad input entered</div>
+            </Alert>
+        </Snackbar>
+    )
+}
+
+export const GetFilteredList = ({callServerObj, filterString, setFilteredList}) => {
+    const [open, setOpen] = React.useState(false)
+    const [errMsg, setErrMsg] = React.useState('')
+
+    useEffect(() => {
+        if(callServerObj.getter) {
+            fetch(`/api/collaboration_proposals/search/${filterString}`).then(res => {
+                if (!res.ok) {
+                    setOpen(true)
+                    setErrMsg('Connection problem')
+                }
+                return res.json()
+            }).then(response => {
+                if ('status' in response) {
+                    setOpen(true)
+                    setErrMsg('The search failed')
+                } else {
+                    callServerObj.setter(false)
+                    setFilteredList(response.docs)
+                }
+            }).catch((error) => {
+                console.log(error)
+            });
+        }
+    },[callServerObj.getter])
+
+    const handleClose = () => {
+        setOpen(false)
+        callServerObj.setter(false)
+    };
+
+    return (
+        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}>
+            <Alert onClose={handleClose} severity={'error'} style={{fontSize:14, fontFamily:'Rubik'}}>
+                <div>{errMsg}</div>
             </Alert>
         </Snackbar>
     )
