@@ -6,10 +6,10 @@ import {createTheme, makeStyles} from "@material-ui/core/styles";
 import ProposalsOfCompany from "../components/Cards/proposalsOfCompany";
 import {Alert, AlertTitle} from "@material-ui/lab";
 import Footer from "../components/footer";
-import CardsDisplay from "../components/Cards/cardsDisplay";
 import PersonalArea from "../components/personalArea/personalArea";
 import BackDrop from "@material-ui/core/Backdrop";
 import FullInfoInfluencer from '../components/Cards/fullInfoInfluencer'
+import FilteringCards from "../components/Cards/filteringCards";
 
 const theme = createTheme({
     palette: {
@@ -62,8 +62,10 @@ export default function CompanyPage() {
         setter: setSearchString
     }
 
-    // filtered object list according to search field, categories
-    const [filteredList, setFilteredList] = React.useState([])
+    // filtered proposal list according to search field, categories
+    const [filteredProposalList, setFilteredProposalList] = React.useState([])
+    // filtered proposal list according to search field, categories
+    const [filteredInfluencersList, setFilteredInfluencersList] = React.useState([])
     // an influencer that the company wants to get more information about
     const [influencerClickedForInfo, setInfluencerClickedForInfo] = React.useState(null)
 
@@ -102,18 +104,21 @@ export default function CompanyPage() {
             <MuiThemeProvider theme={theme}>
                 {companyInfo !== null &&
                     <>
-                        <AppBar userType={'companies'} data={companyInfo} filterString={filterString} searchObj={searchStringObj} setFilteredList={setFilteredList}/>
+                        <AppBar userType={'companies'} data={companyInfo} filterString={filterString} searchObj={searchStringObj} setFilteredList={setFilteredProposalList}/>
                         <Switch>
                             <Route exact path={`/companies/${id}`}>
                                 {influencersList !== null &&
-                                     <CardsDisplay objList={influencersList} display={'influencers'} backdrop={backdropObj} setClickedProposal={setInfluencerClickedForInfo}/>
+                                <FilteringCards display={'influencers'} objList={influencersList}
+                                                backdrop={backdropObj} setClickedCard={setInfluencerClickedForInfo}
+                                                filterStringObj={filterStringObj} filteredListObj={{getter: filteredInfluencersList, setter: setFilteredInfluencersList}}/>
+                                     // <CardsDisplay objList={influencersList} display={'influencers'} backdrop={backdropObj} setClickedProposal={setInfluencerClickedForInfo}/>
                                 }
                                 <BackDrop className={classes.backdrop} open={openBackDrop}>
                                     {influencerClickedForInfo !== null && <FullInfoInfluencer backdrop={backdropObj} influencerObj={influencerClickedForInfo}/>}
                                 </BackDrop>
                             </Route>
                             <Route path={`/companies/${id}/proposals`}>
-                                <ProposalsOfCompany companyInfo={companyInfo} filterStringObj={filterStringObj} filteredListObj={{getter: filteredList, setter: setFilteredList}}/>
+                                <ProposalsOfCompany companyInfo={companyInfo} filterStringObj={filterStringObj} filteredListObj={{getter: filteredProposalList, setter: setFilteredProposalList}}/>
                             </Route>
                             <Route path={`/companies/${id}/personal`}>
                                 <PersonalArea userType={'companies'} objData={companyInfo} setObjData={setCompanyInfo}/>

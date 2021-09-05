@@ -59,10 +59,10 @@ HoverCard.propTypes = {
     cardType: PropTypes.oneOf(['influencers', 'proposals'])
 }
 
-export default function HoverCard({infoObj, cardType, backdrop, setClickedProposal}) {
+export default function HoverCard({infoObj, cardType, backdrop, setClickedCard}) {
     function onClickCard() {
         backdrop.setter(true)
-        setClickedProposal(infoObj)
+        setClickedCard(infoObj)
     }
 
     return(

@@ -82,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function PermanentDrawerRight({objList, display, backdrop, setClickedProposal, filterStringObj, filteredListObj}) {
+export default function PermanentDrawerRight({objList, display, backdrop, setClickedCard, filterStringObj, filteredListObj}) {
     const classes = useStyles();
 
     const [callServerFilter, setCallServerFilter] = React.useState(false)
@@ -159,26 +159,31 @@ export default function PermanentDrawerRight({objList, display, backdrop, setCli
                         </ListItem>
                     ))}
                 </List>
-                <div className={classes.toolbar} style={{display:"flex", alignItems: "flex-end", justifyContent: "space-between", marginRight: 10}}>
-                    <span style={{fontSize:'1.5em',fontWeight:400}}>Filtering</span>
-                    <button onClick={onClickClearAll} className={classes.clearAll} style={{backgroundColor: "transparent", border: '1px solid transparent', cursor: "pointer"}}>clear all</button>
-                </div>
-                <Divider style={{marginTop: 5}}/>
-                <Accordion className={classes.accordion} style={{boxShadow: '0px 0px 0px transparent', marginTop: 5}}>
-                    <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel1a-content"
-                        id="panel1a-header"
-                    >
-                        Followers Amount
-                    </AccordionSummary>
-                    <AccordionDetails >
-                        <RangeSlider/>
-                    </AccordionDetails>
-                </Accordion>
+                {display === 'influencers' &&
+                    <>
+                        <div className={classes.toolbar} style={{display:"flex", alignItems: "flex-end", justifyContent: "space-between", marginRight: 10}}>
+                            <span style={{fontSize:'1.5em',fontWeight:400}}>Filtering</span>
+                            <button onClick={onClickClearAll} className={classes.clearAll} style={{backgroundColor: "transparent", border: '1px solid transparent', cursor: "pointer"}}>clear all</button>
+                        </div>
+                        <Divider style={{marginTop: 5}}/>
+                        <Accordion className={classes.accordion} style={{boxShadow: '0px 0px 0px transparent', marginTop: 5}}>
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls="panel1a-content"
+                                id="panel1a-header"
+                            >
+                                Followers Amount
+                            </AccordionSummary>
+                            <AccordionDetails >
+                                <RangeSlider/>
+                            </AccordionDetails>
+                        </Accordion>
+                    </>
+                }
+
             </div>
             <main className={classes.content}>
-                <CardsDisplay display={display} backdrop={backdrop} setClickedProposal={setClickedProposal} objList={filteredListObj.getter}/>
+                <CardsDisplay display={display} backdrop={backdrop} setClickedCard={setClickedCard} objList={filteredListObj.getter}/>
             </main>
             <GetFilteredList callServerObj={{getter: callServerFilter, setter: setCallServerFilter}} filterString={filterStringObj.getter} setFilteredList={filteredListObj.setter}/>
         </div>

@@ -125,7 +125,7 @@ export default function InfluencerPage() {
                     <Switch>
                         <Route exact path={`/influencers/${id}`}>
                             {proposalsList !== null &&
-                                    <FilteringCards display={'proposals'} objList={proposalsList} backdrop={backdropObj} setClickedProposal={setProposalClickedForInfo}
+                                    <FilteringCards display={'proposals'} objList={proposalsList} backdrop={backdropObj} setClickedCard={setProposalClickedForInfo}
                                                     filterStringObj={filterStringObj} filteredListObj={{getter: filteredList, setter: setFilteredList}}/>
 
                             }

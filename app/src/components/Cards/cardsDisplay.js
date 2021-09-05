@@ -3,7 +3,7 @@ import React, {useEffect} from 'react'
 import {Pagination} from "@material-ui/lab";
 import HoverCard from "./hoverCard";
 
-export default function CardsDisplay({objList, display, backdrop, setClickedProposal}) {
+export default function CardsDisplay({objList, display, backdrop, setClickedCard}) {
     // pagination
     let [page, setPage] = React.useState(1);
     const PER_PAGE = 6;
@@ -31,7 +31,7 @@ export default function CardsDisplay({objList, display, backdrop, setClickedProp
             <Grid container style={{marginLeft:0, width:'inherit', gridColumn: 1}}>
                 {currentData(objList).map((obj) => (
                     <Grid item style={{margin:2}} key={obj._id}>
-                        <HoverCard infoObj={obj} cardType={display} backdrop={backdrop} setClickedProposal={setClickedProposal}/>
+                        <HoverCard infoObj={obj} cardType={display} backdrop={backdrop} setClickedCard={setClickedCard}/>
                     </Grid>
                 ))}
                 {
