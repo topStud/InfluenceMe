@@ -97,6 +97,7 @@ export default function PrimarySearchAppBar({userType, data, filterString, setFi
     const [callServerSearch, setCallServerSearch] = React.useState(false)
     const isMenuOpen = Boolean(anchorEl);
 
+
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -108,6 +109,12 @@ export default function PrimarySearchAppBar({userType, data, filterString, setFi
     const handleMenuClose = () => {
         setAnchorEl(null);
     };
+
+    const onKeyDownSearchInput = (e) => {
+        if (e.key === 'Enter') {
+            onClickSearch()
+        }
+    }
 
     function onClickSearch() {
         if (searchValue !== '') {
@@ -163,6 +170,8 @@ export default function PrimarySearchAppBar({userType, data, filterString, setFi
                     <div className={classes.grow} />
                     <div className={classes.search}>
                         <InputBase
+                            onKeyDown={onKeyDownSearchInput}
+                            id={'search-field'}
                             placeholder="Key words…"
                             classes={{
                                 root: classes.inputRoot,

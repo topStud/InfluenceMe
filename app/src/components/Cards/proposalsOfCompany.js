@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function ProposalsOfCompany({companyInfo, filterStringObj, filteredListObj}) {
+export default function ProposalsOfCompany({companyInfo, filterStringObj, filteredListObj, searchStringObj}) {
     const classes = useStyles()
 
     // decides when to call the server for deleting a proposal
@@ -103,16 +103,16 @@ export default function ProposalsOfCompany({companyInfo, filterStringObj, filter
                       style={{border: 'transparent', fontSize:15}} onClick={onClickNewProposal}/>
             </div>
             {proposalsList !== null && <FilteringCards display={'proposals'} objList={proposalsList}
-                    backdrop={backdropObjFullInfo} setClickedProposal={setProposalClicked}
-                    filterStringObj={filterStringObj} filteredListObj={filteredListObj}/>}
+                    backdrop={backdropObjFullInfo} setClickedCard={setProposalClicked}
+                    filterStringObj={filterStringObj} filteredListObj={filteredListObj} searchStringObj={searchStringObj}/>}
             {/*backdrop for creating new proposal*/}
             <BackDrop className={classes.backdrop} open={openBackdropNewProposal}>
-                <CreateProposal val={values} backdrop={backdropObjNewProposal} companyInfo={companyInfo}
-                                proposalList={proposalListObj} option={'create'} />
+                {openBackdropNewProposal && <CreateProposal val={values} backdrop={backdropObjNewProposal} companyInfo={companyInfo}
+                                proposalList={proposalListObj} option={'create'} />}
             </BackDrop>
             {/*backdrop for showing full information*/}
             <BackDrop className={classes.backdrop} open={openBackdropFullInfo}>
-                {proposalClicked !== null && <FullInfoProposal backdrop={backdropObjFullInfo} proposalList={proposalListObj} proposalObj={proposalClicked} setCallToServer={setCallServerForDelete} userType={'companies'}/>}
+                {proposalClicked !== null && <FullInfoProposal backdrop={backdropObjFullInfo} proposalList={proposalListObj} proposalObj={{getter: proposalClicked, setter:setProposalClicked}} setCallToServer={setCallServerForDelete} userType={'companies'}/>}
             </BackDrop>
             {proposalClicked !== null &&
             <AnswerOfServer callServerObj={{getter: callServerForDelete, setter: setCallServerForDelete}}

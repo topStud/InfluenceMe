@@ -38,25 +38,10 @@ export default function FullInfoProposal({backdrop, proposalObj, setCallToServer
         getter: backdropConfirmation,
         setter: setBackdropConfirmation
     }
-
     const [backdropEdit, setBackdropEdit] = React.useState(false)
     const backdropEditObj = {
         getter: backdropEdit,
         setter: setBackdropEdit
-    }
-
-    const [proposalValues, setProposalValues] = React.useState({
-        title: proposalObj.title,
-        addPhone: proposalObj.phone !== null,
-        addEmail: proposalObj.email !== null,
-        categories: proposalObj.categories,
-        description: proposalObj.description,
-        requirements: proposalObj.requirements,
-        id: proposalObj._id
-    })
-    const values = {
-        getter: proposalValues,
-        setter: setProposalValues
     }
 
     function onClickCancelFinish() {
@@ -91,10 +76,10 @@ export default function FullInfoProposal({backdrop, proposalObj, setCallToServer
             >
                 <DialogTitle id="proposal-dialog-slide-title" >
                     <span style={{fontFamily:'Rubik', fontWeight:800, color: '#1F75A6', fontSize:'1.7em'}}>
-                        {proposalObj.title} <small style={{fontSize:'0.5em', color: '#F27746'}}>({proposalObj.companyName})</small>
+                        {proposalObj.getter.title} <small style={{fontSize:'0.5em', color: '#F27746'}}>({proposalObj.getter.companyName})</small>
                     </span>
                     {userType === 'companies' && <div style={{display: "flex", justifyContent: "flex-end", marginTop: -50}}>
-                        {proposalObj.canEdit === true && <IconButton aria-label="edit" onClick={onEditClick}>
+                        {proposalObj.getter.canEdit === true && <IconButton aria-label="edit" onClick={onEditClick}>
                             <EditIcon/>
                         </IconButton>}
                         <IconButton aria-label="delete" onClick={onDeleteClick}>
@@ -104,8 +89,8 @@ export default function FullInfoProposal({backdrop, proposalObj, setCallToServer
                 </DialogTitle>
                 <DialogContent>
                     <div style={{display:"flex",justifyContent: 'flex-start', fontSize: '1em', marginTop:-10}}>
-                        {proposalObj.categories.map((category, i)=>(
-                            i < proposalObj.categories.length - 1 ?
+                        {proposalObj.getter.categories.map((category, i)=>(
+                            i < proposalObj.getter.categories.length - 1 ?
                                 <div key={i} style={{display:"inline"}}>
                                     <span>{category}</span>
                                     <span style={{marginRight: 15, marginLeft: 15}}>•</span>
@@ -115,27 +100,26 @@ export default function FullInfoProposal({backdrop, proposalObj, setCallToServer
                         ))}
                     </div>
                     <h3 style={{color: '#A68617'}}>Some information about the company</h3>
-                    <p style={{whiteSpace: "pre-line"}}>{proposalObj.bio}</p>
+                    <p style={{whiteSpace: "pre-line"}}>{proposalObj.getter.bio}</p>
                     <h3 style={{color: '#A68617', margin:0}}>Some information about the proposal</h3>
-                    <p style={{whiteSpace: "pre-line"}}>{proposalObj.description}</p>
+                    <p style={{whiteSpace: "pre-line"}}>{proposalObj.getter.description}</p>
                     <h4 style={{color: '#796211'}}>Requirements</h4>
-                    <p style={{whiteSpace: "pre-line"}}>{proposalObj.requirements}</p>
+                    <p style={{whiteSpace: "pre-line"}}>{proposalObj.getter.requirements}</p>
                     {
-                        ((proposalObj.phone !== '' && proposalObj.phone !== null) || proposalObj.email != null || proposalObj.companySite !== '') &&
+                        ((proposalObj.getter.phone !== '' && proposalObj.getter.phone !== null) || proposalObj.getter.email != null || proposalObj.getter.companySite !== '') &&
                         <>
-                            {/*<h3 style={{color: '#A68617'}}>Contact us</h3>*/}
                             <div style={{display:"flex", flexDirection: "column", alignItems:"center"}}>
-                            {(proposalObj.phone !== '' && proposalObj.phone !== null) &&
+                            {(proposalObj.getter.phone !== '' && proposalObj.getter.phone !== null) &&
                             <>
-                                Our phone number is <span style={{textDecoration: "underline", userSelect: 'text', msUserSelect: 'text'}}>{proposalObj.phone}</span><br/>
+                                Our phone number is <span style={{textDecoration: "underline", userSelect: 'text', msUserSelect: 'text'}}>{proposalObj.getter.phone}</span><br/>
                             </>}
-                            {proposalObj.email !== null &&
+                            {proposalObj.getter.email !== null &&
                             <>
-                                You can email us to <span style={{textDecoration: "underline", userSelect: 'text', msUserSelect: 'text'}}>{proposalObj.email}</span><br/>
+                                You can email us to <span style={{textDecoration: "underline", userSelect: 'text', msUserSelect: 'text'}}>{proposalObj.getter.email}</span><br/>
                             </>}
-                            {proposalObj.companySite !== '' &&
+                            {proposalObj.getter.companySite !== '' &&
                             <>
-                                Visit out website <span style={{textDecoration: "underline", userSelect: 'text', msUserSelect: 'text'}}>{proposalObj.companySite}</span>
+                                Visit out website <span style={{textDecoration: "underline", userSelect: 'text', msUserSelect: 'text'}}>{proposalObj.getter.companySite}</span>
                             </>}
                             </div>
                         </>
@@ -158,11 +142,11 @@ export default function FullInfoProposal({backdrop, proposalObj, setCallToServer
                 </DialogActions>
             </Dialog>
             <BackDrop className={classes.backdrop} open={backdropConfirmation}>
-                <ConfirmationDialog type={confirmationType} backdrop={backdropConfirmationObj} setCallServer={setCallToServer}
-                                    proposalName={proposalObj.title} setDialogOpen={backdrop.setter}/>
+                {backdropConfirmation && <ConfirmationDialog type={confirmationType} backdrop={backdropConfirmationObj} setCallServer={setCallToServer}
+                                    proposalName={proposalObj.getter.title} setDialogOpen={backdrop.getter.setter}/>}
             </BackDrop>
             <BackDrop open={backdropEdit} className={classes.backdrop}>
-                <EditDialog val={values} proposalList={proposalList} backdrop={backdropEditObj} option={'edit'}/>
+                {backdropEdit && <EditDialog val={proposalObj} proposalList={proposalList} backdrop={backdropEditObj} option={'edit'}/>}
             </BackDrop>
         </>
     )

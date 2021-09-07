@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -32,8 +32,12 @@ export default function CreateProposalDialog(props) {
     const [proposalAccepted, setProposalAccepted] = React.useState(false)
     const [proposalEdited, setProposalEdited] = React.useState(false)
 
-    // values in field before change
-    const [prevValues, setPrevValues] = React.useState(props.val.getter)
+    function usePrevious(value) {
+        const ref = useRef(value);
+        return ref.current;
+    }
+
+    const prevObj = usePrevious(props.val.getter)
 
     const [errProposals, setErrProposals] = React.useState({
         titleErr: false,
@@ -73,31 +77,32 @@ export default function CreateProposalDialog(props) {
     function onClickCancelFinish() {
         props.backdrop.setter(false)
         if (props.option === 'create') {
-            props.val.setter({
-                title: '',
-                categories: [],
-                description: '',
-                requirements: '',
-                addPhone: false,
-                addEmail: false
-            })
-            setErrProposals({
-                titleErr: false,
-                titleMsg: '',
-                descriptionMsg: '',
-                descriptionErr: false,
-                categoryErr: false,
-                requirementsMsg: '',
-                requirementsErr: false
-            })
             setProposalAccepted(false)
         } else {
             setProposalEdited(false)
         }
+        props.val.setter(prevObj)
+        setErrProposals({
+            titleErr: false,
+            titleMsg: '',
+            descriptionMsg: '',
+            descriptionErr: false,
+            categoryErr: false,
+            requirementsMsg: '',
+            requirementsErr: false
+        })
     }
 
     const handleAddContactInfoChange = (event) => {
-        props.val.setter({ ...props.val.getter, [event.target.name]: event.target.checked});
+        if (props.option === 'create') {
+            props.val.setter({ ...props.val.getter, [event.target.name]: event.target.checked});
+        } else {
+            if (props.val.getter[event.target.name] !== null) {
+                props.val.setter({ ...props.val.getter, [event.target.name]: null})
+            } else {
+                props.val.setter({ ...props.val.getter, [event.target.name]: props.val.getter.contact[event.target.name]})
+            }
+        }
     };
 
     function onClickCreateEdit() {
@@ -161,16 +166,16 @@ export default function CreateProposalDialog(props) {
                     <Grid item xs={12} style={{maxHeight: 90}}>
                         <FormGroup row>
                             <FormControlLabel
-                                control={<Checkbox checked={props.val.getter.addPhone} onChange={handleAddContactInfoChange}
-                                                   name="addPhone" color="primary" value={true} size={"small"}/>}
+                                control={<Checkbox checked={props.option === 'create' ? props.val.getter.addPhone : props.val.getter.phone !== null} onChange={handleAddContactInfoChange}
+                                                   name={props.option === 'create' ? "addPhone":'phone'} color="primary" value={true} size={"small"}/>}
                                 label="Add my company's phone to proposal"
                             />
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        checked={props.val.getter.addEmail}
+                                        checked={props.option === 'create' ? props.val.getter.addEmail: props.val.getter.email !== null}
                                         onChange={handleAddContactInfoChange}
-                                        name="addEmail"
+                                        name={props.option === 'create' ? "addEmail":'email'}
                                         color="primary"
                                         size={"small"}
                                         value={true}
@@ -200,7 +205,7 @@ export default function CreateProposalDialog(props) {
                     <Button color="primary" onClick={onClickCancelFinish}>
                         Cancel
                     </Button>
-                    <Button disabled={JSON.stringify(prevValues) === JSON.stringify(props.val.getter)} color="primary" variant={"contained"} onClick={onClickCreateEdit}>
+                    <Button disabled={JSON.stringify(prevObj) === JSON.stringify(props.val.getter)} color="primary" variant={"contained"} onClick={onClickCreateEdit}>
                         Edit
                     </Button>
                 </DialogActions> :
@@ -227,19 +232,19 @@ export default function CreateProposalDialog(props) {
                                             {phone: props.companyInfo.phone, email: props.companyInfo.email}}]);
                                 }}/> :
                 <AnswerOfServer callServerObj={{getter: sendToServerEdit, setter: setSendToServerEdit}}
-                                url={`/api/collaboration_proposals/${props.val.getter.id}`}
+                                url={`/api/collaboration_proposals/${props.val.getter._id}`}
                                 methodObj={{method: 'PUT', headers: {'Content-type': 'application/json; charset=UTF-8'},
                                 body: JSON.stringify({...props.val.getter})}} sucMsg={'Proposal edited successfully'}
                                 failMsg={'Edit failed'} sucFunc={()=>{
                                     setProposalEdited(true);
-                                    let proposal = props.proposalList.getter.find(proposal => proposal._id === props.val.getter.id);
+                                    let proposal = props.proposalList.getter.find(proposal => proposal._id === props.val.getter._id);
                                     let newArr = props.proposalList.getter.filter(o=>o._id !== proposal._id);
                                     let index = props.proposalList.getter.indexOf(proposal)
                                     newArr.splice(index,0, {...proposal, ...props.val.getter,
                                         phone: props.val.getter.addPhone ? proposal.contact.phone : null,
                                         email: props.val.getter.addEmail ? proposal.contact.email : null})
                                     props.proposalList.setter(newArr);
-                                    setPrevValues(props.val.getter)
+
                 }}/>
             }
         </Dialog>

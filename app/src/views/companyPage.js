@@ -110,7 +110,7 @@ export default function CompanyPage() {
                                 {influencersList !== null &&
                                 <FilteringCards display={'influencers'} objList={influencersList}
                                                 backdrop={backdropObj} setClickedCard={setInfluencerClickedForInfo}
-                                                filterStringObj={filterStringObj} filteredListObj={{getter: filteredInfluencersList, setter: setFilteredInfluencersList}}/>
+                                                filterStringObj={filterStringObj} filteredListObj={{getter: filteredInfluencersList, setter: setFilteredInfluencersList}} searchStringObj={searchStringObj}/>
                                      // <CardsDisplay objList={influencersList} display={'influencers'} backdrop={backdropObj} setClickedProposal={setInfluencerClickedForInfo}/>
                                 }
                                 <BackDrop className={classes.backdrop} open={openBackDrop}>
@@ -118,7 +118,7 @@ export default function CompanyPage() {
                                 </BackDrop>
                             </Route>
                             <Route path={`/companies/${id}/proposals`}>
-                                <ProposalsOfCompany companyInfo={companyInfo} filterStringObj={filterStringObj} filteredListObj={{getter: filteredProposalList, setter: setFilteredProposalList}}/>
+                                <ProposalsOfCompany companyInfo={companyInfo} searchStringObj={searchStringObj} filterStringObj={filterStringObj} filteredListObj={{getter: filteredProposalList, setter: setFilteredProposalList}}/>
                             </Route>
                             <Route path={`/companies/${id}/personal`}>
                                 <PersonalArea userType={'companies'} objData={companyInfo} setObjData={setCompanyInfo}/>
