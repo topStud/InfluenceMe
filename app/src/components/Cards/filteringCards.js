@@ -111,6 +111,11 @@ export default function PermanentDrawerRight({objList, display, backdrop, setCli
 
     function onClickClearSearchString() {
         searchStringObj.setter('')
+        if (filterStringObj.getter !== '') {
+            setCallServerFilter(true)
+        } else {
+            filteredListObj.setter(objList)
+        }
     }
 
     useEffect(()=>{

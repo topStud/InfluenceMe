@@ -126,11 +126,11 @@ export default function InfluencerPage() {
                         <Route exact path={`/influencers/${id}`}>
                             {proposalsList !== null &&
                                     <FilteringCards display={'proposals'} objList={proposalsList} backdrop={backdropObj} setClickedCard={setProposalClickedForInfo}
-                                                    filterStringObj={filterStringObj} filteredListObj={{getter: filteredList, setter: setFilteredList}}/>
+                                                    filterStringObj={filterStringObj} filteredListObj={{getter: filteredList, setter: setFilteredList}} searchStringObj={searchStringObj}/>
 
                             }
                             <BackDrop className={classes.backdrop} open={openBackDrop}>
-                                {proposalClickedForInfo !== null && <FullInfoProposal backdrop={backdropObj} proposalObj={proposalClickedForInfo} userType={'influencers'}/>}
+                                {proposalClickedForInfo !== null && <FullInfoProposal backdrop={backdropObj} proposalObj={{getter: proposalClickedForInfo, setter: setProposalClickedForInfo}} userType={'influencers'}/>}
                             </BackDrop>
                         </Route>
                         <Route path={`/influencers/${id}/personal`}>

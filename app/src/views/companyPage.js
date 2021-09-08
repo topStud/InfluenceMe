@@ -55,11 +55,20 @@ export default function CompanyPage() {
         setter: setFilterString
     }
 
-    // search string
-    const [searchString, setSearchString] = React.useState('')
-    const searchStringObj = {
-        getter: searchString,
-        setter: setSearchString
+    console.log(filterString)
+
+    // search string - proposals
+    const [searchStringProposals, setSearchStringProposals] = React.useState('')
+    const searchStringProposalsObj = {
+        getter: searchStringProposals,
+        setter: setSearchStringProposals
+    }
+
+    // search string - influencers
+    const [searchStringInfluencers, setSearchStringInfluencers] = React.useState('')
+    const searchStringInfluencersObj = {
+        getter: searchStringInfluencers,
+        setter: setSearchStringInfluencers
     }
 
     // filtered proposal list according to search field, categories
@@ -96,6 +105,7 @@ export default function CompanyPage() {
             } else {
                 console.log(influencers.response)
                 setInfluencersList(influencers.response)
+                setFilteredInfluencersList(influencers.response)
             }
         })
     },[])
@@ -104,21 +114,20 @@ export default function CompanyPage() {
             <MuiThemeProvider theme={theme}>
                 {companyInfo !== null &&
                     <>
-                        <AppBar userType={'companies'} data={companyInfo} filterString={filterString} searchObj={searchStringObj} setFilteredList={setFilteredProposalList}/>
+                        <AppBar userType={'companies'} data={companyInfo} filterString={filterString} searchObj={searchStringProposalsObj} setFilteredList={setFilteredProposalList}/>
                         <Switch>
                             <Route exact path={`/companies/${id}`}>
                                 {influencersList !== null &&
                                 <FilteringCards display={'influencers'} objList={influencersList}
                                                 backdrop={backdropObj} setClickedCard={setInfluencerClickedForInfo}
-                                                filterStringObj={filterStringObj} filteredListObj={{getter: filteredInfluencersList, setter: setFilteredInfluencersList}} searchStringObj={searchStringObj}/>
-                                     // <CardsDisplay objList={influencersList} display={'influencers'} backdrop={backdropObj} setClickedProposal={setInfluencerClickedForInfo}/>
+                                                filterStringObj={filterStringObj} filteredListObj={{getter: filteredInfluencersList, setter: setFilteredInfluencersList}} searchStringObj={searchStringInfluencersObj}/>
                                 }
                                 <BackDrop className={classes.backdrop} open={openBackDrop}>
                                     {influencerClickedForInfo !== null && <FullInfoInfluencer backdrop={backdropObj} influencerObj={influencerClickedForInfo}/>}
                                 </BackDrop>
                             </Route>
                             <Route path={`/companies/${id}/proposals`}>
-                                <ProposalsOfCompany companyInfo={companyInfo} searchStringObj={searchStringObj} filterStringObj={filterStringObj} filteredListObj={{getter: filteredProposalList, setter: setFilteredProposalList}}/>
+                                <ProposalsOfCompany companyInfo={companyInfo} searchStringObj={searchStringProposalsObj} filterStringObj={filterStringObj} filteredListObj={{getter: filteredProposalList, setter: setFilteredProposalList}}/>
                             </Route>
                             <Route path={`/companies/${id}/personal`}>
                                 <PersonalArea userType={'companies'} objData={companyInfo} setObjData={setCompanyInfo}/>

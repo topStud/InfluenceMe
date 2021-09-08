@@ -143,7 +143,7 @@ export default function FullInfoProposal({backdrop, proposalObj, setCallToServer
             </Dialog>
             <BackDrop className={classes.backdrop} open={backdropConfirmation}>
                 {backdropConfirmation && <ConfirmationDialog type={confirmationType} backdrop={backdropConfirmationObj} setCallServer={setCallToServer}
-                                    proposalName={proposalObj.getter.title} setDialogOpen={backdrop.getter.setter}/>}
+                                    proposalName={proposalObj.getter.title} setDialogOpen={backdrop.setter}/>}
             </BackDrop>
             <BackDrop open={backdropEdit} className={classes.backdrop}>
                 {backdropEdit && <EditDialog val={proposalObj} proposalList={proposalList} backdrop={backdropEditObj} option={'edit'}/>}
