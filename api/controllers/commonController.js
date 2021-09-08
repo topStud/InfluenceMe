@@ -88,7 +88,7 @@ async function passwordUpdate(model, req, res) {
             return res.status(400).json({status: 'error',
                 'error': 'Hey! It looks like you’ve used this password before. Please choose a fresh one.'})
         }
-        user.password = await bcrypt.hash(req.body.password ,10)
+        user.password = await bcrypt.hash(req.body.newPassword ,10)
         user.save().catch((err) => {
             return res.status(500).json({status: 'error', 'error': 'could not save user'})
         })
