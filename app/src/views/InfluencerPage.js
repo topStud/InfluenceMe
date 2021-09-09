@@ -10,6 +10,7 @@ import '../styles/globals.css'
 import PersonalArea from "../components/personalArea/personalArea";
 import FullInfoProposal from "../components/Cards/fullInfoProposal";
 import BackDrop from "@material-ui/core/Backdrop";
+import {AnswerOfServer} from "../utils";
 
 const theme = createTheme({
     palette: {
@@ -65,6 +66,9 @@ export default function InfluencerPage() {
 
     const [companiesList, setCompaniesList] = React.useState(null)
     const [proposalsList, setProposalsList] = React.useState(null)
+
+    // user clicked on 'interested' button
+    const [callServerInterested, setCallServerInterested] = React.useState(false)
 
     useEffect(()=>{
         fetch(`/api/influencers/${id}`).then(res => {
@@ -130,8 +134,15 @@ export default function InfluencerPage() {
 
                             }
                             <BackDrop className={classes.backdrop} open={openBackDrop}>
-                                {proposalClickedForInfo !== null && <FullInfoProposal backdrop={backdropObj} proposalObj={{getter: proposalClickedForInfo, setter: setProposalClickedForInfo}} userType={'influencers'}/>}
+                                {proposalClickedForInfo !== null && <FullInfoProposal setCallToServer={setCallServerInterested} backdrop={backdropObj} proposalObj={{getter: proposalClickedForInfo, setter: setProposalClickedForInfo}} userType={'influencers'}/>}
                             </BackDrop>
+                            {proposalClickedForInfo !== null && <AnswerOfServer callServerObj={{getter: callServerInterested, setter: setCallServerInterested}}
+                                            url={`/api/notifications`} methodObj={{method: 'POST', headers:
+                                            {'Accept': 'application/json', 'Content-type': 'application/json'},
+                                            body: JSON.stringify({itemID: proposalClickedForInfo._id,
+                                            itemName: proposalClickedForInfo.title, receiverID: proposalClickedForInfo.companyID,
+                                            senderID: influencerData._id, senderName: influencerData.firstName, messageType: 1})}} sucMsg={'Request sent successfully'}
+                                            failMsg={'Failed sending the request'} sucFunc={()=>{console.log('add to influencer list the proposal')}}/>}
                         </Route>
                         <Route path={`/influencers/${id}/personal`}>
                             <PersonalArea userType={'influencers'} objData={influencerData} setObjData={setInfluencerData} />

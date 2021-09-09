@@ -12,9 +12,7 @@ export default function ConfirmationDialog({backdrop, setCallServer, proposalNam
     };
 
     function handleConfirm() {
-        if (type === 'delete') {
-            setCallServer(true)
-        }
+        setCallServer(true)
         backdrop.setter(false)
         setDialogOpen(false)
     }

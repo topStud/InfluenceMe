@@ -1,6 +1,8 @@
 import React, {useEffect} from "react";
 import {Snackbar} from "@material-ui/core";
 import {Alert} from "@material-ui/lab";
+import PropTypes from 'prop-types'
+
 
 export function parseJwt (token) {
     const base64Url = token.split('.')[1];
@@ -31,6 +33,7 @@ export const AnswerOfServer = ({callServerObj, url, methodObj, sucMsg, failMsg, 
                     setOpen(true)
                     setSeverity('error')
                     setErrMsg('Connection problem')
+                    console.log('Connection problem')
                 }
                 return res.json()
             }).then(response => {
@@ -40,7 +43,9 @@ export const AnswerOfServer = ({callServerObj, url, methodObj, sucMsg, failMsg, 
                     sucFunc()
                     callServerObj.setter(false)
                     setOpen(true)
+                    console.log('success')
                 } else {
+                    console.log('error')
                     setSeverity('error')
                     setOpen(true)
                     if ('error' in response) {
@@ -121,6 +126,15 @@ export const GetFilteredList = ({callServerObj, filterString, setFilteredList}) 
             </Alert>
         </Snackbar>
     )
+}
+
+AnswerOfServer.propTypes = {
+    callServerObj: PropTypes.object.isRequired,
+    url: PropTypes.string.isRequired,
+    methodObj: PropTypes.object.isRequired,
+    sucMsg: PropTypes.string.isRequired,
+    failMsg: PropTypes.string.isRequired,
+    sucFunc: PropTypes.func
 }
 
 export function calculateAge(birthday) { // birthday is a date
