@@ -4,6 +4,8 @@ const NotificationSchema = new mongoose.Schema({
     senderID:{ type: String, required: true },
     itemID:{ type: String, required: true },
     messageType:{ type: Number, required: true },
+    message : { type : String, required: true },
+    createdAt : { type : Date, default: Date.now },
     seen:{ type: Boolean, default: false }
 })
 

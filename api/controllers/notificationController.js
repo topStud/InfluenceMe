@@ -12,7 +12,16 @@ const sendNotification = async (req, res) => {
             if (err || company === null){
                 return res.status(400).json({status: 'error', 'error': 'company not exist'})
             }
-            await createNotificationTo(company, req, res)
+            let message
+            if(req.body.messageType === 1){
+                message = req.body.senderName +
+                    ' has sent a collaboration request for the proposal named ' + req.body.itemName
+            } else{
+                message = req.body.senderName
+                    + ' has sent a contract for the '+ req.body.itemName + ' proposal'
+            }
+
+            await createNotificationTo(company, req, res, message)
         })
     }
     // The receiver is an influencer and the sender is a company
@@ -22,16 +31,20 @@ const sendNotification = async (req, res) => {
             if (err || influencer === null){
                 return res.status(400).json({status: 'error', 'error': 'influencer not exist'})
             }
-            await createNotificationTo(influencer, req, res)
+            const message = 'You and ' + req.body.senderName
+                + ' are now collaborating on '+ req.body.itemName
+            await createNotificationTo(influencer, req, res, message)
         })
     }
 }
 
-async function createNotificationTo(user, req, res) {
+async function createNotificationTo(user, req, res, message) {
     await notificationModel.create({
         senderID: req.body.senderID,
         itemID: req.body.itemID,
         messageType: req.body.messageType,
+        message: message,
+        createdAt: req.body.createdAt, // just in case
         seen:req.body.seen
     }).then((notification) => {
         user.Notifications.push(notification)
