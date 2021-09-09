@@ -316,7 +316,7 @@ export default function ContentBelowStepper(props) {
                         bio: bioInfluencer
                     }:{
                         email: props.regValues.email,
-                        password: props.regValues.pass,
+                        password: props.regValues.password,
                         ...valuesCompany,
                         bio: bioCompany
                     }} filledCorrectly={props.filledCorrectly} userType={userType}/>
