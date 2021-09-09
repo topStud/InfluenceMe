@@ -16,9 +16,20 @@ const sendNotification = async (req, res) => {
             if(req.body.messageType === 1){
                 message = req.body.senderName +
                     ' has sent a collaboration request for the proposal named ' + req.body.itemName
+
+                // add collaboration to influencer's clickedCollaborations
+                await influencerModel.
+                findOne({ _id: req.body.senderID }, async (err, influencer) => {
+                    if (err || influencer === null) {
+                        return res.status(400).json({status: 'error', 'error': 'influencer not exist'})
+                    }
+                    influencer.clickedCollaborations.push(req.body.itemID)
+                    influencer.save().catch((err) => {
+                        return res.status(500).json({status: 'error', 'error': 'could not save'})
+                    })
+                })
             } else{
-                message = req.body.senderName
-                    + ' has sent a contract for the '+ req.body.itemName + ' proposal'
+                message = req.body.senderName + ' has sent a contract for the '+ req.body.itemName + ' proposal'
             }
 
             await createNotificationTo(company, req, res, message)
