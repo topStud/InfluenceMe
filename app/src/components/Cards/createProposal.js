@@ -12,7 +12,7 @@ import CategoriesComponent from "../InputComponents/categoriesComponent";
 import InputTextArea from "../InputComponents/InputTextArea";
 import {Checkbox, FormControlLabel, FormGroup, TextField} from "@material-ui/core";
 import PropTypes from 'prop-types'
-import {AnswerOfServer, required_txt} from "../../utils";
+import {AnswerOfServer, ErrorSnackbar, required_txt} from "../../utils";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -31,6 +31,7 @@ export default function CreateProposalDialog(props) {
     const [sendToServerEdit, setSendToServerEdit] = React.useState(false)
     const [proposalAccepted, setProposalAccepted] = React.useState(false)
     const [proposalEdited, setProposalEdited] = React.useState(false)
+    const [badInput, setBadInput] = React.useState(false)
 
     function usePrevious(value) {
         const ref = useRef(value);
@@ -120,6 +121,7 @@ export default function CreateProposalDialog(props) {
                 requirementsErr: emptyRequirements,
                 requirementsMsg: emptyRequirements ? required_txt : ''
             })
+            setBadInput(true)
         } else {
             // sends info to server
             if (props.option === 'create') {
@@ -149,18 +151,18 @@ export default function CreateProposalDialog(props) {
                     All the proposals will be shared with all users (not only influencers registered to this site).
                 </DialogContentText>}
                 <Grid container spacing={3}>
-                    <Grid item xs={12} style={{maxHeight: 90}}>
+                    <Grid item xs={12} style={{height: 80}}>
                         {props.option === 'create' ? <InputText val={props.val} err={errors} info={titleObj}/> :
                          <TextField disabled={true} fullWidth label={'Title'} id={'disabled-title'}
                                     value={props.val.getter.title}/>}
                     </Grid>
-                    <Grid item xs={12} style={{maxHeight: 100}}>
+                    <Grid item xs={12} style={{height: 100}}>
                         <CategoriesComponent val={props.val} err={errors}/>
                     </Grid>
-                    <Grid item xs={12} style={{maxHeight: 145, paddingLeft:0}}>
+                    <Grid item xs={12} style={{height: 145, paddingLeft:0}}>
                         <InputTextArea val={props.val} err={errors} info={descriptionObj}/>
                     </Grid>
-                    <Grid item xs={12} style={{maxHeight: 145, paddingLeft:0}}>
+                    <Grid item xs={12} style={{height: 145, paddingLeft:0}}>
                         <InputTextArea val={props.val} err={errors} info={requirementsObj}/>
                     </Grid>
                     <Grid item xs={12} style={{maxHeight: 90}}>
@@ -226,7 +228,7 @@ export default function CreateProposalDialog(props) {
                                     const {addPhone: phoneVal, addEmail: emailVal,...otherKeys} = props.val.getter;
                                     props.proposalList.setter(oldArray => [...oldArray, {...otherKeys,
                                         companyID: props.companyInfo._id, companyName: props.companyInfo.name,
-                                        companySite: props.companyInfo.siteUrl, logo: props.companyInfo.photo,
+                                        companySite: props.companyInfo.siteUrl, photo: props.companyInfo.photo,
                                         bio: props.companyInfo.bio, email: emailVal ? props.companyInfo.email : null,
                                         phone: phoneVal ? props.companyInfo.phone : null, contact:
                                             {phone: props.companyInfo.phone, email: props.companyInfo.email}}]);
@@ -247,6 +249,7 @@ export default function CreateProposalDialog(props) {
 
                 }}/>
             }
+            <ErrorSnackbar open={badInput} setOpen={setBadInput}/>
         </Dialog>
 
     );

@@ -81,39 +81,39 @@ export default function InfluencerPage() {
                 setErrFetchInfluencerData(true)
             } else {
                 setInfluencerData(influencerData.response)
-            }
-        })
-        fetch('/api/companies').then(res => {
-            if (!res.ok) {
-                console.log('connection problem')
-            }
-            return res.json()
-        }).then(companiesData => {
-            if ('status' in companiesData) {
-                console.log('couldn\'t get all companies')
-            } else {
-                setCompaniesList(companiesData.response)
-                fetch('/api/collaboration_proposals').then(res => {
+                fetch('/api/companies').then(res => {
                     if (!res.ok) {
                         console.log('connection problem')
                     }
                     return res.json()
-                }).then(proposalsData => {
-                    if ('status' in proposalsData) {
-                        console.log('couldn\'t get all Cards')
+                }).then(companiesData => {
+                    if ('status' in companiesData) {
+                        console.log('couldn\'t get all companies')
                     } else {
-                        // setProposalsList(proposalsList.response)
-                        let proposalsList = proposalsData.response.map((proposal)=> {
-                            let company = companiesData.response.find(company => company._id === proposal.companyID)
-                            proposal.companyName = company.name
-                            proposal.companySite = company.siteUrl
-                            proposal.logo = company.photo
-                            proposal.bio = company.bio
-                            return proposal
+                        setCompaniesList(companiesData.response)
+                        fetch('/api/collaboration_proposals').then(res => {
+                            if (!res.ok) {
+                                console.log('connection problem')
+                            }
+                            return res.json()
+                        }).then(proposalsData => {
+                            if ('status' in proposalsData) {
+                                console.log('couldn\'t get all Cards')
+                            } else {
+                                let proposalsList = proposalsData.response.map((proposal)=> {
+                                    let company = companiesData.response.find(company => company._id === proposal.companyID)
+                                    proposal.companyName = company.name
+                                    proposal.companySite = company.siteUrl
+                                    proposal.photo = company.photo
+                                    proposal.bio = company.bio
+                                    proposal.disabled = influencerData.response.clickedCollaborations.includes(proposal._id)
+                                    return proposal
+                                })
+                                console.log(proposalsList)
+                                setProposalsList(proposalsList)
+                                setFilteredList(proposalsList)
+                            }
                         })
-                        console.log(proposalsList)
-                        setProposalsList(proposalsList)
-                        setFilteredList(proposalsList)
                     }
                 })
             }
@@ -141,8 +141,8 @@ export default function InfluencerPage() {
                                             {'Accept': 'application/json', 'Content-type': 'application/json'},
                                             body: JSON.stringify({itemID: proposalClickedForInfo._id,
                                             itemName: proposalClickedForInfo.title, receiverID: proposalClickedForInfo.companyID,
-                                            senderID: influencerData._id, senderName: influencerData.firstName, messageType: 1})}} sucMsg={'Request sent successfully'}
-                                            failMsg={'Failed sending the request'} sucFunc={()=>{console.log('add to influencer list the proposal')}}/>}
+                                            senderID: influencerData._id, senderName: influencerData.firstName + ' ' + influencerData.lastName, messageType: 1})}} sucMsg={'Request sent successfully'}
+                                            failMsg={'Failed sending the request'} sucFunc={()=>{proposalClickedForInfo.disabled = true}}/>}
                         </Route>
                         <Route path={`/influencers/${id}/personal`}>
                             <PersonalArea userType={'influencers'} objData={influencerData} setObjData={setInfluencerData} />

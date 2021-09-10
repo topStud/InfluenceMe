@@ -10,6 +10,7 @@ import PersonalArea from "../components/personalArea/personalArea";
 import BackDrop from "@material-ui/core/Backdrop";
 import FullInfoInfluencer from '../components/Cards/fullInfoInfluencer'
 import FilteringCards from "../components/Cards/filteringCards";
+import PersonalInfluencerDataPage from '../components/notifications/personalInfluencerDataPage'
 
 const theme = createTheme({
     palette: {
@@ -132,6 +133,7 @@ export default function CompanyPage() {
                             <Route path={`/companies/${id}/personal`}>
                                 <PersonalArea userType={'companies'} objData={companyInfo} setObjData={setCompanyInfo}/>
                             </Route>
+                            <Route path='/companies/:id/:influencerId' component={PersonalInfluencerDataPage}/>
                         </Switch>
                     </>
                 }

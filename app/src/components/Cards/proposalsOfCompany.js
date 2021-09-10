@@ -79,7 +79,7 @@ export default function ProposalsOfCompany({companyInfo, filterStringObj, filter
                 let proposals = proposalData.response.map(proposal => {
                     proposal.companyName = companyInfo.name
                     proposal.companySite = companyInfo.siteUrl
-                    proposal.logo = companyInfo.photo
+                    proposal.photo = companyInfo.photo
                     proposal.bio = companyInfo.bio
                     proposal.contact = {
                         phone: companyInfo.phone,

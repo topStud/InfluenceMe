@@ -1,21 +1,21 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { alpha, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import Badge from '@material-ui/core/Badge';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import NotificationsIcon from '@material-ui/icons/Notifications';
 import Chip from "@material-ui/core/Chip";
 import {Link} from 'react-router-dom';
-import {Avatar} from "@material-ui/core";
+import {Avatar, Snackbar} from "@material-ui/core";
 import BusinessIcon from '@material-ui/icons/Business';
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
 import {GetFilteredList} from "../utils";
+import Notification from "./notifications/Notification";
+import {Alert} from "@material-ui/lab";
 
 const useStyles = makeStyles((theme) => ({
     grow: {
@@ -96,7 +96,23 @@ export default function PrimarySearchAppBar({userType, data, filterString, setFi
     const [searchValue, setSearchValue] = React.useState('')
     const [callServerSearch, setCallServerSearch] = React.useState(false)
     const isMenuOpen = Boolean(anchorEl);
+    const [errFetchNotifications, setErrFetchNotifications] = React.useState(false)
+    const [notificationsList, setNotificationsList] = React.useState(null)
 
+    useEffect(()=> {
+        fetch(`/api/notifications/${data._id}`).then(res => {
+            if (!res.ok) {
+                setErrFetchNotifications(true)
+            }
+            return res.json()
+        }).then(notificationsData => {
+            if ('status' in notificationsData) {
+                setErrFetchNotifications(true)
+            } else {
+                setNotificationsList(notificationsData.response)
+            }
+        })
+    },[])
 
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -114,6 +130,10 @@ export default function PrimarySearchAppBar({userType, data, filterString, setFi
         if (e.key === 'Enter') {
             onClickSearch()
         }
+    }
+
+    const handleCloseSnackbar = () => {
+        setErrFetchNotifications(false)
     }
 
     function onClickSearch() {
@@ -135,8 +155,10 @@ export default function PrimarySearchAppBar({userType, data, filterString, setFi
             id={menuId}
             keepMounted
             transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-            transitionDuration={700}
+            transitionDuration={200}
             open={isMenuOpen}
+            disableScrollLock={true}
+            style={{position: 'fixed'}}
             onClose={handleMenuClose}
         >
             <Typography style={{marginLeft:10, marginBottom:10}}>
@@ -158,9 +180,9 @@ export default function PrimarySearchAppBar({userType, data, filterString, setFi
     );
 
     return (
-        <div className={classes.grow} style={{marginBottom: 20}}>
-            <AppBar position="static">
-                <Toolbar style={{backgroundColor: "white", boxShadow: '1px 5px 10px #A68617'}}>
+        <div className={classes.grow} style={{marginBottom: 20, position:"sticky", top:0, zIndex:1000}}>
+            <AppBar position="relative">
+                <Toolbar style={{backgroundColor: "white", borderBottom: '8px solid #F27746'}}>
                     <Link to={`/${userType}/${data._id}`}>
                         <Typography className={classes.title} component={'h2'} variant="h2" noWrap
                                     style={{fontFamily: 'Rubik', fontWeight:800, color:'#1F75A6',cursor: "pointer"}}>
@@ -195,11 +217,7 @@ export default function PrimarySearchAppBar({userType, data, filterString, setFi
                                       style={{color: "black", fontFamily: 'Rubik', fontWeight: 300, fontSize:'1.1em', border:'1px solid transparent'}}/>
                             </Link>
                         }
-                        <IconButton aria-label="show 17 new notifications" color="inherit" style={{height: '80%', alignSelf:"center"}}>
-                            <Badge badgeContent={17} color="secondary">
-                                <NotificationsIcon style={{color: 'black'}}/>
-                            </Badge>
-                        </IconButton>
+                        {notificationsList !== null && <Notification listItems={notificationsList} id={data._id} userType={userType} unseen={data.unseenNotification}/>}
                         <IconButton
                             edge="end"
                             aria-label="account of current user"
@@ -221,6 +239,11 @@ export default function PrimarySearchAppBar({userType, data, filterString, setFi
                                  filterString={filterString+' '+searchObj.getter} setFilteredList={setFilteredList}/>
             </AppBar>
             {renderMenu}
+            <Snackbar open={errFetchNotifications} autoHideDuration={6000} onClose={handleCloseSnackbar} anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}>
+                <Alert onClose={handleCloseSnackbar} severity={'error'} style={{fontSize:14, fontFamily:'Rubik'}}>
+                    <div>Couldn't get notifications</div>
+                </Alert>
+            </Snackbar>
         </div>
     );
 }

@@ -132,6 +132,7 @@ export default function FullInfoProposal({backdrop, proposalObj, setCallToServer
                         color="secondary"
                         startIcon={<FavoriteBorderIcon />}
                         onClick={onClickInterested}
+                        disabled={proposalObj.getter.disabled}
                     >
                         Interested
                     </Button>

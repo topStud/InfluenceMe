@@ -33,7 +33,6 @@ export const AnswerOfServer = ({callServerObj, url, methodObj, sucMsg, failMsg, 
                     setOpen(true)
                     setSeverity('error')
                     setErrMsg('Connection problem')
-                    console.log('Connection problem')
                 }
                 return res.json()
             }).then(response => {
