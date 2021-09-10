@@ -13,7 +13,8 @@ const CompanySchema = new mongoose.Schema({
     disabled: {type: Boolean, default: false},
     CollaborationProposals: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Collaborations' }],
     Contracts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Contracts' }],
-    Notifications: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notifications' }]
+    Notifications: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notifications' }],
+    unseenNotification: {type: Number, default: 0}
 })
 
 const model = mongoose.model('Companies', CompanySchema)
