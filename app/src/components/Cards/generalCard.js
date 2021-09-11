@@ -2,9 +2,11 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
-import {Avatar} from "@material-ui/core";
+import {Avatar, CardContent} from "@material-ui/core";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import PropTypes from "prop-types";
+import PeopleIcon from '@material-ui/icons/People';
+import {useLocation} from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -15,23 +17,28 @@ const useStyles = makeStyles((theme) => ({
         display: "flex",
         flexDirection: "column"
     },
-    bullet: {
-        display: 'inline-block',
-        margin: '0 2px',
-        transform: 'scale(0.8)',
-    },
-    media: {
-        height: 150,
-        paddingTop: '40%'
-    },
     big: {
         width: theme.spacing(15),
         height: theme.spacing(15),
     },
-    backdrop: {
-        zIndex: theme.zIndex.drawer + 1,
-        color: '#fff',
+    collaborationsNumber: {
+        paddingBottom:0,
+        display: "flex",
+        justifyContent: "flex-end",
+        alignItems:"center"
     },
+    header: {
+        display: "flex",
+        flexDirection:"column",
+        textAlign: "center",
+        alignItems: "center",
+        justifyContent:"center",
+        justifySelf: "center",
+    },
+    company: {
+        paddingTop:0,
+        marginTop: -20
+    }
 }));
 
 GeneralCard.propTypes = {
@@ -41,19 +48,25 @@ GeneralCard.propTypes = {
 
 export default function GeneralCard({infoObj, cardType}) {
     const classes = useStyles();
+    const { pathname } = useLocation();
+    const userType = pathname.split('/')[1]
 
     return (
         <Card className={classes.root}>
+            {userType === 'companies' && <CardContent className={classes.collaborationsNumber}>
+                {infoObj.collaborationsNumber}
+                <PeopleIcon style={{marginLeft: 7}}/>
+            </CardContent>}
             <CardHeader
                 avatar={
                     infoObj.photo !== null ?
                         <Avatar src={infoObj.photo} alt={infoObj.className} className={classes.big}/> : <AccountCircle style={{color: 'black'}} className={classes.big}/>
                 }
-                style={{display: "flex", flexDirection:"column", textAlign: "center", alignItems: "center", justifyContent:"center", justifySelf: "center"}}
+                className={`${classes.header} ${userType === 'companies' ? classes.company : ''}`}
                 title={cardType === 'proposals' ? infoObj.title : infoObj.instagramUser}
                 subheader={cardType === 'proposals' ? infoObj.companyName: infoObj.followersAmount}
-                subheaderTypographyProps={{style:{fontSize:'1em', fontFamily: 'Rubik', fontWeight: 200}}}
-                titleTypographyProps={{style:{fontSize:'1.2em', fontFamily: 'Rubik', fontWeight: 500, color: '#1F75A6'}}}
+                subheaderTypographyProps={{style:{fontSize:'1em', fontFamily: 'Rubik', fontWeight: 200, overflowWrap: "anywhere"}}}
+                titleTypographyProps={{style:{fontSize:'1.2em', fontFamily: 'Rubik', fontWeight: 500, color: '#1F75A6', overflowWrap: "anywhere"}}}
             />
         </Card>
     )

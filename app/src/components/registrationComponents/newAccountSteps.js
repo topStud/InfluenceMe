@@ -213,17 +213,18 @@ export default function ContentBelowStepper(props) {
         }
         // Instagram account
         else if (activeStep === 1) {
-            let instaUserErr = valuesInstaAccount.instagramUser === ''
+            let instaUserEmpty = valuesInstaAccount.instagramUser === ''
+            let instagramUserTooLong = valuesInstaAccount.instagramUser > 50
             let instaFollowersErr = valuesInstaAccount.followersAmount === ''
             let linkErr = valuesInstaAccount.instagramUrl !== '' && !validateWebsiteUrl(valuesInstaAccount.instagramUrl)
             let categoryErr = valuesInstaAccount.categories.length === 0
-            if (linkErr || instaUserErr || instaFollowersErr || categoryErr) {
+            if (linkErr || instaUserEmpty || instaFollowersErr || categoryErr || instagramUserTooLong) {
                 mayContinue = false
                 setErrInstaAccount({
                     instagramUrlErr: linkErr,
                     instagramUrlMsg: linkErr ? 'Url format is invalid' : '',
-                    instagramUserErr: instaUserErr,
-                    instagramUserMsg: instaUserErr ? required_txt : '',
+                    instagramUserErr: instaUserEmpty || instagramUserTooLong,
+                    instagramUserMsg: instaUserEmpty ? required_txt : instagramUserTooLong ? 'Username too long. The length\'s limit is 50 characters' : '',
                     followersErr: instaFollowersErr,
                     followersMsg: instaFollowersErr ? required_txt : '',
                     categoryErr: categoryErr
@@ -239,14 +240,14 @@ export default function ContentBelowStepper(props) {
         // personal information
         if (activeStep === 0) {
             let phoneNumberErr = !(valuesCompany.phone === '' || (valuesCompany.phone.split(" ").length - 1) === 0 || isMobilePhone(valuesCompany.phone.replace(/\s+/g, ''), 'any')),
-                compNameErr = valuesCompany.name === '',
+                compNameEmpty = valuesCompany.name === '', companyNameTooLong = valuesCompany.name.length > 30,
                 linkErr = valuesCompany.siteUrl !== '' && !validateWebsiteUrl(valuesCompany.siteUrl);
-            if (compNameErr || linkErr || phoneNumberErr) {
+            if (compNameEmpty || linkErr || phoneNumberErr || companyNameTooLong) {
                 mayContinue = false
             }
             setErrCompanyData({
-                companyNameErr: compNameErr,
-                companyNameMsg: compNameErr ? required_txt : '',
+                companyNameErr: compNameEmpty || companyNameTooLong,
+                companyNameMsg: compNameEmpty ? required_txt : companyNameTooLong ? 'Name too long. The length\'s limit is 30 characters' : '',
                 siteUrlErr: linkErr,
                 siteUrlMsg: linkErr ? 'Url format is invalid' : '',
                 phoneErr: phoneNumberErr,

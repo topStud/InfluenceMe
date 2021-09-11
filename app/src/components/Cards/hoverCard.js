@@ -62,6 +62,7 @@ HoverCard.propTypes = {
 export default function HoverCard({infoObj, cardType, backdrop, setClickedCard}) {
     function onClickCard() {
         backdrop.setter(true)
+        console.log(infoObj._id)
         setClickedCard(infoObj)
     }
 

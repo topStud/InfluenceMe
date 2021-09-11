@@ -9,6 +9,7 @@ import {AppBar} from "@material-ui/core";
 import {GetFilteredList} from "../../utils";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
 
 const drawerWidth = 240;
 
@@ -20,8 +21,15 @@ const useStyles = makeStyles((theme) => ({
         width: drawerWidth,
         flexShrink: 0,
     },
-    // necessary for content to be below app bar
-    toolbar: theme.mixins.toolbar,
+    toolbar: {
+        fontSize:'1.5em',
+        fontWeight:400,
+        display:"flex",
+        alignItems: "flex-end",
+        justifyContent: "space-between",
+        // necessary for content to be below app bar
+        ...theme.mixins.toolbar
+    },
     content: {
         flexGrow: 1,
         backgroundColor: theme.palette.background.default,
@@ -30,7 +38,11 @@ const useStyles = makeStyles((theme) => ({
     clearAll: {
         "&:hover": {
             textDecoration: 'underline',
-        }
+        },
+        cursor: "pointer",
+        backgroundColor: "transparent",
+        border: '1px solid transparent',
+        alignSelf: "flex-end"
     }
 }));
 
@@ -102,39 +114,45 @@ export default function PermanentDrawerRight({objList, display, backdrop, setCli
     }
 
     return (
-        <div className={classes.root}>
-            <div
-                className={classes.drawer}
-                style={{position:"relative !important", paddingLeft: 10}}
-            >
-                <div className={classes.toolbar} style={{fontSize:'1.5em',fontWeight:400, display:"flex", alignItems: "flex-end"}}>
-                    Categories
+        <Grid container>
+            <Grid item xs={1}/>
+            <Grid item xs={10}>
+                <div className={classes.root}>
+                    <div
+                        className={classes.drawer}
+                        style={{position:"relative !important", paddingLeft: 10}}
+                    >
+                        <div className={classes.toolbar}>
+                            Categories
+                            <button onClick={onClickClearAll} className={classes.clearAll}>clear all</button>
+                        </div>
+                        <Divider style={{marginTop: 5}} />
+                        <List style={{display: "flex", flexDirection:"column"}}>
+                            {['Lifestyle', 'Travel', 'Games','Gadgets', 'Clothing', 'Beauty'].map((text) => (
+                                <ListItem button key={text} style={{height: 40}} onClick={()=>onCategoryClick(text)}>
+                                    <ListItemText style={{textDecorationLine: checked[text] ? "underline" : 'none',
+                                        textDecorationColor: '#F27746', textDecorationThickness: '0.4em'}} primary={text} />
+                                </ListItem>
+                            ))}
+                        </List>
+                    </div>
+                    <main className={classes.content}>
+                        {searchStringObj.getter !== '' &&
+                        <AppBar position={"relative"} style={{padding:0}}>
+                            <Toolbar style={{display: "flex", justifyContent: "space-between"}}>
+                                <Typography variant="h6" style={{padding:0}}>
+                                    You searched for: {searchStringObj.getter}
+                                </Typography>
+                                <button onClick={onClickClearSearchString} className={classes.clearAll} style={{fontSize: '0.9em', color: "white"}}>clear search text</button>
+                            </Toolbar>
+                        </AppBar>
+                        }
+                        <CardsDisplay display={display} backdrop={backdrop} setClickedCard={setClickedCard} objList={filteredListObj.getter}/>
+                    </main>
+                    <GetFilteredList callServerObj={{getter: callServerFilter, setter: setCallServerFilter}} filterString={filterStringObj.getter + ' ' + searchStringObj.getter} setFilteredList={filteredListObj.setter}/>
                 </div>
-                <Divider style={{marginTop: 5}} />
-                <List style={{display: "flex", flexDirection:"column"}}>
-                    {['Lifestyle', 'Travel', 'Games','Gadgets', 'Clothing', 'Beauty'].map((text) => (
-                        <ListItem button key={text} style={{height: 40}} onClick={()=>onCategoryClick(text)}>
-                            <ListItemText style={{textDecorationLine: checked[text] ? "underline" : 'none',
-                                textDecorationColor: '#F27746', textDecorationThickness: '0.4em'}} primary={text} />
-                        </ListItem>
-                    ))}
-                    <button onClick={onClickClearAll} className={classes.clearAll} style={{alignSelf:"flex-end", backgroundColor: "transparent", border: '1px solid transparent', cursor: "pointer"}}>clear all</button>
-                </List>
-            </div>
-            <main className={classes.content}>
-                {searchStringObj.getter !== '' &&
-                <AppBar position={"relative"} style={{padding:0}}>
-                    <Toolbar style={{display: "flex", justifyContent: "space-between"}}>
-                        <Typography variant="h6" style={{padding:0}}>
-                            You searched for: {searchStringObj.getter}
-                        </Typography>
-                        <button onClick={onClickClearSearchString} className={classes.clearAll} style={{backgroundColor: "transparent", border: '1px solid transparent', cursor: "pointer", alignSelf: "flex-end", fontSize: '0.9em', color: "white"}}>clear search text</button>
-                    </Toolbar>
-                </AppBar>
-                }
-                <CardsDisplay display={display} backdrop={backdrop} setClickedCard={setClickedCard} objList={filteredListObj.getter}/>
-            </main>
-            <GetFilteredList callServerObj={{getter: callServerFilter, setter: setCallServerFilter}} filterString={filterStringObj.getter + ' ' + searchStringObj.getter} setFilteredList={filteredListObj.setter}/>
-        </div>
+            </Grid>
+            <Grid item xs={1}/>
+        </Grid>
     );
 }

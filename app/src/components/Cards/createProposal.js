@@ -108,13 +108,14 @@ export default function CreateProposalDialog(props) {
 
     function onClickCreateEdit() {
         let emptyTitle = props.val.getter.title === ''
+        let longTitle = props.val.getter.title.length > 50
         let categoriesErr = props.val.getter.categories.length === 0
         let emptyDescription = props.val.getter.description === ''
         let emptyRequirements = props.val.getter.requirements === ''
         if (emptyTitle || categoriesErr || emptyDescription || emptyRequirements) {
             setErrProposals({
-                titleErr: emptyTitle,
-                titleMsg: emptyTitle ? required_txt : '',
+                titleErr: emptyTitle || longTitle,
+                titleMsg: emptyTitle ? required_txt : longTitle ? 'Title too long. The length\'s limit is 50 characters' : '',
                 categoryErr: categoriesErr,
                 descriptionErr: emptyDescription,
                 descriptionMsg: emptyDescription ? required_txt : '',
@@ -231,7 +232,7 @@ export default function CreateProposalDialog(props) {
                                         companySite: props.companyInfo.siteUrl, photo: props.companyInfo.photo,
                                         bio: props.companyInfo.bio, email: emailVal ? props.companyInfo.email : null,
                                         phone: phoneVal ? props.companyInfo.phone : null, contact:
-                                            {phone: props.companyInfo.phone, email: props.companyInfo.email}}]);
+                                            {phone: props.companyInfo.phone, email: props.companyInfo.email}, canEdit: true}]);
                                 }}/> :
                 <AnswerOfServer callServerObj={{getter: sendToServerEdit, setter: setSendToServerEdit}}
                                 url={`/api/collaboration_proposals/${props.val.getter._id}`}
