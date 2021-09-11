@@ -1,7 +1,9 @@
 const companyModel = require('../models/company')
 const collaborationModel = require('../models/collaboration')
 const commonController = require('./commonController')
+const jwt = require('jsonwebtoken')
 
+const JWT_SECRET = 'gkdd462gfkbjfoh#$#54*jfdsdf&$&$#)fhdsadfkl676q3478dfcSgd'
 
 // find company by company id and add a new collaboration proposal
 const addCollaborationProposal = async (req, res) => {
@@ -29,12 +31,18 @@ const addCollaborationProposal = async (req, res) => {
             disabled: req.body.disabled,
             canEdit: req.body.canEdit,
             requirements: req.body.requirements
-        }).then(( collaborationProposal) => {
+        }).then(async ( collaborationProposal) => {
             company.CollaborationProposals.push(collaborationProposal)
             company.save().catch((err) => {
                 return res.status(500).json({status: 'error', 'error': 'could not save'})
             })
-            res.json({status: 'ok'})
+
+            // get collaboration proposal id and send it
+            const cp = await collaborationModel.findOne({ title: req.body.title }).lean()
+            const token = jwt.sign({
+                id: cp._id
+            },JWT_SECRET)
+            return res.json({status: 'ok', data: token})
         }).catch((err) => {
             if(err.code === 11000){
                 return res.status(400).json({status: 'error', 'error': 'title already in use'})
@@ -126,8 +134,16 @@ const update = async (req, res) => {
 }
 
 // accept string with ' ' delimiter
-const searchBy = async (req, res) => {
-    await commonController.search(collaborationModel, req, res)
+const searchByCategories = async (req, res) => {
+    await commonController.searchByCategories(collaborationModel, req, res)
+}
+
+const searchBySearchBar = async (req, res) => {
+    await commonController.searchBySearchBar(collaborationModel, req, res)
+}
+
+const searchBySearchBarAndCategories = async (req, res) => {
+    await commonController.searchBySearchBarAndCategories(collaborationModel, req, res)
 }
 
 
@@ -140,5 +156,7 @@ module.exports = {
     collaborationProposalsOf,
     update,
     updateCanEdit,
-    searchBy
+    searchBySearchBarAndCategories,
+    searchBySearchBar,
+    searchByCategories
 }
