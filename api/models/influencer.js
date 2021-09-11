@@ -25,11 +25,12 @@ const InfluencerSchema = new mongoose.Schema({
 
 InfluencerSchema.index({
     email: 'text',
+    phone: 'text',
     firstName: 'text',
     lastName: 'text',
     instagramUser: 'text',
-    instagramUrl: 'text',
     categories: 'text',
+    instagramUrl: 'text',
     bio: 'text'});
 
 

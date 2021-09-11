@@ -19,7 +19,7 @@ const addContract = async (req, res) => {
             companyEmail: req.body.companyEmail,
             influencerName: req.body.influencerName,
             influencerPhone: req.body.influencerPhone,
-            infliencerEmail: req.body.infliencerEmail,
+            influencerEmail: req.body.influencerEmail,
             categories: req.body.categories,
             details: req.body.details,
             payment: req.body.payment,

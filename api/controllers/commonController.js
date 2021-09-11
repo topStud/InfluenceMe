@@ -64,9 +64,43 @@ async function findOne(model, req, res) {
 }
 
 
-async function search(model, req, res) {
-    model.find({$and: [{$text: {$search: req.params.searchString}}, {disabled: false}]})
-    /*.limit(10)*/
+async function searchByCategories(model, req, res) {
+    const categories = req.params.categories
+    console.log(categories)
+    const array = categories.split(" ")
+    console.log(array)
+    // search only by categories
+    model.find({$and: [{ categories: { $in: array} }, {disabled: false}]})
+    //.limit(10)
+    .exec(function(err, docs) {
+        if(err) return res.status(400).json({status: 'error', 'error': 'Search by categories failed'})
+        return res.status(200).json({docs})
+    })
+}
+
+async function searchBySearchBar(model, req, res) {
+    const searchBar = req.params.searchBar
+    const queryString = '\"' + searchBar.split(' ').join('\" \"') + '\"'
+    console.log(queryString)
+    model.find({$and: [{$text: { $search: queryString}},{disabled: false}]})
+    //model.find({$and: [{$text: {$search: '\"'+ searchBar + '\"'}}, {disabled: false}]})
+    //.limit(10)
+    .exec(function(err, docs) {
+        if(err) return res.status(400).json({status: 'error', 'error': 'Search by search bar failed'})
+        return res.status(200).json({docs})
+    })
+}
+
+async function searchBySearchBarAndCategories(model, req, res) {
+    const searchBar = req.params.searchBar
+    const categories = req.params.categories
+    console.log(searchBar+" "+  categories)
+    const categoriesArray = categories.split(" ")
+    const queryString = '\"' + searchBar.split(' ').join('\" \"') + '\"'
+    console.log(queryString)
+    model.find({$and: [{$text: { $search: queryString}},
+            {disabled: false}, { categories: { $in: categoriesArray} }]})
+    //.limit(10)
     .exec(function(err, docs) {
         if(err) return res.status(400).json({status: 'error', 'error': 'Search failed'})
         return res.status(200).json({docs})
@@ -114,7 +148,9 @@ module.exports = {
     update,
     findMany,
     findOne,
-    search,
     passwordUpdate,
-    changeStatus
+    changeStatus,
+    searchByCategories,
+    searchBySearchBar,
+    searchBySearchBarAndCategories
 }

@@ -10,7 +10,9 @@ router.get('/:id', collaborationsController.specificCollaborationProposal)
 router.get('/company/:id', collaborationsController.collaborationProposalsOf)
 router.put('/:id', collaborationsController.update)
 router.put('/cantEdit/:id', collaborationsController.updateCanEdit)
-router.get('/search/:searchString', collaborationsController.searchBy)
+router.get('/search-categories/:categories', collaborationsController.searchByCategories)
+router.get('/search-bar/:searchBar', collaborationsController.searchBySearchBar)
+router.get('/search/:searchBar/:categories', collaborationsController.searchBySearchBarAndCategories)
 
 
 module.exports = router

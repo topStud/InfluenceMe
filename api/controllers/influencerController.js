@@ -56,9 +56,18 @@ const update = async (req, res) => {
 }
 
 // accept string with ' ' delimiter
-const searchBy = async (req, res) => {
-    await commonController.search(influencerModel, req, res)
+const searchByCategories = async (req, res) => {
+    await commonController.searchByCategories(influencerModel, req, res)
 }
+
+const searchBySearchBar = async (req, res) => {
+    await commonController.searchBySearchBar(influencerModel, req, res)
+}
+
+const searchBySearchBarAndCategories = async (req, res) => {
+    await commonController.searchBySearchBarAndCategories(influencerModel, req, res)
+}
+
 
 const passwordUpdate = async (req, res) => {
     await commonController.passwordUpdate(influencerModel, req, res)
@@ -88,8 +97,10 @@ module.exports = {
     influencer,
     influencerRegister,
     update,
-    searchBy,
     passwordUpdate,
     makeDisabled,
-    makeActive
+    makeActive,
+    searchBySearchBarAndCategories,
+    searchBySearchBar,
+    searchByCategories
 }

@@ -15,9 +15,11 @@ const CollaborationSchema = new mongoose.Schema({
 
 CollaborationSchema.index({
     title: 'text',
+    phone: 'text',
+    email: 'text',
     categories: 'text',
     description: 'text',
-    requirements: 'text'});
+    requirements: 'text'})
 
 const model = mongoose.model('Collaborations', CollaborationSchema)
 module.exports = model
