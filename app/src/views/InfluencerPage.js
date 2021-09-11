@@ -3,14 +3,13 @@ import React, {useEffect} from "react";
 import {MuiThemeProvider} from "@material-ui/core";
 import {createTheme, makeStyles} from "@material-ui/core/styles";
 import {Route, Switch, useParams} from "react-router-dom";
-import {Alert, AlertTitle} from "@material-ui/lab";
 import Footer from "../components/footer";
 import FilteringCards from '../components/Cards/filteringCards'
 import '../styles/globals.css'
 import PersonalArea from "../components/personalArea/personalArea";
 import FullInfoProposal from "../components/Cards/fullInfoProposal";
 import BackDrop from "@material-ui/core/Backdrop";
-import {AnswerOfServer} from "../utils";
+import {AnswerOfServer, FetchError} from "../utils";
 
 const theme = createTheme({
     palette: {
@@ -64,60 +63,71 @@ export default function InfluencerPage() {
     const [errFetchInfluencerData, setErrFetchInfluencerData] = React.useState(false)
     const [influencerData, setInfluencerData] = React.useState(null)
 
-    const [companiesList, setCompaniesList] = React.useState(null)
+    // fetching data for proposals
+    const [errFetchProposalsData, setErrFetchProposalsData] = React.useState(false)
     const [proposalsList, setProposalsList] = React.useState(null)
 
     // user clicked on 'interested' button
     const [callServerInterested, setCallServerInterested] = React.useState(false)
 
     useEffect(()=>{
+        // temps - for accessing the data
+        let companiesList, influencerTempData
         fetch(`/api/influencers/${id}`).then(res => {
             if (!res.ok) {
                 setErrFetchInfluencerData(true)
+                throw new Error('Couldn\'t get influencer\'s data');
             }
             return res.json()
         }).then(influencerData => {
             if ('status' in influencerData) {
                 setErrFetchInfluencerData(true)
+                throw new Error('Couldn\'t get influencer\'s data');
             } else {
-                setInfluencerData(influencerData.response)
-                fetch('/api/companies').then(res => {
-                    if (!res.ok) {
-                        console.log('connection problem')
-                    }
-                    return res.json()
-                }).then(companiesData => {
-                    if ('status' in companiesData) {
-                        console.log('couldn\'t get all companies')
-                    } else {
-                        setCompaniesList(companiesData.response)
-                        fetch('/api/collaboration_proposals').then(res => {
-                            if (!res.ok) {
-                                console.log('connection problem')
-                            }
-                            return res.json()
-                        }).then(proposalsData => {
-                            if ('status' in proposalsData) {
-                                console.log('couldn\'t get all Cards')
-                            } else {
-                                let proposalsList = proposalsData.response.map((proposal)=> {
-                                    let company = companiesData.response.find(company => company._id === proposal.companyID)
-                                    proposal.companyName = company.name
-                                    proposal.companySite = company.siteUrl
-                                    proposal.photo = company.photo
-                                    proposal.bio = company.bio
-                                    proposal.disabled = influencerData.response.clickedCollaborations.includes(proposal._id)
-                                    return proposal
-                                })
-                                console.log(proposalsList)
-                                setProposalsList(proposalsList)
-                                setFilteredList(proposalsList)
-                            }
-                        })
-                    }
-                })
+                influencerTempData = influencerData.response
+                setInfluencerData(influencerTempData)
+                return fetch('/api/companies')
             }
-        })
+        }).then(res => {
+            if (!res.ok) {
+                setErrFetchProposalsData(true)
+                throw new Error('Couldn\'t get companies\' data');
+            }
+            return res.json()
+        }).then(companiesData => {
+            if ('status' in companiesData) {
+                setErrFetchProposalsData(true)
+                throw new Error('Couldn\'t get companies\' data');
+            } else {
+                companiesList = companiesData.response
+                return fetch('/api/collaboration_proposals')
+            }
+        }).then(res => {
+            if (!res.ok) {
+                setErrFetchProposalsData(true)
+                throw new Error('Couldn\'t get proposals\' data');
+            }
+            return res.json()
+        }).then(proposalsData => {
+            if ('status' in proposalsData) {
+                setErrFetchProposalsData(true)
+                throw new Error('Couldn\'t get proposals\' data');
+            } else {
+                let proposalsList = proposalsData.response.map((proposal)=> {
+                    let company = companiesList.find(company => company._id === proposal.companyID)
+                    proposal.companyName = company.name
+                    proposal.companySite = company.siteUrl
+                    proposal.photo = company.photo
+                    proposal.bio = company.bio
+                    proposal.disabled = influencerTempData.clickedCollaborations.includes(proposal._id)
+                    return proposal
+                })
+                setProposalsList(proposalsList)
+                setFilteredList(proposalsList)
+            }
+        }).catch((error) => {
+            console.log(error)
+        });
     }, [])
 
     return (
@@ -150,12 +160,8 @@ export default function InfluencerPage() {
                     </Switch>
                 </>
             }
-            { errFetchInfluencerData &&
-            <Alert severity="error" style={{margin:50, fontFamily: 'Rubik'}}>
-                <AlertTitle><span style={{fontFamily: 'Rubik', fontSize: '1.2em'}}>Error</span></AlertTitle>
-                Something went wrong, The influencer's data couldn't be reached — <strong>try again!</strong>
-            </Alert>
-            }
+            { errFetchInfluencerData && <FetchError name={'influencer\'s'}/>}
+            { errFetchProposalsData && <FetchError name={'proposals\''}/>}
             <Footer/>
         </MuiThemeProvider>
     )

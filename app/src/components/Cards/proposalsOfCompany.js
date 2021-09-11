@@ -5,7 +5,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import React, {useEffect} from 'react'
 import CreateProposal from './createProposal'
 import FilteringCards from './filteringCards'
-import {AnswerOfServer} from "../../utils";
+import {AnswerOfServer, FetchError} from "../../utils";
 import FullInfoProposal from "./fullInfoProposal";
 
 const useStyles = makeStyles((theme) => ({
@@ -64,16 +64,19 @@ export default function ProposalsOfCompany({companyInfo, filterStringObj, filter
         setter: setProposalsList
     }
 
+    // true when an error occurred while fetching the proposals from server.
+    const [errFetchProposals, setErrFetchProposals] = React.useState(false)
+
     useEffect(()=>{
         // getting all proposals of current company
         fetch(`/api/collaboration_proposals/company/${companyInfo._id}`).then(res => {
             if (!res.ok) {
-                console.log('problem in connection with server')
+                throw new Error('Couldn\'t get proposals\' data');
             }
             return res.json()
         }).then(proposalData => {
             if ('status' in proposalData) {
-                console.log('there is an error')
+                throw new Error('Couldn\'t get proposals\' data');
             } else {
                 // creating object of proposal
                 let proposals = proposalData.response.map(proposal => {
@@ -87,13 +90,15 @@ export default function ProposalsOfCompany({companyInfo, filterStringObj, filter
                     }
                     return proposal
                 })
-                console.log(proposals)
                 // sets original list of proposals
                 setProposalsList(proposals)
                 // sets filtered list of proposals
                 filteredListObj.setter(proposals)
             }
-        })
+        }).catch((error) => {
+            setErrFetchProposals(true)
+            console.log(error)
+        });
     }, [])
 
     return (
@@ -120,6 +125,7 @@ export default function ProposalsOfCompany({companyInfo, filterStringObj, filter
                             sucMsg={'Proposal deleted successfully'} failMsg={'Deletion Failed'}
                             sucFunc={()=>{proposalListObj.setter(proposalListObj.getter.filter(proposal=> proposal._id !== proposalClicked._id))}}/>
             }
+            {errFetchProposals && <FetchError name={'proposals\''}/>}
         </>
     )
 }

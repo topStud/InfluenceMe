@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import {Snackbar} from "@material-ui/core";
-import {Alert} from "@material-ui/lab";
+import {Alert, AlertTitle} from "@material-ui/lab";
 import PropTypes from 'prop-types'
 
 
@@ -42,9 +42,7 @@ export const AnswerOfServer = ({callServerObj, url, methodObj, sucMsg, failMsg, 
                     sucFunc()
                     callServerObj.setter(false)
                     setOpen(true)
-                    console.log('success')
                 } else {
-                    console.log('error')
                     setSeverity('error')
                     setOpen(true)
                     if ('error' in response) {
@@ -139,6 +137,15 @@ AnswerOfServer.propTypes = {
 export function calculateAge(birthday) { // birthday is a date
     birthday = new Date(birthday)
     let ageDifMs = Date.now() - birthday.getTime();
-    let ageDate = new Date(ageDifMs); // miliseconds from epoch
+    let ageDate = new Date(ageDifMs);
     return Math.abs(ageDate.getUTCFullYear() - 1970);
+}
+
+export function FetchError({name}) {
+    return(
+        <Alert severity="error" style={{margin:50, fontFamily: 'Rubik'}}>
+            <AlertTitle><span style={{fontFamily: 'Rubik', fontSize: '1.2em'}}>Error</span></AlertTitle>
+            Something went wrong, The {name} data couldn't be reached — <strong>try again!</strong>
+        </Alert>
+    )
 }

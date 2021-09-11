@@ -4,13 +4,13 @@ import React, {useEffect} from "react";
 import {MuiThemeProvider} from "@material-ui/core";
 import {createTheme, makeStyles} from "@material-ui/core/styles";
 import ProposalsOfCompany from "../components/Cards/proposalsOfCompany";
-import {Alert, AlertTitle} from "@material-ui/lab";
 import Footer from "../components/footer";
 import PersonalArea from "../components/personalArea/personalArea";
 import BackDrop from "@material-ui/core/Backdrop";
 import FullInfoInfluencer from '../components/Cards/fullInfoInfluencer'
 import FilteringCards from "../components/Cards/filteringCards";
 import PersonalInfluencerDataPage from '../components/notifications/personalInfluencerDataPage'
+import {FetchError} from "../utils";
 
 const theme = createTheme({
     palette: {
@@ -38,6 +38,7 @@ export default function CompanyPage() {
     // the data of the current company
     const [companyInfo, setCompanyInfo] = React.useState(null)
     const [errFetchCompanyData, setErrFetchCompanyData] = React.useState(false)
+    const [errFetchInfluencersData, setErrFetchInfluencersData] = React.useState(false)
 
     // influencers to display the company
     const [influencersList, setInfluencersList] = React.useState(null)
@@ -55,8 +56,6 @@ export default function CompanyPage() {
         getter: filterString,
         setter: setFilterString
     }
-
-    console.log(filterString)
 
     // search string - proposals
     const [searchStringProposals, setSearchStringProposals] = React.useState('')
@@ -84,31 +83,36 @@ export default function CompanyPage() {
         // current company
         fetch(`/api/companies/${id}`).then(res => {
             if (!res.ok) {
-                setErrFetchCompanyData(true)
+                throw new Error('Couldn\'t get company\'s data');
             }
             return res.json()
         }).then(companyData => {
             if ('status' in companyData) {
-                setErrFetchCompanyData(true)
+                throw new Error('Couldn\'t get company\'s data');
             } else {
                 setCompanyInfo(companyData.response)
             }
-        })
+        }).catch((error) => {
+            setErrFetchCompanyData(true)
+            console.log(error)
+        });
         // all influencers
         fetch('/api/influencers').then(res => {
             if (!res.ok) {
-                setErrFetchCompanyData(true)
+                throw new Error('Couldn\'t get influencers\' data');
             }
             return res.json()
         }).then(influencers => {
             if ('status' in influencers) {
-                setErrFetchCompanyData(true)
+                throw new Error('Couldn\'t get influencers\' data');
             } else {
-                console.log(influencers.response)
                 setInfluencersList(influencers.response)
                 setFilteredInfluencersList(influencers.response)
             }
-        })
+        }).catch((error) => {
+            setErrFetchInfluencersData(true)
+            console.log(error)
+        });
     },[])
 
     return(
@@ -137,12 +141,9 @@ export default function CompanyPage() {
                         </Switch>
                     </>
                 }
-                { errFetchCompanyData &&
-                <Alert severity="error" style={{margin:50, fontFamily: 'Rubik'}}>
-                    <AlertTitle><span style={{fontFamily: 'Rubik', fontSize: '1.2em'}}>Error</span></AlertTitle>
-                    Something went wrong, The company's data couldn't be reached — <strong>try again!</strong>
-                </Alert>
-                }
+                { errFetchCompanyData && errFetchInfluencersData && <FetchError name={'company\'s and influencers\''}/>}
+                { errFetchCompanyData && !errFetchInfluencersData && <FetchError name={'company\'s'}/>}
+                { errFetchInfluencersData && !errFetchCompanyData && <FetchError name={'influencers\''}/>}
                 <Footer/>
             </MuiThemeProvider>
     )
