@@ -53,10 +53,7 @@ export default function FullInfoProposal({backdrop, influencerObj}) {
                 <p>Number of followers: {influencerObj.followersAmount}</p>
                 <p style={{whiteSpace: "pre-line"}}>{influencerObj.bio}</p>
                 <div style={{display:"flex", flexDirection: "column", alignItems:"center"}}>
-                    {influencerObj.email !== null &&
-                    <>
-                        You can send me emails to <span style={{textDecoration: "underline", userSelect: 'text', msUserSelect: 'text'}}>{influencerObj.email}</span><br/>
-                    </>}
+                    You can send me emails to <span style={{textDecoration: "underline", userSelect: 'text', msUserSelect: 'text'}}>{influencerObj.email}</span><br/>
                     {(influencerObj.phone !== '' && influencerObj.phone !== null) &&
                     <>
                         For any need please call to <span style={{textDecoration: "underline", userSelect: 'text', msUserSelect: 'text'}}>{influencerObj.phone}</span><br/>
