@@ -29,7 +29,8 @@ const sendNotification = async (req, res) => {
                     })
                 })
             } else{
-                message = req.body.senderName + ' has sent a contract for the '+ req.body.itemName + ' proposal'
+                message = 'You and ' + req.body.senderName
+                    + ' are now collaborating on '+ req.body.itemName
             }
 
             await createNotificationTo(company, req, res, message)
@@ -42,8 +43,7 @@ const sendNotification = async (req, res) => {
             if (err || influencer === null){
                 return res.status(400).json({status: 'error', 'error': 'influencer not exist'})
             }
-            const message = 'You and ' + req.body.senderName
-                + ' are now collaborating on '+ req.body.itemName
+            const message = req.body.senderName + ' has sent a contract for the '+ req.body.itemName + ' proposal'
             await createNotificationTo(influencer, req, res, message)
         })
     }
@@ -137,11 +137,51 @@ const updateSeen = async (req, res) => {
     })
 }
 
+const deleteSpecificNotification = async (req, res) => {
+    companyModel.findOneAndUpdate({_id: req.params.userID},
+        {$pull: {Notifications: req.params.notificationID}},
+        { new: true },
+        function(err){
+            influencerModel.findOneAndUpdate({_id: req.params.userID},
+                {$pull: {Notifications: req.params.notificationID}},
+                { new: true },
+                function(err){
+                    if(err) return res.status(500).json({status: 'error'})
+                })
+        })
+
+    await notificationModel.
+    findOne({ _id: req.params.notificationID}, async (err, notification) => {
+        if (err || notification === null){
+            return res.status(400).json({status: 'error', 'error': 'notification not exist'})
+        }
+        notification.remove(function (err, result){
+            if(err) return res.status(500).json({status: 'error'})
+            res.json({status: 'ok', 'deletedID': req.params.notificationID})
+        })
+    })
+}
+
+const deleteNotifications = async (req, res) => {
+    companyModel.findOneAndUpdate({_id: req.params.userID},
+        {$pull: {Notifications: req.params.notificationID}},
+        { new: true },
+        function(err){
+            influencerModel.findOneAndUpdate({_id: req.params.userID},
+                {$pull: {Notifications: req.params.notificationID}},
+                { new: true },
+                function(err){
+                    if(err) return res.status(500).json({status: 'error'})
+                })
+        })
+}
 
 
 
 module.exports = {
     sendNotification,
     notificationsOf,
-    updateSeen
+    updateSeen,
+    deleteSpecificNotification,
+    deleteNotifications
 }
