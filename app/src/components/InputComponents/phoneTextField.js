@@ -1,8 +1,8 @@
 import React from "react";
 import MuiPhoneNumber from "material-ui-phone-number";
+import PropTypes from 'prop-types'
 
-
-export default class CreateUserDialog extends React.Component {
+export default class InputPhone extends React.Component {
     constructor(props) {
         super(props);
         this.handlePhoneChange = this.handlePhoneChange.bind(this);
@@ -13,7 +13,8 @@ export default class CreateUserDialog extends React.Component {
         if (value) {
             this.props.val.setter({
                 ...this.props.val.getter,
-                phone: value
+                [this.props.info.name]: value
+                // phone: value
             })
         }
     }
@@ -21,8 +22,10 @@ export default class CreateUserDialog extends React.Component {
     onClick() {
         this.props.err.setter({
             ...this.props.err.getter,
-            phoneErr: false,
-            phoneMsg: ''
+            [this.props.info.name+'Err']: false,
+            [this.props.info.name+'Msg']: ''
+            // phoneErr: false,
+            // phoneMsg: ''
         })
     }
 
@@ -30,16 +33,31 @@ export default class CreateUserDialog extends React.Component {
         return (
             <MuiPhoneNumber
                 style={{width: '100%'}}
-                name="phone"
+                name={this.props.info.name}
                 label="Phone Number"
                 data-cy="user-phone"
                 defaultCountry={"il"}
-                value={this.props.val.getter.phone}
+                value={this.props.val.getter[this.props.info.name]}
                 onChange={this.handlePhoneChange}
-                error={this.props.err.getter.phoneErr}
-                helperText={this.props.err.getter.phoneMsg}
+                error={this.props.err.getter[this.props.info.name+'Err']}
+                helperText={this.props.err.getter[this.props.info.name+'Msg']}
                 onClick={this.onClick}
             />
         );
     }
+}
+
+InputPhone.propTypes = {
+    val: PropTypes.exact({
+        getter: PropTypes.object,
+        setter: PropTypes.func
+    }).isRequired,
+    err: PropTypes.exact({
+        getter: PropTypes.object,
+        setter: PropTypes.func
+    }).isRequired,
+    info: PropTypes.exact({
+        name: PropTypes.string
+    }),
+    defaultValue: PropTypes.string
 }

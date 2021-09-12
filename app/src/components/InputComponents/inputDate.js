@@ -2,32 +2,24 @@ import React from "react";
 import {TextField} from "@material-ui/core";
 import PropTypes from 'prop-types'
 
-TextInput.propTypes = {
+InputDate.propTypes = {
     val: PropTypes.exact({
         getter: PropTypes.object,
         setter: PropTypes.func
     }).isRequired,
     info: PropTypes.exact({
         id: PropTypes.string,
-        required: PropTypes.bool,
         label: PropTypes.string,
         name: PropTypes.string
-    }).isRequired,
-    err: PropTypes.exact({
-        getter: PropTypes.object,
-        setter: PropTypes.func
-    }).isRequired,
-    defaultValue: PropTypes.string
+    }).isRequired
 }
 
-export default function TextInput(props) {
+export default function InputDate(props) {
     function handleInputChange(e) {
-        if (e) {
-            props.val.setter({
-                ...props.val.getter,
-                [e.target.name]: e.target.value
-            })
-        }
+        props.val.setter({
+            ...props.val.getter,
+            [e.target.name]: e.target.value
+        })
     }
 
     function onInputClick(e) {
@@ -40,16 +32,19 @@ export default function TextInput(props) {
 
     return (
         <TextField
-            required={props.info.required}
+            id={props.info.id}
+            label={props.info.label}
             fullWidth
             name={props.info.name}
-            label={props.info.label}
-            id={props.info.id}
+            type="date"
+            InputLabelProps={{
+                shrink: true,
+            }}
             value={props.val.getter[props.info.name]}
             onChange={handleInputChange}
+            onClick={onInputClick}
             error={props.err.getter[props.info.name+'Err']}
             helperText={props.err.getter[props.info.name+'Msg']}
-            onClick={onInputClick}
-     />
+        />
     );
 }

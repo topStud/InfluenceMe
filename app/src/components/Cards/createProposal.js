@@ -189,7 +189,7 @@ export default function CreateProposalDialog(props) {
                     <Button color="primary" onClick={onClickCancelFinish}>
                         Cancel
                     </Button>
-                    <Button color="primary" name="create" onClick={onClickCreateEdit}>
+                    <Button color="primary" variant={"contained"} onClick={onClickCreateEdit}>
                         Create
                     </Button>
                 </DialogActions> :
@@ -233,7 +233,6 @@ export default function CreateProposalDialog(props) {
                                         ...props.proposalList.getter,
                                         original: newArr
                                     });
-
                 }}/>
             }
             <ErrorSnackbar open={badInput} setOpen={setBadInput}/>
@@ -310,23 +309,3 @@ const AnswerOfServerForCreate = ({callServerObj, val, companyInfo, proposalsList
         </Snackbar>
     )
 }
-//
-// <AnswerOfServer callServerObj={{getter: sendToServerCreate, setter: setSendToServerCreate}}
-//                 url={'/api/collaboration_proposals'} methodObj={{method: 'POST',
-//     headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
-//     body: JSON.stringify({...props.val.getter, companyID: props.companyInfo._id})}}
-//                 sucMsg={'Proposal created successfully'} failMsg={'Failed to creat the proposal'}
-//                 sucFunc={()=>{
-//                     setProposalAccepted(true);
-//                     const {addPhone: phoneVal, addEmail: emailVal,...otherKeys} = props.val.getter;
-//                     props.proposalList.setter({
-//                         ...props.proposalList.getter,
-//                         original: [...props.proposalList.getter.original, {...otherKeys,
-//                             companyID: props.companyInfo._id, companyName: props.companyInfo.name,
-//                             companySite: props.companyInfo.siteUrl, photo: props.companyInfo.photo,
-//                             bio: props.companyInfo.bio, email: emailVal ? props.companyInfo.email : null,
-//                             phone: phoneVal ? props.companyInfo.phone : null, contact:
-//                                 {phone: props.companyInfo.phone, email: props.companyInfo.email},
-//                             canEdit: true, collaborationsNumber:0}]
-//                     })
-//                 }}/>

@@ -10,7 +10,7 @@ import {Link} from "react-router-dom";
 import styles from "../../styles/Home.module.css";
 import InputText from '../InputComponents/inputText';
 import InputPassword from '../InputComponents/inputPassword'
-import {required_txt} from "../../utils";
+import {required_txt, ValidateEmail} from "../../utils";
 
 export default function SignUp(props) {
     const values = props.values
@@ -130,9 +130,4 @@ export default function SignUp(props) {
             </form>
         </div>
     );
-}
-
-function ValidateEmail(email)
-{
-    return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email);
 }

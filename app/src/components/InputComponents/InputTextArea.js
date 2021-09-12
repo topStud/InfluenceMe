@@ -1,9 +1,24 @@
 import {TextField} from "@material-ui/core";
+import PropTypes from 'prop-types';
+
+InputTextArea.propTypes = {
+    val: PropTypes.exact({
+        getter: PropTypes.object,
+        setter: PropTypes.func
+    }).isRequired,
+    err: PropTypes.exact({
+        getter: PropTypes.object,
+        setter: PropTypes.func
+    }).isRequired,
+    info: PropTypes.exact({
+        id: PropTypes.string,
+        label: PropTypes.string,
+        name: PropTypes.string,
+        placeholder: PropTypes.string
+    }).isRequired
+}
 
 export default function InputTextArea(props) {
-    // the data in info that needs to be sent:
-    // id, label, name, placeholder
-
     function handleChange(e) {
         if (e) {
             props.val.setter({

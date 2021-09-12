@@ -5,8 +5,20 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import PropTypes from 'prop-types'
 
-export default function ConfirmationDialog({backdrop, setCallServer, proposalName, setDialogOpen, type}) {
+ConfirmationDialog.propTypes = {
+    backdrop: PropTypes.exact({
+        getter: PropTypes.bool,
+        setter: PropTypes.func
+    }).isRequired,
+    setCallServer: PropTypes.func.isRequired,
+    msg: PropTypes.string.isRequired,
+    setDialogOpen: PropTypes.func,
+    type: PropTypes.oneOf(['delete', 'interested', 'create'])
+}
+
+export default function ConfirmationDialog({backdrop, setCallServer, msg, setDialogOpen, type}) {
     const handleClose = () => {
         backdrop.setter(false)
     };
@@ -23,12 +35,13 @@ export default function ConfirmationDialog({backdrop, setCallServer, proposalNam
             maxWidth={'xs'}
         >
             <DialogTitle style={{color: '#1F75A6'}} id="dialog-title">
-                <span style={{fontFamily: 'Rubik'}}>{type==='delete'?'Delete Proposal':'Send Request'}</span>
+                <span style={{fontFamily: 'Rubik'}}>
+                    {type==='delete' ? 'Delete Proposal' : type === 'interested' ? 'Send Request' : 'Create Contract'}
+                </span>
             </DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    {type === 'delete' ? `Are you sure you want to delete the proposal of the name \'${proposalName}\'?` :
-                        `Are you sure you want to send the company a cooperation request for the proposal named \'${proposalName}\'?`}
+                    {msg}
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
@@ -36,7 +49,7 @@ export default function ConfirmationDialog({backdrop, setCallServer, proposalNam
                     Cancel
                 </Button>
                 <Button variant="contained" onClick={handleConfirm} color="primary">
-                    {type === 'delete' ? 'Delete' : 'I am sure'}
+                    {type === 'delete' ? 'Delete' : type === 'interested' ? 'I am sure' : 'Create & Send'}
                 </Button>
             </DialogActions>
         </Dialog>

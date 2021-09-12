@@ -1,21 +1,14 @@
-import TextField from '@material-ui/core/TextField';
 import Grid from "@material-ui/core/Grid";
 import React from "react";
 import PhoneTextField from '../InputComponents/phoneTextField'
 import InputText from '../InputComponents/inputText'
 import InputImage from "../InputComponents/inputImage";
+import InputDate from "../InputComponents/inputDate";
 
 export default function PersonalInfo(props) {
     // values
     const values = props.values.val
     const errors = props.values.err
-
-    function onDateChange(e) {
-        values.setter({
-            ...values.getter,
-            date: e.target.value
-        })
-    }
 
     const fNameObj = {
         required: true,
@@ -31,6 +24,12 @@ export default function PersonalInfo(props) {
         name: 'lastName'
     }
 
+    const dateObj = {
+        id: 'date',
+        label: 'Birthday',
+        name: 'date'
+    }
+
     return (
         <Grid container spacing={4}>
             <Grid item xs={12} sm={6} style={{height: 90, marginTop:10}}>
@@ -40,23 +39,13 @@ export default function PersonalInfo(props) {
                 <InputText val={values} err={errors} info={lNameObj}/>
             </Grid>
             <Grid item xs={12} style={{height:90}}>
-                <TextField
-                    id="date"
-                    label="Birthday"
-                    type="date"
-                    fullWidth
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
-                    value={values.getter.date}
-                    onChange={onDateChange}
-                />
+                <InputDate val={values} err={errors} info={dateObj}/>
             </Grid>
             <Grid item xs={12} sm={6} style={{height:140}}>
                 <InputImage val={values} info={{label: 'Add a profile picture'}}/>
             </Grid>
             <Grid item xs={12} sm={6} style={{height:140}}>
-                <PhoneTextField val={values} err={errors}/>
+                <PhoneTextField val={values} err={errors} info={{name: 'phone'}}/>
             </Grid>
         </Grid>
     )

@@ -35,7 +35,7 @@ export default function CompanyData(props) {
                 <InputImage val={values} info={{label: 'Add company\'s logo here'}}/>
             </Grid>
             <Grid item xs={12} sm={6} style={{height:110}}>
-                <PhoneTextField val={values} err={errors}/>
+                <PhoneTextField val={values} err={errors} info={{name: 'phone'}}/>
             </Grid>
         </Grid>
     )

@@ -142,9 +142,12 @@ export default function FullInfoProposal({backdrop, proposalObj, setCallToServer
             </Dialog>
             <BackDrop className={classes.backdrop} open={backdropConfirmation}>
                 {backdropConfirmation &&
-                    <ConfirmationDialog type={confirmationType} backdrop={backdropConfirmationObj}
-                                        setCallServer={setCallToServer} proposalName={proposalObj.getter.title}
-                                        setDialogOpen={backdrop.setter}/>
+                    <ConfirmationDialog
+                        msg={confirmationType === 'delete' ? `Are you sure you want to delete the proposal of the
+                         name \'${proposalObj.getter.title}\'?` : `Are you sure you want to send the company a 
+                         cooperation request for the proposal named \'${proposalObj.getter.title}\'?`}
+                        backdrop={backdropConfirmationObj} setCallServer={setCallToServer} setDialogOpen={backdrop.setter}
+                        type={confirmationType}/>
                 }
             </BackDrop>
             <BackDrop open={backdropEdit} className={classes.backdrop}>

@@ -21,7 +21,7 @@ export default function Registration() {
     const [valuesPersonalInfo, setValuesPersonalInfo] = React.useState({
         firstName: '',
         lastName: '',
-        date: undefined,
+        date: '',
         phone: '',
         photo: null,
         photoName: ''

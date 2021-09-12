@@ -49,7 +49,7 @@ export default function FullInfoProposal({backdrop, influencerObj}) {
                     ))}
                 </div>
                 <h3 style={{color: '#A68617'}}>About Me</h3>
-                {influencerObj.date !== undefined && <p>Age: {calculateAge(influencerObj.date.substring(0,influencerObj.date.indexOf('T')))}</p>}
+                {influencerObj.date !== '' && <p>Age: {calculateAge(influencerObj.date.substring(0,influencerObj.date.indexOf('T')))}</p>}
                 <p>Number of followers: {influencerObj.followersAmount}</p>
                 <p style={{whiteSpace: "pre-line"}}>{influencerObj.bio}</p>
                 <div style={{display:"flex", flexDirection: "column", alignItems:"center"}}>

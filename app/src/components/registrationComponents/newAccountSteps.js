@@ -18,7 +18,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import BusinessIcon from '@material-ui/icons/Business'
 import CompanyData from "./companyData";
 import isMobilePhone from "validator/es/lib/isMobilePhone";
-import {parseJwt} from '../../utils'
+import {calculateAge, parseJwt} from '../../utils'
 import {required_txt, validateWebsiteUrl} from "../../utils";
 
 function getSteps(userType) {
@@ -116,7 +116,9 @@ export default function ContentBelowStepper(props) {
         firstNameMsg: '',
         lastNameMsg: '',
         phoneErr: false,
-        phoneMsg: ''
+        phoneMsg: '',
+        dateErr: false,
+        dateMsg: ''
     })
     const [errInstaAccount, setErrInstaAccount] = React.useState({
         instagramUserErr: false,
@@ -199,7 +201,8 @@ export default function ContentBelowStepper(props) {
             let phoneNumberErr = !(valuesPersonalInfo.phone === '' || (valuesPersonalInfo.phone.split(" ").length - 1) === 0 || isMobilePhone(valuesPersonalInfo.phone.replace(/\s+/g, ''), 'any'))
             let fNameErr = valuesPersonalInfo.firstName === ''
             let lNameErr = valuesPersonalInfo.lastName === ''
-            if (fNameErr || lNameErr || phoneNumberErr) {
+            let invalidAge = new Date(valuesPersonalInfo.date).getTime() > new Date().getTime() || calculateAge(valuesPersonalInfo.date) > 120
+            if (fNameErr || lNameErr || phoneNumberErr || invalidAge) {
                 mayContinue = false;
             }
             setErrPersonalInfo({
@@ -208,7 +211,9 @@ export default function ContentBelowStepper(props) {
                 lastNameErr: lNameErr,
                 lastNameMsg: lNameErr ? required_txt : '',
                 phoneErr: phoneNumberErr,
-                phoneMsg: phoneNumberErr ? 'Phone number is not valid' : ''
+                phoneMsg: phoneNumberErr ? 'Phone number is not valid' : '',
+                dateErr: invalidAge,
+                dateMsg: invalidAge ? 'Invalid Age' : ''
             })
         }
         // Instagram account
@@ -299,7 +304,7 @@ export default function ContentBelowStepper(props) {
 
     return (
         <div style={{width: '100%', boxShadow: '1px 10px 10px gray', paddingRight:50, paddingLeft:50, paddingBottom:20, marginBottom: 20, height:520}} >
-            <Stepper activeStep={activeStep} alternativeLabel connector={<StepConnector style={{marginTop: '10px'}}
+            <Stepper style={{backgroundColor:'transparent'}} activeStep={activeStep} alternativeLabel connector={<StepConnector style={{marginTop: '10px'}}
             classes={{completed: classes.completed_conn, active: classes.active_conn, line: classes.line_conn}}/>}>
                 {steps.map((label) => (
                     <Step key={label}>

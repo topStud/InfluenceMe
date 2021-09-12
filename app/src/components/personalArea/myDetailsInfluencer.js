@@ -29,7 +29,7 @@ export default function MyDetailsInfluencer({setValue, influencerData, setInflue
     const [valuesMyDetails, setValuesMyDetails] = React.useState({
         firstName: influencerData.firstName,
         lastName: influencerData.lastName,
-        date: influencerData.date === undefined ? undefined : influencerData.date.substring(0,influencerData.date.indexOf('T')),
+        date: influencerData.date === '' ? '' : influencerData.date.substring(0,influencerData.date.indexOf('T')),
         phone: influencerData.phone,
         photo: influencerData.photo,
         photoName: influencerData.photoName,
