@@ -8,7 +8,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import Chip from "@material-ui/core/Chip";
-import {Link} from 'react-router-dom';
+import {Link, useLocation} from 'react-router-dom';
 import {Avatar, Snackbar} from "@material-ui/core";
 import BusinessIcon from '@material-ui/icons/Business';
 import SearchIcon from '@material-ui/icons/Search';
@@ -16,6 +16,7 @@ import InputBase from '@material-ui/core/InputBase';
 import {GetFilteredList} from "../utils";
 import Notification from "./notifications/Notification";
 import {Alert} from "@material-ui/lab";
+import PropTypes from 'prop-types'
 
 const useStyles = makeStyles((theme) => ({
     grow: {
@@ -90,8 +91,20 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function PrimarySearchAppBar({userType, data, filterString, setFilteredList, searchObj}) {
+PrimarySearchAppBar.propsType = {
+    data: PropTypes.object.isRequired,
+    filterString: PropTypes.object.isRequired,
+    proposalsList: PropTypes.object.isRequired,
+    searchStringObj: PropTypes.object.isRequired,
+    influencersList: PropTypes.object
+}
+
+export default function PrimarySearchAppBar({data, filterString, proposalsList, searchObj, influencersList}) {
     const classes = useStyles();
+    const { pathname } = useLocation();
+    const userType = pathname.split('/')[1]
+    const proposalsOrInfluencers = userType === 'companies' && pathname.split('/')[3] === 'proposals' ?
+        'proposals' : 'influencers'
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [searchValue, setSearchValue] = React.useState('')
     const [callServerSearch, setCallServerSearch] = React.useState(false)
@@ -102,16 +115,19 @@ export default function PrimarySearchAppBar({userType, data, filterString, setFi
     useEffect(()=> {
         fetch(`/api/notifications/${data._id}`).then(res => {
             if (!res.ok) {
-                setErrFetchNotifications(true)
+                throw new Error('Couldn\'t get user\'s notifications');
             }
             return res.json()
         }).then(notificationsData => {
             if ('status' in notificationsData) {
-                setErrFetchNotifications(true)
+                throw new Error('Couldn\'t get user\'s notifications');
             } else {
                 setNotificationsList(notificationsData.response)
             }
-        })
+        }).catch((error) => {
+            setErrFetchNotifications(true)
+            console.log(error)
+        });
     },[])
 
     const handleProfileMenuOpen = (event) => {
@@ -201,7 +217,8 @@ export default function PrimarySearchAppBar({userType, data, filterString, setFi
                             }}
                             value={searchValue}
                             onChange={onChangeSearchContent}
-                            style={{color: '#1F75A6', border:'1px solid #F27746', backgroundColor:'rgba(242,119,70,0.05)', borderRadius: '20px'}}
+                            style={{color: '#1F75A6', border:'1px solid #F27746',
+                                backgroundColor:'rgba(242,119,70,0.05)', borderRadius: '20px'}}
                             inputProps={{ 'aria-label': 'search' }}
                             startAdornment={<IconButton onClick={onClickSearch} className={classes.searchIcon}>
                                 <SearchIcon style={{color:'#F27746', height:20, width:20}}/>
@@ -213,11 +230,13 @@ export default function PrimarySearchAppBar({userType, data, filterString, setFi
                         {
                             userType === 'companies' &&
                             <Link to={`/companies/${data._id}/proposals`} style={{marginRight: 20, alignSelf: 'center'}}>
-                                <Chip label="My Proposals" clickable variant="outlined"
-                                      style={{color: "black", fontFamily: 'Rubik', fontWeight: 300, fontSize:'1.1em', border:'1px solid transparent'}}/>
+                                <Chip label="My Proposals" clickable variant="outlined" style={{color: "black",
+                                    fontFamily: 'Rubik', fontWeight: 300, fontSize:'1.1em', border:'1px solid transparent'}}/>
                             </Link>
                         }
-                        {notificationsList !== null && <Notification listItems={notificationsList} id={data._id} userType={userType} unseen={data.unseenNotification}/>}
+                        {notificationsList !== null &&
+                        <Notification listItems={notificationsList} id={data._id} userType={userType}
+                                      unseen={data.unseenNotification}/>}
                         <IconButton
                             edge="end"
                             aria-label="account of current user"
@@ -236,10 +255,12 @@ export default function PrimarySearchAppBar({userType, data, filterString, setFi
                     </div>
                 </Toolbar>
                 <GetFilteredList callServerObj={{getter: callServerSearch, setter: setCallServerSearch}}
-                                 filterString={filterString+' '+searchObj.getter} setFilteredList={setFilteredList}/>
+                                 filterString={filterString+' '+searchObj.getter} cardType={proposalsOrInfluencers}
+                                 itemsList={proposalsOrInfluencers === 'proposals' ? proposalsList : influencersList}/>
             </AppBar>
             {renderMenu}
-            <Snackbar open={errFetchNotifications} autoHideDuration={6000} onClose={handleCloseSnackbar} anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}>
+            <Snackbar open={errFetchNotifications} autoHideDuration={6000} onClose={handleCloseSnackbar}
+                      anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}>
                 <Alert onClose={handleCloseSnackbar} severity={'error'} style={{fontSize:14, fontFamily:'Rubik'}}>
                     <div>Couldn't get notifications</div>
                 </Alert>

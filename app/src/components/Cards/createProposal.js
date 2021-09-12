@@ -1,22 +1,18 @@
-import React, {useRef} from 'react';
+import React, {useEffect, useRef} from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import Slide from '@material-ui/core/Slide';
 import InputText from '../InputComponents/inputText'
 import Grid from "@material-ui/core/Grid";
 import CategoriesComponent from "../InputComponents/categoriesComponent";
 import InputTextArea from "../InputComponents/InputTextArea";
-import {Checkbox, FormControlLabel, FormGroup, TextField} from "@material-ui/core";
+import {Checkbox, FormControlLabel, FormGroup, Snackbar, TextField} from "@material-ui/core";
 import PropTypes from 'prop-types'
-import {AnswerOfServer, ErrorSnackbar, required_txt} from "../../utils";
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
-});
+import {AnswerOfServer, ErrorSnackbar, parseJwt, required_txt, TransitionSlide} from "../../utils";
+import {Alert} from "@material-ui/lab";
 
 CreateProposalDialog.propTypes = {
     val: PropTypes.object.isRequired,
@@ -108,14 +104,14 @@ export default function CreateProposalDialog(props) {
 
     function onClickCreateEdit() {
         let emptyTitle = props.val.getter.title === ''
-        let longTitle = props.val.getter.title.length > 50
+        let longTitle = props.val.getter.title.length > 40
         let categoriesErr = props.val.getter.categories.length === 0
         let emptyDescription = props.val.getter.description === ''
         let emptyRequirements = props.val.getter.requirements === ''
         if (emptyTitle || categoriesErr || emptyDescription || emptyRequirements) {
             setErrProposals({
                 titleErr: emptyTitle || longTitle,
-                titleMsg: emptyTitle ? required_txt : longTitle ? 'Title too long. The length\'s limit is 50 characters' : '',
+                titleMsg: emptyTitle ? required_txt : longTitle ? 'Title too long. The length\'s limit is 40 characters' : '',
                 categoryErr: categoriesErr,
                 descriptionErr: emptyDescription,
                 descriptionMsg: emptyDescription ? required_txt : '',
@@ -136,14 +132,12 @@ export default function CreateProposalDialog(props) {
     return (
         <Dialog
             open={props.backdrop.getter}
-            TransitionComponent={Transition}
+            TransitionComponent={TransitionSlide}
             keepMounted
             fullWidth
             maxWidth={'sm'}
-            aria-labelledby="alert-dialog-slide-title"
-            aria-describedby="alert-dialog-slide-description"
         >
-            <DialogTitle id="proposal-dialog-slide-title"><span style={{fontFamily:'Rubik', fontWeight:800,
+            <DialogTitle><span style={{fontFamily:'Rubik', fontWeight:800,
                 color: '#1F75A6', fontSize:'1.5em'}}>{props.option === 'create' ? 'Create New Proposal' : 'Edit '
                 + props.val.getter.title}</span></DialogTitle>
             <DialogContent>
@@ -219,34 +213,26 @@ export default function CreateProposalDialog(props) {
                 </DialogActions>
             )}
             {props.option === 'create' ?
-                <AnswerOfServer callServerObj={{getter: sendToServerCreate, setter: setSendToServerCreate}}
-                                url={'/api/collaboration_proposals'} methodObj={{method: 'POST',
-                                headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
-                                body: JSON.stringify({...props.val.getter, companyID: props.companyInfo._id})}}
-                                sucMsg={'Proposal created successfully'} failMsg={'Failed to creat the proposal'}
-                                sucFunc={()=>{
-                                    setProposalAccepted(true);
-                                    const {addPhone: phoneVal, addEmail: emailVal,...otherKeys} = props.val.getter;
-                                    props.proposalList.setter(oldArray => [...oldArray, {...otherKeys,
-                                        companyID: props.companyInfo._id, companyName: props.companyInfo.name,
-                                        companySite: props.companyInfo.siteUrl, photo: props.companyInfo.photo,
-                                        bio: props.companyInfo.bio, email: emailVal ? props.companyInfo.email : null,
-                                        phone: phoneVal ? props.companyInfo.phone : null, contact:
-                                            {phone: props.companyInfo.phone, email: props.companyInfo.email}, canEdit: true}]);
-                                }}/> :
+                <AnswerOfServerForCreate callServerObj={{getter: sendToServerCreate, setter: setSendToServerCreate}}
+                                         proposalsList={props.proposalList} companyInfo={props.companyInfo}
+                                         val={props.val} setProposalAccepted={setProposalAccepted}/>
+                 :
                 <AnswerOfServer callServerObj={{getter: sendToServerEdit, setter: setSendToServerEdit}}
                                 url={`/api/collaboration_proposals/${props.val.getter._id}`}
                                 methodObj={{method: 'PUT', headers: {'Content-type': 'application/json; charset=UTF-8'},
                                 body: JSON.stringify({...props.val.getter})}} sucMsg={'Proposal edited successfully'}
                                 failMsg={'Edit failed'} sucFunc={()=>{
                                     setProposalEdited(true);
-                                    let proposal = props.proposalList.getter.find(proposal => proposal._id === props.val.getter._id);
-                                    let newArr = props.proposalList.getter.filter(o=>o._id !== proposal._id);
-                                    let index = props.proposalList.getter.indexOf(proposal)
+                                    let proposal = props.proposalList.getter.original.find(proposal => proposal._id === props.val.getter._id);
+                                    let newArr = props.proposalList.getter.original.filter(o=>o._id !== proposal._id);
+                                    let index = props.proposalList.getter.original.indexOf(proposal)
                                     newArr.splice(index,0, {...proposal, ...props.val.getter,
                                         phone: props.val.getter.addPhone ? proposal.contact.phone : null,
                                         email: props.val.getter.addEmail ? proposal.contact.email : null})
-                                    props.proposalList.setter(newArr);
+                                    props.proposalList.setter({
+                                        ...props.proposalList.getter,
+                                        original: newArr
+                                    });
 
                 }}/>
             }
@@ -255,3 +241,92 @@ export default function CreateProposalDialog(props) {
 
     );
 }
+
+const AnswerOfServerForCreate = ({callServerObj, val, companyInfo, proposalsList, setProposalAccepted}) => {
+    const [open, setOpen] = React.useState(false)
+    const [errMsg, setErrMsg] = React.useState('')
+    const [severity, setSeverity] = React.useState('error')
+
+    useEffect(() => {
+        if(callServerObj.getter) {
+            fetch('/api/collaboration_proposals', {
+                method: 'POST',
+                headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+                body: JSON.stringify({...val.getter, companyID: companyInfo._id})
+            }).then(res => {
+                if (!res.ok) {
+                    setOpen(true)
+                    setSeverity('error')
+                    setErrMsg('Connection problem')
+                    throw new Error('Couldn\'t save new proposal');
+                }
+                return res.json()
+            }).then(response => {
+                if (response.status === 'error') {
+                    setSeverity('error')
+                    setOpen(true)
+                    if ('error' in response) {
+                        setErrMsg(response.error)
+                    } else {
+                        setErrMsg('Failed to create the proposal')
+                    }
+                    throw new Error('Couldn\'t save new proposal');
+                } else {
+                    setSeverity('success')
+                    setErrMsg('Proposal created successfully')
+                    callServerObj.setter(false)
+                    setOpen(true)
+
+                    let dic = parseJwt(response.data)
+                    const {addPhone: phoneVal, addEmail: emailVal,...otherKeys} = val.getter;
+                    proposalsList.setter({
+                        ...proposalsList.getter,
+                        original: [...proposalsList.getter.original, {...otherKeys,
+                            companyID: companyInfo._id, companyName: companyInfo.name,
+                            companySite: companyInfo.siteUrl, photo: companyInfo.photo,
+                            bio: companyInfo.bio, email: emailVal ? companyInfo.email : null,
+                            phone: phoneVal ? companyInfo.phone : null, contact:
+                                {phone: companyInfo.phone, email: companyInfo.email},
+                            canEdit: true, collaborationsNumber:0, _id: dic.id}]
+                    })
+                    setProposalAccepted(true)
+                }
+            }).catch((error) => {
+                console.log(error)
+            });
+        }
+    },[callServerObj.getter])
+
+    const handleClose = () => {
+        setOpen(false)
+        callServerObj.setter(false)
+    };
+
+    return (
+        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}>
+            <Alert onClose={handleClose} severity={severity} style={{fontSize:14, fontFamily:'Rubik'}}>
+                <div>{errMsg}</div>
+            </Alert>
+        </Snackbar>
+    )
+}
+//
+// <AnswerOfServer callServerObj={{getter: sendToServerCreate, setter: setSendToServerCreate}}
+//                 url={'/api/collaboration_proposals'} methodObj={{method: 'POST',
+//     headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+//     body: JSON.stringify({...props.val.getter, companyID: props.companyInfo._id})}}
+//                 sucMsg={'Proposal created successfully'} failMsg={'Failed to creat the proposal'}
+//                 sucFunc={()=>{
+//                     setProposalAccepted(true);
+//                     const {addPhone: phoneVal, addEmail: emailVal,...otherKeys} = props.val.getter;
+//                     props.proposalList.setter({
+//                         ...props.proposalList.getter,
+//                         original: [...props.proposalList.getter.original, {...otherKeys,
+//                             companyID: props.companyInfo._id, companyName: props.companyInfo.name,
+//                             companySite: props.companyInfo.siteUrl, photo: props.companyInfo.photo,
+//                             bio: props.companyInfo.bio, email: emailVal ? props.companyInfo.email : null,
+//                             phone: phoneVal ? props.companyInfo.phone : null, contact:
+//                                 {phone: props.companyInfo.phone, email: props.companyInfo.email},
+//                             canEdit: true, collaborationsNumber:0}]
+//                     })
+//                 }}/>

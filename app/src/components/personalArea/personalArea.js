@@ -5,7 +5,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 import MyDetailsInfluencer from "./myDetailsInfluencer";
-import {Link, Route, Switch} from "react-router-dom";
+import {Link, Route, Switch, useLocation} from "react-router-dom";
 import {Avatar} from "@material-ui/core";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import BusinessIcon from '@material-ui/icons/Business';
@@ -62,14 +62,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 PersonalArea.propTypes = {
-    userType: PropTypes.oneOf(['influencers', 'companies']).isRequired,
     objData: PropTypes.object.isRequired,
     setObjData: PropTypes.func.isRequired
-    // img: PropTypes.object.isRequired
 }
 
-export default function PersonalArea({userType, objData, setObjData}) {
+export default function PersonalArea({objData, setObjData}) {
     const classes = useStyles();
+    const { pathname } = useLocation();
+    const userType = pathname.split('/')[1]
     const [value, setValue] = React.useState(0);
 
     const handleChange = (newValue) => {

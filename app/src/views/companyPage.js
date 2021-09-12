@@ -40,9 +40,6 @@ export default function CompanyPage() {
     const [errFetchCompanyData, setErrFetchCompanyData] = React.useState(false)
     const [errFetchInfluencersData, setErrFetchInfluencersData] = React.useState(false)
 
-    // influencers to display the company
-    const [influencersList, setInfluencersList] = React.useState(null)
-
     // for backdrop
     const [openBackDrop, setOpenBackDrop] = React.useState(false);
     const backdropObj = {
@@ -71,10 +68,16 @@ export default function CompanyPage() {
         setter: setSearchStringInfluencers
     }
 
-    // filtered proposal list according to search field, categories
-    const [filteredProposalList, setFilteredProposalList] = React.useState([])
-    // filtered proposal list according to search field, categories
-    const [filteredInfluencersList, setFilteredInfluencersList] = React.useState([])
+    const [proposalsList, setProposalsList] = React.useState({
+        original: null,
+        filtered: null
+    })
+
+    const [influencersList, setInfluencersList] = React.useState({
+        original: null,
+        filtered: null
+    })
+
     // an influencer that the company wants to get more information about
     const [influencerClickedForInfo, setInfluencerClickedForInfo] = React.useState(null)
 
@@ -106,8 +109,12 @@ export default function CompanyPage() {
             if ('status' in influencers) {
                 throw new Error('Couldn\'t get influencers\' data');
             } else {
-                setInfluencersList(influencers.response)
-                setFilteredInfluencersList(influencers.response)
+                // setInfluencersList(influencers.response)
+                // setFilteredInfluencersList(influencers.response)
+                setInfluencersList({
+                    original: influencers.response,
+                    filtered: influencers.response
+                })
             }
         }).catch((error) => {
             setErrFetchInfluencersData(true)
@@ -119,23 +126,23 @@ export default function CompanyPage() {
             <MuiThemeProvider theme={theme}>
                 {companyInfo !== null &&
                     <>
-                        <AppBar userType={'companies'} data={companyInfo} filterString={filterString} searchObj={searchStringProposalsObj} setFilteredList={setFilteredProposalList}/>
+                        <AppBar data={companyInfo} filterString={filterString} searchObj={searchStringProposalsObj} proposalsList={{getter: proposalsList, setter: setProposalsList}}/>
                         <Switch>
                             <Route exact path={`/companies/${id}`}>
-                                {influencersList !== null &&
-                                <FilteringCards display={'influencers'} objList={influencersList}
+                                {influencersList.original !== null &&
+                                <FilteringCards display={'influencers'} objList={{getter: influencersList, setter: setInfluencersList}}
                                                 backdrop={backdropObj} setClickedCard={setInfluencerClickedForInfo}
-                                                filterStringObj={filterStringObj} filteredListObj={{getter: filteredInfluencersList, setter: setFilteredInfluencersList}} searchStringObj={searchStringInfluencersObj}/>
+                                                filterStringObj={filterStringObj} searchStringObj={searchStringInfluencersObj}/>
                                 }
                                 <BackDrop className={classes.backdrop} open={openBackDrop}>
                                     {influencerClickedForInfo !== null && <FullInfoInfluencer backdrop={backdropObj} influencerObj={influencerClickedForInfo}/>}
                                 </BackDrop>
                             </Route>
                             <Route path={`/companies/${id}/proposals`}>
-                                <ProposalsOfCompany companyInfo={companyInfo} searchStringObj={searchStringProposalsObj} filterStringObj={filterStringObj} filteredListObj={{getter: filteredProposalList, setter: setFilteredProposalList}}/>
+                                <ProposalsOfCompany companyInfo={companyInfo} searchStringObj={searchStringProposalsObj} filterStringObj={filterStringObj} proposalsListObj={{getter: proposalsList, setter: setProposalsList}}/>
                             </Route>
                             <Route path={`/companies/${id}/personal`}>
-                                <PersonalArea userType={'companies'} objData={companyInfo} setObjData={setCompanyInfo}/>
+                                <PersonalArea objData={companyInfo} setObjData={setCompanyInfo}/>
                             </Route>
                             <Route path='/companies/:id/:influencerId' component={PersonalInfluencerDataPage}/>
                         </Switch>

@@ -48,7 +48,7 @@ export default function InfluencerPage() {
     }
 
     // filtered object list according to search field, categories
-    const [filteredList, setFilteredList] = React.useState([])
+    // const [filteredList, setFilteredList] = React.useState([])
 
     // for backdrop
     const [openBackDrop, setOpenBackDrop] = React.useState(false);
@@ -65,7 +65,10 @@ export default function InfluencerPage() {
 
     // fetching data for proposals
     const [errFetchProposalsData, setErrFetchProposalsData] = React.useState(false)
-    const [proposalsList, setProposalsList] = React.useState(null)
+    const [proposalsList, setProposalsList] = React.useState({
+        original: null,
+        filtered: null
+    })
 
     // user clicked on 'interested' button
     const [callServerInterested, setCallServerInterested] = React.useState(false)
@@ -113,7 +116,7 @@ export default function InfluencerPage() {
                 setErrFetchProposalsData(true)
                 throw new Error('Couldn\'t get proposals\' data');
             } else {
-                let proposalsList = proposalsData.response.map((proposal)=> {
+                let tempProposalsList = proposalsData.response.map((proposal)=> {
                     let company = companiesList.find(company => company._id === proposal.companyID)
                     proposal.companyName = company.name
                     proposal.companySite = company.siteUrl
@@ -122,8 +125,10 @@ export default function InfluencerPage() {
                     proposal.disabled = influencerTempData.clickedCollaborations.includes(proposal._id)
                     return proposal
                 })
-                setProposalsList(proposalsList)
-                setFilteredList(proposalsList)
+                setProposalsList({
+                    original: tempProposalsList,
+                    filtered: tempProposalsList
+                })
             }
         }).catch((error) => {
             console.log(error)
@@ -134,13 +139,14 @@ export default function InfluencerPage() {
         <MuiThemeProvider theme={theme}>
             {influencerData &&
                 <>
-                    <AppBar userType={'influencers'} data={influencerData} filterString={filterString}
-                            searchObj={searchStringObj} setFilteredList={setFilteredList}/>
+                    <AppBar data={influencerData} filterString={filterString}
+                            searchObj={searchStringObj} proposalsList={{getter: proposalsList, setter: setProposalsList}}/>
                     <Switch>
                         <Route exact path={`/influencers/${id}`}>
-                            {proposalsList !== null &&
-                                    <FilteringCards display={'proposals'} objList={proposalsList} backdrop={backdropObj} setClickedCard={setProposalClickedForInfo}
-                                                    filterStringObj={filterStringObj} filteredListObj={{getter: filteredList, setter: setFilteredList}} searchStringObj={searchStringObj}/>
+                            {proposalsList.original !== null &&
+                            <FilteringCards display={'proposals'} objList={{getter: proposalsList, setter: setProposalsList}}
+                                            backdrop={backdropObj} setClickedCard={setProposalClickedForInfo}
+                                            filterStringObj={filterStringObj} searchStringObj={searchStringObj}/>
 
                             }
                             <BackDrop className={classes.backdrop} open={openBackDrop}>
@@ -155,7 +161,7 @@ export default function InfluencerPage() {
                                             failMsg={'Failed sending the request'} sucFunc={()=>{proposalClickedForInfo.disabled = true}}/>}
                         </Route>
                         <Route path={`/influencers/${id}/personal`}>
-                            <PersonalArea userType={'influencers'} objData={influencerData} setObjData={setInfluencerData} />
+                            <PersonalArea objData={influencerData} setObjData={setInfluencerData} />
                         </Route>
                     </Switch>
                 </>

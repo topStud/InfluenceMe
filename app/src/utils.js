@@ -2,6 +2,7 @@ import React, {useEffect} from "react";
 import {Snackbar} from "@material-ui/core";
 import {Alert, AlertTitle} from "@material-ui/lab";
 import PropTypes from 'prop-types'
+import Slide from "@material-ui/core/Slide";
 
 
 export function parseJwt (token) {
@@ -20,6 +21,10 @@ export const validateWebsiteUrl = websiteUrl => {
     const urlRegEx = new RegExp(/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=+$,\w]+@)?[A-Za-z0-9.-]+|(?:www\.|[-;:&=+$,\w]+@)[A-Za-z0-9.-]+)((?:\/[+~%/.\w\-_]*)?\??#?)?)/);
     return urlRegEx.test(String(websiteUrl).toLowerCase());
 };
+
+export const TransitionSlide = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
 
 export const AnswerOfServer = ({callServerObj, url, methodObj, sucMsg, failMsg, sucFunc}) => {
     const [open, setOpen] = React.useState(false)
@@ -85,13 +90,13 @@ export function ErrorSnackbar({open, setOpen}) {
     )
 }
 
-export const GetFilteredList = ({callServerObj, filterString, setFilteredList}) => {
+export const GetFilteredList = ({callServerObj, filterString, itemsList, cardType}) => {
     const [open, setOpen] = React.useState(false)
     const [errMsg, setErrMsg] = React.useState('')
-
+    const strForURL = cardType === 'proposals' ? 'collaboration_proposals' : 'influencers'
     useEffect(() => {
         if(callServerObj.getter) {
-            fetch(`/api/collaboration_proposals/search/${filterString}`).then(res => {
+            fetch(`/api/${strForURL}/search/${filterString}`).then(res => {
                 if (!res.ok) {
                     setOpen(true)
                     setErrMsg('Connection problem')
@@ -103,7 +108,12 @@ export const GetFilteredList = ({callServerObj, filterString, setFilteredList}) 
                     setErrMsg('The search failed')
                 } else {
                     callServerObj.setter(false)
-                    setFilteredList(response.docs)
+                    let tempList = response.docs
+                    tempList = tempList.map(item => itemsList.getter.original.find(i=> i._id === item._id))
+                    itemsList.setter({
+                        ...itemsList.getter,
+                        filtered: tempList
+                    })
                 }
             }).catch((error) => {
                 console.log(error)

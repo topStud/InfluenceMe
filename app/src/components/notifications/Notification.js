@@ -116,7 +116,6 @@ class Notification extends React.Component {
                 let index = items.findIndex(i=> i._id === notification._id)
                 notification.seen = true
                 items[index] = notification
-                console.log(items)
                 this.setState({
                     ...this.state,
                     listItems: items,
@@ -226,12 +225,11 @@ class Notification extends React.Component {
                                             }
                                             const dayDifferent = daysDifferent(obj.createdAt)
                                             const date = this.generateDate(d).date
-                                            console.log(obj.seen)
                                             return (
                                                 <div key={key}>
                                                     <Link
                                                         to={`/${this.props.userType}/${this.props.id}/${obj.messageType === 1
-                                                            ? obj.senderID : obj.messageType === 2 ? `contract/${obj.itemID}` :
+                                                            ? obj.senderID+'?id='+obj.itemID : obj.messageType === 2 ? `contract/${obj.itemID}` :
                                                                 'personal/currentCollaborations'}`} style={{width: '100%'}}>
                                                         <MenuItem className={'' + (!obj.seen ? classes.backgroundUnseen : classes.backgroundSeen)}
                                                         onClick={() => this.onNotificationClick(obj)}>
@@ -295,8 +293,8 @@ class Notification extends React.Component {
         );
     }
 }
-// , borderRadius: '50%', padding: 5
-//className={`${classes.small} ${classes.hover}`}
+
+
 function hoursDifferent(timestamp) {
     let diffInMilliSeconds = Math.abs(new Date().getTime() - new Date(timestamp).getTime()) / 1000;
     return Math.floor(diffInMilliSeconds / 3600) % 24;

@@ -1,4 +1,4 @@
-import {Avatar, Button, Divider} from "@material-ui/core";
+import {Avatar, Backdrop, Button, Divider} from "@material-ui/core";
 import {useEffect} from "react";
 import {AccountCircle} from "@material-ui/icons";
 import {useParams} from "react-router-dom";
@@ -7,6 +7,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import {calculateAge, FetchError} from "../../utils";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
+import CreateContractDialog from "./createContract";
 
 const useStyles = makeStyles((theme) => ({
     photo: {
@@ -19,7 +20,6 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: 30
     },
     body: {
-        textAlign: "center",
         marginBottom:30
     },
     contact: {
@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: "column",
         justifyContent: "center"
     },
-    mainTile: {
+    mainTitle: {
         fontSize: '2.5em',
         fontFamily: 'Rubik',
         fontWeight: 800,
@@ -62,16 +62,23 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'flex-end',
         alignItems: "flex-start",
         paddingRight: '2%'
-    }
+    },
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
+    },
 }))
 
 export default function PersonalInfluencerDataPage() {
     const {influencerId} = useParams()
     const classes = useStyles()
     const [errFetchInfluencerData, setErrFetchInfluencerData] = React.useState(false)
-    const [influencerInfo, setInfluencerData] = React.useState(null)
+    const [influencerData, setInfluencerData] = React.useState(null)
+
+    const [contractBackdrop, setContractBackdrop] = React.useState(false)
 
     useEffect(()=>{
+        // get influencer
         fetch(`/api/influencers/${influencerId}`).then(res => {
             if (!res.ok) {
                 throw new Error('Couldn\'t get influencer\'s data');
@@ -89,65 +96,74 @@ export default function PersonalInfluencerDataPage() {
         });
     },[])
 
+    function onClickCreate() {
+        setContractBackdrop(true)
+    }
+
     return (
         <div style={{display:"flex", flexDirection: "column", alignItems: 'center', width:'100%'}}>
-            {influencerInfo !== null &&
+            {influencerData !== null &&
             <Grid container>
                 <Grid item xs={3}/>
                 <Grid item xs={6}>
                     <div className={classes.header}>
-                        {influencerInfo.photo !== null ? <Avatar src={influencerInfo.photo} className={classes.photo}/>
+                        {influencerData.photo !== null ? <Avatar src={influencerData.photo} className={classes.photo}/>
                             : <AccountCircle className={classes.photo}/>}
                         <div className={classes.identity}>
-                            <Typography className={classes.mainTile}>
-                                {influencerInfo.firstName} {influencerInfo.lastName}
+                            <Typography className={classes.mainTitle}>
+                                {influencerData.firstName} {influencerData.lastName}
                             </Typography>
                             <Typography className={classes.subTitle}>
-                                {influencerInfo.instagramUser}
+                                {influencerData.instagramUser}
                             </Typography>
                             <div style={{display: "flex", color:'#747474'}}>
                                 <Typography style={{fontSize:'0.8em'}}>
-                                    Followers: {influencerInfo.followersAmount}
+                                    Followers: {influencerData.followersAmount}
                                 </Typography>
-                                {influencerInfo.date !== undefined &&
+                                {influencerData.date !== undefined &&
                                 <>
                                     <Divider orientation="vertical" className={classes.divider}/>
                                     <Typography style={{fontSize:'0.8em'}}>
-                                        Age: {calculateAge(influencerInfo.date.substring(0,influencerInfo.date.indexOf('T')))}
+                                        Age: {calculateAge(influencerData.date.substring(0,influencerData.date.indexOf('T')))}
                                     </Typography>
                                 </>}
                             </div>
                         </div>
                     </div>
                     <div className={classes.body}>
-                        {influencerInfo.bio}
+                        {influencerData.bio}
                     </div>
                     <div className={classes.contact}>
                         My email address is
                         <span className={classes.selectable}>
-                            {influencerInfo.email}
+                            {influencerData.email}
                         </span><br/>
-                        {(influencerInfo.phone !== '' && influencerInfo.phone !== null) &&
+                        {(influencerData.phone !== '' && influencerData.phone !== null) &&
                         <>
                             You may give me a call to
                             <span className={classes.selectable}>
-                                {influencerInfo.phone}
+                                {influencerData.phone}
                             </span><br/>
                         </>}
-                        {influencerInfo.instagramUrl !== '' &&
+                        {influencerData.instagramUrl !== '' &&
                         <>
                             Check out my instagram account
                             <span className={classes.selectable}>
-                                {influencerInfo.instagramUrl}
+                                {influencerData.instagramUrl}
                             </span>
                         </>}
                     </div>
                 </Grid>
                 <Grid item xs={3} className={classes.contract}>
-                    <Button variant={'contained'} color={"primary"}>Create Contract</Button>
+                    <Button variant={'contained'} color={"primary"} onClick={onClickCreate}>Create Contract</Button>
                 </Grid>
             </Grid>
             }
+            <Backdrop open={contractBackdrop} className={classes.backdrop}>
+                {influencerData !== null && <CreateContractDialog
+                    backdrop={{getter: contractBackdrop, setter: setContractBackdrop}}
+                    influencer={influencerData}/>}
+            </Backdrop>
             {errFetchInfluencerData && <FetchError name={'influencer\'s'}/>}
         </div>
     )

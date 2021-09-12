@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function PermanentDrawerRight({objList, display, backdrop, setClickedCard, filterStringObj, filteredListObj, searchStringObj}) {
+export default function PermanentDrawerRight({objList, display, backdrop, setClickedCard, filterStringObj, searchStringObj}) {
     const classes = useStyles();
     const [callServerFilter, setCallServerFilter] = React.useState(false)
 
@@ -68,7 +68,10 @@ export default function PermanentDrawerRight({objList, display, backdrop, setCli
             Clothing: false,
             Beauty: false
         })
-        filteredListObj.setter(objList)
+        objList.setter({
+            ...objList.getter,
+            filtered: objList.getter.original
+        })
     }
 
     function onClickClearSearchString() {
@@ -76,17 +79,23 @@ export default function PermanentDrawerRight({objList, display, backdrop, setCli
         if (filterStringObj.getter !== '') {
             setCallServerFilter(true)
         } else {
-            filteredListObj.setter(objList)
+            objList.setter({
+                ...objList.getter,
+                filtered: objList.getter.original
+            })
         }
     }
 
     useEffect(()=>{
         if (filterStringObj.getter === '' && searchStringObj.getter === '') {
-            filteredListObj.setter(objList)
+            objList.setter({
+                ...objList.getter,
+                filtered: objList.getter.original
+            })
         } else {
             setCallServerFilter(true)
         }
-    },[JSON.stringify(objList)])
+    },[JSON.stringify(objList.getter.original)])
 
     function onCategoryClick(text) {
         let searchString, chosenCategories
@@ -107,7 +116,10 @@ export default function PermanentDrawerRight({objList, display, backdrop, setCli
         searchString = chosenCategories.join('  ')
         filterStringObj.setter(searchString)
         if (searchString === '' && searchStringObj.getter === '') {
-            filteredListObj.setter(objList)
+            objList.setter({
+                ...objList.getter,
+                filtered: objList.getter.original
+            })
         } else {
             setCallServerFilter(true)
         }
@@ -138,18 +150,18 @@ export default function PermanentDrawerRight({objList, display, backdrop, setCli
                     </div>
                     <main className={classes.content}>
                         {searchStringObj.getter !== '' &&
-                        <AppBar position={"relative"} style={{padding:0}}>
+                        <AppBar variant={"outlined"} position={"relative"} style={{padding:0,backgroundColor: "transparent", borderBottom:'3px solid #F27746'}}>
                             <Toolbar style={{display: "flex", justifyContent: "space-between"}}>
-                                <Typography variant="h6" style={{padding:0}}>
+                                <Typography variant="h6" style={{padding:0, color: '#1F75A6'}}>
                                     You searched for: {searchStringObj.getter}
                                 </Typography>
-                                <button onClick={onClickClearSearchString} className={classes.clearAll} style={{fontSize: '0.9em', color: "white"}}>clear search text</button>
+                                <button onClick={onClickClearSearchString} className={classes.clearAll} style={{fontSize: '0.9em', color: "#1F75A6"}}>clear search text</button>
                             </Toolbar>
                         </AppBar>
                         }
-                        <CardsDisplay display={display} backdrop={backdrop} setClickedCard={setClickedCard} objList={filteredListObj.getter}/>
+                        <CardsDisplay display={display} backdrop={backdrop} setClickedCard={setClickedCard} objList={objList.getter.filtered}/>
                     </main>
-                    <GetFilteredList callServerObj={{getter: callServerFilter, setter: setCallServerFilter}} filterString={filterStringObj.getter + ' ' + searchStringObj.getter} setFilteredList={filteredListObj.setter}/>
+                    <GetFilteredList cardType={display} callServerObj={{getter: callServerFilter, setter: setCallServerFilter}} filterString={filterStringObj.getter + ' ' + searchStringObj.getter} itemsList={objList}/>
                 </div>
             </Grid>
             <Grid item xs={1}/>

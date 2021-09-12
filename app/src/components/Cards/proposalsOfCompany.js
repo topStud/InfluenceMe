@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function ProposalsOfCompany({companyInfo, filterStringObj, filteredListObj, searchStringObj}) {
+export default function ProposalsOfCompany({companyInfo, filterStringObj, proposalsListObj, searchStringObj}) {
     const classes = useStyles()
 
     // decides when to call the server for deleting a proposal
@@ -57,13 +57,6 @@ export default function ProposalsOfCompany({companyInfo, filterStringObj, filter
         setOpenBackdropNewProposal(true)
     }
 
-    // the original list from the DB
-    const [proposalsList, setProposalsList] = React.useState(null)
-    const proposalListObj = {
-        getter: proposalsList,
-        setter: setProposalsList
-    }
-
     // true when an error occurred while fetching the proposals from server.
     const [errFetchProposals, setErrFetchProposals] = React.useState(false)
 
@@ -90,10 +83,10 @@ export default function ProposalsOfCompany({companyInfo, filterStringObj, filter
                     }
                     return proposal
                 })
-                // sets original list of proposals
-                setProposalsList(proposals)
-                // sets filtered list of proposals
-                filteredListObj.setter(proposals)
+                proposalsListObj.setter({
+                    original:proposals,
+                    filtered:proposals
+                })
             }
         }).catch((error) => {
             setErrFetchProposals(true)
@@ -107,24 +100,25 @@ export default function ProposalsOfCompany({companyInfo, filterStringObj, filter
                 <Chip label="NEW PROPOSAL" icon={<AddIcon />} color={"primary"} clickable variant="outlined"
                       style={{border: 'transparent', fontSize:15}} onClick={onClickNewProposal}/>
             </div>
-            {proposalsList !== null && <FilteringCards display={'proposals'} objList={proposalsList}
-                    backdrop={backdropObjFullInfo} setClickedCard={setProposalClicked}
-                    filterStringObj={filterStringObj} filteredListObj={filteredListObj} searchStringObj={searchStringObj}/>}
-            {/*backdrop for creating new proposal*/}
+            {proposalsListObj.getter.original !== null && <FilteringCards display={'proposals'}
+                    backdrop={backdropObjFullInfo} setClickedCard={setProposalClicked} objList={proposalsListObj}
+                    filterStringObj={filterStringObj} searchStringObj={searchStringObj}/>}
             <BackDrop className={classes.backdrop} open={openBackdropNewProposal}>
                 {openBackdropNewProposal && <CreateProposal val={values} backdrop={backdropObjNewProposal} companyInfo={companyInfo}
-                                proposalList={proposalListObj} option={'create'} />}
+                                proposalList={proposalsListObj} option={'create'} />}
             </BackDrop>
             {/*backdrop for showing full information*/}
             <BackDrop className={classes.backdrop} open={openBackdropFullInfo}>
-                {proposalClicked !== null && <FullInfoProposal backdrop={backdropObjFullInfo} proposalList={proposalListObj} proposalObj={{getter: proposalClicked, setter:setProposalClicked}} setCallToServer={setCallServerForDelete} userType={'companies'}/>}
+                {proposalClicked !== null && <FullInfoProposal backdrop={backdropObjFullInfo} proposalList={proposalsListObj} proposalObj={{getter: proposalClicked, setter:setProposalClicked}} setCallToServer={setCallServerForDelete}/>}
             </BackDrop>
             {proposalClicked !== null &&
             <AnswerOfServer callServerObj={{getter: callServerForDelete, setter: setCallServerForDelete}}
                             url={`/api/collaboration_proposals/${proposalClicked._id}`} methodObj={{method: 'DELETE'}}
                             sucMsg={'Proposal deleted successfully'} failMsg={'Deletion Failed'}
-                            sucFunc={()=>{proposalListObj.setter(proposalListObj.getter.filter(proposal=> proposal._id !== proposalClicked._id))}}/>
-            }
+                            sucFunc={()=>{proposalsListObj.setter({ ...proposalsListObj.getter,
+                                original: proposalsListObj.getter.original.filter(proposal=> proposal._id !== proposalClicked._id)
+                            })}}/>
+              }
             {errFetchProposals && <FetchError name={'proposals\''}/>}
         </>
     )

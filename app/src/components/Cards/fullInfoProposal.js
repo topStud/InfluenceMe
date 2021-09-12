@@ -11,9 +11,9 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import ConfirmationDialog from "./confirmationDialog";
 import BackDrop from "@material-ui/core/Backdrop";
 import {makeStyles} from "@material-ui/core/styles";
-import PropTypes from 'prop-types'
 import EditDialog from "./createProposal";
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import {useLocation} from "react-router-dom";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Zoom ref={ref} {...props} />;
@@ -26,12 +26,10 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-FullInfoProposal.propTypes = {
-    userType: PropTypes.oneOf(['influencers', 'companies'])
-}
-
-export default function FullInfoProposal({backdrop, proposalObj, setCallToServer, userType, proposalList}) {
+export default function FullInfoProposal({backdrop, proposalObj, setCallToServer, proposalList}) {
     const classes = useStyles()
+    const { pathname } = useLocation();
+    const userType = pathname.split('/')[1]
     const [confirmationType, setConfirmationType] = React.useState('delete')
     const [backdropConfirmation, setBackdropConfirmation] = React.useState(false)
     const backdropConfirmationObj = {
@@ -143,8 +141,11 @@ export default function FullInfoProposal({backdrop, proposalObj, setCallToServer
                 </DialogActions>
             </Dialog>
             <BackDrop className={classes.backdrop} open={backdropConfirmation}>
-                {backdropConfirmation && <ConfirmationDialog type={confirmationType} backdrop={backdropConfirmationObj} setCallServer={setCallToServer}
-                                    proposalName={proposalObj.getter.title} setDialogOpen={backdrop.setter}/>}
+                {backdropConfirmation &&
+                    <ConfirmationDialog type={confirmationType} backdrop={backdropConfirmationObj}
+                                        setCallServer={setCallToServer} proposalName={proposalObj.getter.title}
+                                        setDialogOpen={backdrop.setter}/>
+                }
             </BackDrop>
             <BackDrop open={backdropEdit} className={classes.backdrop}>
                 {backdropEdit && <EditDialog val={proposalObj} proposalList={proposalList} backdrop={backdropEditObj} option={'edit'}/>}
