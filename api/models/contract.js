@@ -9,10 +9,10 @@ const ContractSchema = new mongoose.Schema({
     companyEmail: { type: String, required: true },
     influencerName: { type: String, required: true},
     influencerPhone:{ type: String },
-    infliencerEmail:{ type: String, required: true },
+    influencerEmail:{ type: String, required: true },
     categories: { type: [String], required: true },
     details: { type: String, required: true },
-    payment: {type: String},
+    payment: {type: String, required: true },
     startDay:{type: Date, default: Date.now}, // need to know the time it working
     endDay:{type: Date} // end time - when to remove the contract
 })

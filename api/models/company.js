@@ -9,7 +9,7 @@ const CompanySchema = new mongoose.Schema({
     photo: { type: String },
     photoName: { type: String },
     phone: { type: String },
-    bio: { type: String },
+    bio: { type: String, required: true },
     disabled: {type: Boolean, default: false},
     CollaborationProposals: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Collaborations' }],
     Contracts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Contracts' }],
