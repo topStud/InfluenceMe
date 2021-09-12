@@ -47,9 +47,6 @@ export default function InfluencerPage() {
         setter: setSearchString
     }
 
-    // filtered object list according to search field, categories
-    // const [filteredList, setFilteredList] = React.useState([])
-
     // for backdrop
     const [openBackDrop, setOpenBackDrop] = React.useState(false);
     const backdropObj = {
@@ -139,8 +136,9 @@ export default function InfluencerPage() {
         <MuiThemeProvider theme={theme}>
             {influencerData &&
                 <>
-                    <AppBar data={influencerData} filterString={filterString}
-                            searchObj={searchStringObj} proposalsList={{getter: proposalsList, setter: setProposalsList}}/>
+                    <AppBar data={influencerData} filtersString={{proposals: filterStringObj, influencers: null}}
+                            searchesObj={{proposals: searchStringObj, influencers: null}} itemsLists={{proposals:
+                            {getter: proposalsList, setter: setProposalsList}, influencers: null}}/>
                     <Switch>
                         <Route exact path={`/influencers/${id}`}>
                             {proposalsList.original !== null &&
@@ -150,14 +148,19 @@ export default function InfluencerPage() {
 
                             }
                             <BackDrop className={classes.backdrop} open={openBackDrop}>
-                                {proposalClickedForInfo !== null && <FullInfoProposal setCallToServer={setCallServerInterested} backdrop={backdropObj} proposalObj={{getter: proposalClickedForInfo, setter: setProposalClickedForInfo}} userType={'influencers'}/>}
+                                {proposalClickedForInfo !== null &&
+                                <FullInfoProposal setCallToServer={setCallServerInterested} backdrop={backdropObj}
+                                                  proposalObj={{getter: proposalClickedForInfo,
+                                                      setter: setProposalClickedForInfo}} userType={'influencers'}/>}
                             </BackDrop>
-                            {proposalClickedForInfo !== null && <AnswerOfServer callServerObj={{getter: callServerInterested, setter: setCallServerInterested}}
+                            {proposalClickedForInfo !== null &&
+                            <AnswerOfServer callServerObj={{getter: callServerInterested, setter: setCallServerInterested}}
                                             url={`/api/notifications`} methodObj={{method: 'POST', headers:
                                             {'Accept': 'application/json', 'Content-type': 'application/json'},
                                             body: JSON.stringify({itemID: proposalClickedForInfo._id,
                                             itemName: proposalClickedForInfo.title, receiverID: proposalClickedForInfo.companyID,
-                                            senderID: influencerData._id, senderName: influencerData.firstName + ' ' + influencerData.lastName, messageType: 1})}} sucMsg={'Request sent successfully'}
+                                            senderID: influencerData._id, senderName: influencerData.firstName + ' ' +
+                                                    influencerData.lastName, messageType: 1})}} sucMsg={'Request sent successfully'}
                                             failMsg={'Failed sending the request'} sucFunc={()=>{proposalClickedForInfo.disabled = true}}/>}
                         </Route>
                         <Route path={`/influencers/${id}/personal`}>

@@ -47,11 +47,18 @@ export default function CompanyPage() {
         setter: setOpenBackDrop
     }
 
-    // filtering string
-    const [filterString, setFilterString] = React.useState('')
-    const filterStringObj = {
-        getter: filterString,
-        setter: setFilterString
+    // filtering string - influencers
+    const [filterStringInfluencers, setFilterStringInfluencers] = React.useState('')
+    const filterStringObjInfluencers = {
+        getter: filterStringInfluencers,
+        setter: setFilterStringInfluencers
+    }
+
+    // filtering string - influencers
+    const [filterStringProposals, setFilterStringProposals] = React.useState('')
+    const filterStringObjProposals = {
+        getter: filterStringProposals,
+        setter: setFilterStringProposals
     }
 
     // search string - proposals
@@ -109,8 +116,6 @@ export default function CompanyPage() {
             if ('status' in influencers) {
                 throw new Error('Couldn\'t get influencers\' data');
             } else {
-                // setInfluencersList(influencers.response)
-                // setFilteredInfluencersList(influencers.response)
                 setInfluencersList({
                     original: influencers.response,
                     filtered: influencers.response
@@ -126,20 +131,27 @@ export default function CompanyPage() {
             <MuiThemeProvider theme={theme}>
                 {companyInfo !== null &&
                     <>
-                        <AppBar data={companyInfo} filterString={filterString} searchObj={searchStringProposalsObj} proposalsList={{getter: proposalsList, setter: setProposalsList}}/>
+                        <AppBar data={companyInfo} filtersString={{proposals: filterStringObjProposals,
+                            influencers: filterStringObjInfluencers}} searchesString={{proposals: searchStringProposalsObj,
+                            influencers: searchStringInfluencersObj}} itemsLists={{proposals:{getter: proposalsList,
+                                setter: setProposalsList}, influencers: {getter: influencersList, setter: setInfluencersList}}}/>
                         <Switch>
                             <Route exact path={`/companies/${id}`}>
                                 {influencersList.original !== null &&
-                                <FilteringCards display={'influencers'} objList={{getter: influencersList, setter: setInfluencersList}}
-                                                backdrop={backdropObj} setClickedCard={setInfluencerClickedForInfo}
-                                                filterStringObj={filterStringObj} searchStringObj={searchStringInfluencersObj}/>
+                                <FilteringCards display={'influencers'} objList={{getter: influencersList,
+                                    setter: setInfluencersList}} backdrop={backdropObj} setClickedCard={setInfluencerClickedForInfo}
+                                    filterStringObj={filterStringObjInfluencers} searchStringObj={searchStringInfluencersObj}/>
                                 }
                                 <BackDrop className={classes.backdrop} open={openBackDrop}>
-                                    {influencerClickedForInfo !== null && <FullInfoInfluencer backdrop={backdropObj} influencerObj={influencerClickedForInfo}/>}
+                                    {influencerClickedForInfo !== null &&
+                                        <FullInfoInfluencer backdrop={backdropObj} influencerObj={influencerClickedForInfo}/>
+                                    }
                                 </BackDrop>
                             </Route>
                             <Route path={`/companies/${id}/proposals`}>
-                                <ProposalsOfCompany companyInfo={companyInfo} searchStringObj={searchStringProposalsObj} filterStringObj={filterStringObj} proposalsListObj={{getter: proposalsList, setter: setProposalsList}}/>
+                                <ProposalsOfCompany companyInfo={companyInfo} searchStringObj={searchStringProposalsObj}
+                                                    filterStringObj={filterStringObjInfluencers}
+                                                    proposalsListObj={{getter: proposalsList, setter: setProposalsList}}/>
                             </Route>
                             <Route path={`/companies/${id}/personal`}>
                                 <PersonalArea objData={companyInfo} setObjData={setCompanyInfo}/>

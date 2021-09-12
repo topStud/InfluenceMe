@@ -10,6 +10,7 @@ import {GetFilteredList} from "../../utils";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
+import PropTypes from 'prop-types'
 
 const drawerWidth = 240;
 
@@ -46,7 +47,25 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function PermanentDrawerRight({objList, display, backdrop, setClickedCard, filterStringObj, searchStringObj}) {
+FilteringCards.propTypes = {
+    display: PropTypes.oneOf(['proposals','influencers']).isRequired,
+    backdrop: PropTypes.exact({
+        getter: PropTypes.bool,
+        setter: PropTypes.func
+    }).isRequired,
+    setClickedCard: PropTypes.func.isRequired,
+    filterStringObj: PropTypes.exact({
+        getter: PropTypes.string,
+        setter: PropTypes.func
+    }).isRequired,
+    searchStringObj: PropTypes.exact({
+        getter: PropTypes.string,
+        setter: PropTypes.func
+    }).isRequired,
+    objList: PropTypes.arrayOf(PropTypes.object).isRequired
+}
+
+export default function FilteringCards({objList, display, backdrop, setClickedCard, filterStringObj, searchStringObj}) {
     const classes = useStyles();
     const [callServerFilter, setCallServerFilter] = React.useState(false)
 
@@ -161,10 +180,29 @@ export default function PermanentDrawerRight({objList, display, backdrop, setCli
                         }
                         <CardsDisplay display={display} backdrop={backdrop} setClickedCard={setClickedCard} objList={objList.getter.filtered}/>
                     </main>
-                    <GetFilteredList cardType={display} callServerObj={{getter: callServerFilter, setter: setCallServerFilter}} filterString={filterStringObj.getter + ' ' + searchStringObj.getter} itemsList={objList}/>
+                    <GetFilteredList cardType={display} callServerObj={{getter: callServerFilter, setter: setCallServerFilter}}
+                                     filterString={filterStringObj.getter + ' ' + searchStringObj.getter} itemsList={objList}
+                    url={getUrl(filterStringObj.getter, searchStringObj.getter, display)}/>
                 </div>
             </Grid>
             <Grid item xs={1}/>
         </Grid>
     );
+}
+
+function getUrl(filterStr, searchStr, cardType) {
+    let url = '/api/'
+    if (cardType === 'proposals') {
+        url += 'collaboration_proposals/'
+    } else {
+        url += 'influencers/'
+    }
+    if (filterStr !== '' && searchStr !== '') {
+        url += `search/${searchStr}/${filterStr}`
+    } else if (filterStr !== '') {
+        url += `search-categories/${filterStr}`
+    } else {
+        url += `search-bar/${searchStr}`
+    }
+    return url
 }

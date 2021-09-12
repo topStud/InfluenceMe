@@ -90,13 +90,12 @@ export function ErrorSnackbar({open, setOpen}) {
     )
 }
 
-export const GetFilteredList = ({callServerObj, filterString, itemsList, cardType}) => {
+export const GetFilteredList = ({callServerObj, url, itemsList}) => {
     const [open, setOpen] = React.useState(false)
     const [errMsg, setErrMsg] = React.useState('')
-    const strForURL = cardType === 'proposals' ? 'collaboration_proposals' : 'influencers'
     useEffect(() => {
         if(callServerObj.getter) {
-            fetch(`/api/${strForURL}/search/${filterString}`).then(res => {
+            fetch(url).then(res => {
                 if (!res.ok) {
                     setOpen(true)
                     setErrMsg('Connection problem')

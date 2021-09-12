@@ -22,6 +22,9 @@ const useStyles = makeStyles((theme) => ({
     grow: {
         flexGrow: 1,
     },
+    root: {
+        zIndex: theme.zIndex.drawer
+    },
     menuButton: {
         marginRight: theme.spacing(2),
     },
@@ -93,24 +96,38 @@ const useStyles = makeStyles((theme) => ({
 
 PrimarySearchAppBar.propsType = {
     data: PropTypes.object.isRequired,
-    filterString: PropTypes.object.isRequired,
-    proposalsList: PropTypes.object.isRequired,
-    searchStringObj: PropTypes.object.isRequired,
-    influencersList: PropTypes.object
+    filtersString: PropTypes.exact({
+        proposals: PropTypes.object,
+        influencers: PropTypes.object
+    }).isRequired,
+    searchesString: PropTypes.exact({
+        proposals: PropTypes.object,
+        influencers: PropTypes.object
+    }).isRequired,
+    itemsLists: PropTypes.exact({
+        proposals: PropTypes.object,
+        influencers: PropTypes.object
+    }).isRequired
 }
 
-export default function PrimarySearchAppBar({data, filterString, proposalsList, searchObj, influencersList}) {
+export default function PrimarySearchAppBar({data, filtersString, searchesString, itemsLists}) {
     const classes = useStyles();
     const { pathname } = useLocation();
     const userType = pathname.split('/')[1]
-    const proposalsOrInfluencers = userType === 'companies' && pathname.split('/')[3] === 'proposals' ?
-        'proposals' : 'influencers'
     const [anchorEl, setAnchorEl] = React.useState(null);
-    const [searchValue, setSearchValue] = React.useState('')
-    const [callServerSearch, setCallServerSearch] = React.useState(false)
+
     const isMenuOpen = Boolean(anchorEl);
     const [errFetchNotifications, setErrFetchNotifications] = React.useState(false)
     const [notificationsList, setNotificationsList] = React.useState(null)
+
+    // search related
+    const proposalsOrInfluencers = userType === 'companies' && pathname.split('/')[3] === 'proposals' ?
+        'collaboration_proposals' : 'influencers'
+    const filterString = proposalsOrInfluencers === 'influencers' ? filtersString.influencers : filtersString.proposals
+    const searchObj = proposalsOrInfluencers === 'influencers' ? searchesString.influencers : searchesString.proposals
+    const currentList = proposalsOrInfluencers === 'influencers' ? itemsLists.influencers : itemsLists.proposals
+    const [searchValue, setSearchValue] = React.useState('')
+    const [callServerSearch, setCallServerSearch] = React.useState(false)
 
     useEffect(()=> {
         fetch(`/api/notifications/${data._id}`).then(res => {
@@ -196,7 +213,7 @@ export default function PrimarySearchAppBar({data, filterString, proposalsList, 
     );
 
     return (
-        <div className={classes.grow} style={{marginBottom: 20, position:"sticky", top:0, zIndex:1000}}>
+        <div className={`${classes.grow} ${classes.root}`} style={{marginBottom: 20, position:"sticky", top:0}}>
             <AppBar position="relative">
                 <Toolbar style={{backgroundColor: "white", borderBottom: '8px solid #F27746'}}>
                     <Link to={`/${userType}/${data._id}`}>
@@ -255,8 +272,9 @@ export default function PrimarySearchAppBar({data, filterString, proposalsList, 
                     </div>
                 </Toolbar>
                 <GetFilteredList callServerObj={{getter: callServerSearch, setter: setCallServerSearch}}
-                                 filterString={filterString+' '+searchObj.getter} cardType={proposalsOrInfluencers}
-                                 itemsList={proposalsOrInfluencers === 'proposals' ? proposalsList : influencersList}/>
+                                 url={`/api/${proposalsOrInfluencers}/${filterString.getter !== '' ? 'search/' : 
+                                     'search-bar/'}/${searchObj.getter}${filterString.getter !== '' ? 
+                                     `/${filterString.getter}`:''}`} itemsList={currentList}/>
             </AppBar>
             {renderMenu}
             <Snackbar open={errFetchNotifications} autoHideDuration={6000} onClose={handleCloseSnackbar}
