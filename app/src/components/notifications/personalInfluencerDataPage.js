@@ -223,7 +223,7 @@ export default function PersonalInfluencerDataPage() {
             </Grid>
             }
             <Backdrop open={contractBackdrop} className={classes.backdrop}>
-                {contractValues.companyEmail !== '' && <CreateContractDialog
+                {contractValues.companyID !== '' && <CreateContractDialog
                     backdrop={{getter: contractBackdrop, setter: setContractBackdrop}}
                     contractValues={values} setCallServer={setCallServerCreateContract}/>}
             </Backdrop>

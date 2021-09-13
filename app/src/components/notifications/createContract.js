@@ -55,7 +55,7 @@ export default function CreateContractDialog({backdrop, contractValues, setCallS
         startDayErr: false,
         startDayMsg: '',
         endDayErr: false,
-        endErrMsg: ''
+        endDayMsg: ''
     })
     const err = {
         getter: errContract,
@@ -96,7 +96,7 @@ export default function CreateContractDialog({backdrop, contractValues, setCallS
                 companyPhoneErr: invalidPhone,
                 companyPhoneMsg: invalidPhone ? 'Phone number is not valid' : '',
                 companyEmailErr: invalidEmail,
-                companyEmailMsg: invalidEmail ? 'The email entered is not in the correct format' : '',
+                companyEmailMsg: contractValues.getter.companyEmail === '' ? required_txt : invalidEmail ? 'The email entered is not in the correct format' : '',
                 startDayErr: invalidDates || invalidStartDay,
                 startDayMsg: invalidDates ? 'The collaboration needs first to start' : invalidStartDay ? 'Invalid Date' : '',
                 endDayErr: invalidEndDay || invalidDates,
