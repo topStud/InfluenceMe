@@ -2,11 +2,13 @@ import React from "react";
 import Badge from "@material-ui/core/Badge";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import IconButton from "@material-ui/core/IconButton";
-import {Menu, MenuItem, Snackbar, withStyles} from "@material-ui/core";
+import {Divider, Menu, MenuItem, Snackbar, withStyles} from "@material-ui/core";
 import {Link} from 'react-router-dom';
 import Typography from "@material-ui/core/Typography";
 import CloseIcon from '@material-ui/icons/Close';
 import {Alert} from "@material-ui/lab";
+
+const viewMoreJump = 3
 
 const styles = (theme) => ({
     clearAll: {
@@ -42,7 +44,8 @@ class Notification extends React.Component {
             snackbarError: {
                 msg: '',
                 open: false
-            }
+            },
+            expandNotificationsNumber: 1
         };
     }
     componentDidMount() {
@@ -80,7 +83,8 @@ class Notification extends React.Component {
     closeNotifications = () => {
         this.setState({
             ...this.state,
-            anchorEl: null
+            anchorEl: null,
+            expandNotificationsNumber: 1
         })
     }
     onNotificationClick = (notification) => {
@@ -138,16 +142,24 @@ class Notification extends React.Component {
             }
         })
     }
+    onViewMoreClick = () => {
+        this.setState({
+            ...this.state,
+            expandNotificationsNumber: this.state.expandNotificationsNumber + 1
+        })
+    }
     render() {
         const { classes } = this.props;
         const { listItems } = this.state;
         const allTimestamp = [
             {
                 groupName: 'New Notifications',
+                fullList: [],
                 list: []
             },
             {
                 groupName: 'Old Notifications',
+                fullList: [],
                 list: []
             }
         ];
@@ -156,12 +168,16 @@ class Notification extends React.Component {
             const days = daysDifferent(notification.createdAt)
             const hours = hoursDifferent(notification.createdAt)
             if (hours < 9 && days === 0)
-                allTimestamp[0].list.push(notification)
+                allTimestamp[0].fullList.push(notification)
             else
-                allTimestamp[1].list.push(notification)
+                allTimestamp[1].fullList.push(notification)
         });
-        allTimestamp[0].list.sort((a, b) => (a.createdAt < b.createdAt) ? 1 : -1)
-        allTimestamp[1].list.sort((a, b) => (a.createdAt < b.createdAt) ? 1 : -1)
+        allTimestamp[0].fullList.sort((a, b) => (a.createdAt < b.createdAt) ? 1 : -1)
+        allTimestamp[1].fullList.sort((a, b) => (a.createdAt < b.createdAt) ? 1 : -1)
+        allTimestamp[0].list = allTimestamp[0].fullList.slice(0,Math.min(viewMoreJump * this.state.expandNotificationsNumber, allTimestamp[0].fullList.length))
+        if (allTimestamp[0].list.length < this.state.expandNotificationsNumber * viewMoreJump){
+            allTimestamp[1].list = allTimestamp[1].fullList.slice(0,Math.min(viewMoreJump * this.state.expandNotificationsNumber - allTimestamp[0].list.length, allTimestamp[0].fullList.length))
+        }
         return (
             <>
                 <IconButton color="inherit" style={{height: '80%', alignSelf:"center"}} onClick={(event) => this.toggleNotification(event)}>
@@ -199,7 +215,7 @@ class Notification extends React.Component {
                             {allTimestamp.map((timestamp, k) => {
                                 return (
                                     <div key={k}>
-                                        <p
+                                        {timestamp.list.length !== 0 && <p
                                             style={{
                                                 fontSize: "15px",
                                                 marginLeft: "5px",
@@ -211,7 +227,7 @@ class Notification extends React.Component {
                                 <span style={{display: "inline-block", width: "50%", marginBottom: 10, marginTop: 10}}>
                                   {timestamp.groupName}
                                 </span>
-                                        </p>
+                                        </p>}
                                         {timestamp.list.map((obj, key) => {
                                             // calculates time for current day
                                             const d = new Date(obj.createdAt);
@@ -271,6 +287,7 @@ class Notification extends React.Component {
                                                         onClick={() => {}}>
                                                         <CloseIcon className={classes.small} style={{color: '#A68617'}}/>
                                                     </IconButton>
+                                                    <Divider style={{backgroundColor: 'rgba(31,117,166,0.08)', height:3}}/>
                                                 </div>
                                             );
                                         })
@@ -278,13 +295,15 @@ class Notification extends React.Component {
                                     </div>
                                 );
                             })}
-                            <MenuItem style={{display: "flex", justifyContent: 'center', color: '#F27746'}}>
+                            {this.props.listItems.length > (this.state.expandNotificationsNumber * viewMoreJump) && <MenuItem style={{display: "flex", justifyContent: 'center', color: '#F27746'}}
+                                      onClick={this.onViewMoreClick}>
                                 VIEW MORE
-                            </MenuItem>
+                            </MenuItem>}
                         </div>}
                     </Menu>
                 }
-                <Snackbar open={this.state.snackbarError.open} autoHideDuration={6000} onClose={this.handleCloseSnackbar} anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}>
+                <Snackbar open={this.state.snackbarError.open} autoHideDuration={6000} onClose={this.handleCloseSnackbar}
+                          anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}>
                     <Alert onClose={this.handleCloseSnackbar} severity={'error'} style={{fontSize:14, fontFamily:'Rubik'}}>
                         <div>{this.state.snackbarError.msg}</div>
                     </Alert>
