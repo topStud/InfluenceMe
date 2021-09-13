@@ -4,6 +4,7 @@ import {createTheme, MuiThemeProvider} from '@material-ui/core/styles';
 import Footer from "./footer";
 import Typography from "@material-ui/core/Typography";
 import {Link} from 'react-router-dom';
+import Button from "@material-ui/core/Button";
 
 export const siteTitle = 'InfluenceMe'
 
@@ -24,12 +25,17 @@ export default function Layout({ children, pageOption }) {
             <div className={styles.container}>
                 <header style={{width: '100%'}}>
                     {!pageOption && (
-                        <Typography component="h1" variant={"h1"} style={{textAlign:'center', marginTop: 50, marginBottom: 50, fontFamily: 'Rubik',fontWeight: 400, color: '#1F75A6'}}>
-                            Influence<span style={{color: '#A64B28'}}>Me</span>
-                        </Typography>
+                        <>
+                            <Link to={'/view'}>
+                                <Button style={{marginTop:'2%', marginLeft:'3%'}} variant={"outlined"}>View Proposals</Button>
+                            </Link>
+                            <Typography component="h1" variant={"h1"} style={{textAlign:'center', marginTop: 50, marginBottom: 50, fontFamily: 'Rubik',fontWeight: 400, color: '#1F75A6'}}>
+                                Influence<span style={{color: '#A64B28'}}>Me</span>
+                            </Typography>
+                        </>
                     ) }
                     {pageOption === 1 && (
-                        <Typography component="h1" variant={"h2"} style={{textAlign:'left', marginBottom: 30, fontFamily: 'Rubik',fontWeight: 400, color: '#1F75A6'}}>
+                        <Typography component="h1" variant={"h2"} style={{textAlign:'left', marginBottom: 30, fontFamily: 'Rubik',fontWeight: 400, color: '#1F75A6', margin:20}}>
                             <Link to={'/'}>
                                Influence<span style={{color: '#A64B28'}}>Me</span>
                             </Link>

@@ -14,6 +14,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import EditDialog from "./createProposal";
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import {useLocation} from "react-router-dom";
+import PropTypes from 'prop-types'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Zoom ref={ref} {...props} />;
@@ -26,10 +27,27 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+FullInfoProposal.propTypes = {
+    backdrop: PropTypes.exact({
+        getter: PropTypes.bool,
+        setter: PropTypes.func
+    }).isRequired,
+    proposalObj: PropTypes.exact({
+        getter: PropTypes.object,
+        setter: PropTypes.func
+    }).isRequired,
+    setCallToServer: PropTypes.func,
+    proposalList: PropTypes.exact({
+        getter: PropTypes.object,
+        setter: PropTypes.func
+    })
+}
+
 export default function FullInfoProposal({backdrop, proposalObj, setCallToServer, proposalList}) {
     const classes = useStyles()
     const { pathname } = useLocation();
     const userType = pathname.split('/')[1]
+
     const [confirmationType, setConfirmationType] = React.useState('delete')
     const [backdropConfirmation, setBackdropConfirmation] = React.useState(false)
     const backdropConfirmationObj = {

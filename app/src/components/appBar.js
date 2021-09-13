@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import { alpha, makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -11,9 +11,7 @@ import Chip from "@material-ui/core/Chip";
 import {Link, useLocation} from 'react-router-dom';
 import {Avatar, Snackbar} from "@material-ui/core";
 import BusinessIcon from '@material-ui/icons/Business';
-import SearchIcon from '@material-ui/icons/Search';
-import InputBase from '@material-ui/core/InputBase';
-import {GetFilteredList} from "../utils";
+import SearchField from './InputComponents/searchField'
 import Notification from "./notifications/Notification";
 import {Alert} from "@material-ui/lab";
 import PropTypes from 'prop-types'
@@ -24,9 +22,6 @@ const useStyles = makeStyles((theme) => ({
     },
     root: {
         zIndex: theme.zIndex.drawer
-    },
-    menuButton: {
-        marginRight: theme.spacing(2),
     },
     title: {
         display: 'none',
@@ -41,19 +36,6 @@ const useStyles = makeStyles((theme) => ({
         paddingTop:2,
         paddingRight:8,
     },
-    inputRoot: {
-        color: 'inherit',
-    },
-    inputInput: {
-        padding: theme.spacing(1, 1, 1, 0),
-        // vertical padding + font size from searchIcon
-        marginLeft: `calc(1em + ${theme.spacing(4)}px)`,
-        transition: theme.transitions.create('width'),
-        width: '100%',
-        [theme.breakpoints.up('md')]: {
-            width: '20ch',
-        },
-    },
     sectionDesktop: {
         display: 'none',
         [theme.breakpoints.up('md')]: {
@@ -63,34 +45,6 @@ const useStyles = makeStyles((theme) => ({
     small: {
         width: theme.spacing(5),
         height: theme.spacing(5),
-    },
-    sectionMobile: {
-        display: 'flex',
-        [theme.breakpoints.up('md')]: {
-            display: 'none',
-        },
-    },
-    searchIcon: {
-        padding: theme.spacing(1, 1),
-        height: 'inherit',
-        position: 'absolute',
-        display: 'flex',
-        justifyContent: 'center',
-    },
-    search: {
-        position: 'relative',
-        borderRadius: '20px',
-        backgroundColor: alpha(theme.palette.common.white, 0.15),
-        '&:hover': {
-            backgroundColor: alpha('#A64B28', 0.05),
-        },
-        marginRight: theme.spacing(2),
-        marginLeft: 0,
-        width: '100%',
-        [theme.breakpoints.up('sm')]: {
-            marginLeft: theme.spacing(3),
-            width: 'auto',
-        },
     },
 }));
 
@@ -126,8 +80,6 @@ export default function PrimarySearchAppBar({data, filtersString, searchesString
     const filterString = proposalsOrInfluencers === 'influencers' ? filtersString.influencers : filtersString.proposals
     const searchObj = proposalsOrInfluencers === 'influencers' ? searchesString.influencers : searchesString.proposals
     const currentList = proposalsOrInfluencers === 'influencers' ? itemsLists.influencers : itemsLists.proposals
-    const [searchValue, setSearchValue] = React.useState('')
-    const [callServerSearch, setCallServerSearch] = React.useState(false)
 
     useEffect(()=> {
         fetch(`/api/notifications/${data._id}`).then(res => {
@@ -151,32 +103,12 @@ export default function PrimarySearchAppBar({data, filtersString, searchesString
         setAnchorEl(event.currentTarget);
     };
 
-    const onChangeSearchContent = (event) => {
-        setSearchValue(event.target.value)
-    }
-
     const handleMenuClose = () => {
         setAnchorEl(null);
     };
 
-    const onKeyDownSearchInput = (e) => {
-        if (e.key === 'Enter') {
-            onClickSearch()
-        }
-    }
-
     const handleCloseSnackbar = () => {
         setErrFetchNotifications(false)
-    }
-
-    function onClickSearch() {
-        if (searchValue !== '') {
-            setCallServerSearch(true)
-            // nullifies search string (displayed to user)
-            setSearchValue('')
-        }
-        // saves search value of user
-        searchObj.setter(searchValue)
     }
 
     const menuId = 'primary-search-account-menu';
@@ -223,25 +155,7 @@ export default function PrimarySearchAppBar({data, filtersString, searchesString
                         </Typography>
                     </Link>
                     <div className={classes.grow} />
-                    <div className={classes.search}>
-                        <InputBase
-                            onKeyDown={onKeyDownSearchInput}
-                            id={'search-field'}
-                            placeholder="Key words…"
-                            classes={{
-                                root: classes.inputRoot,
-                                input: classes.inputInput,
-                            }}
-                            value={searchValue}
-                            onChange={onChangeSearchContent}
-                            style={{color: '#1F75A6', border:'1px solid #F27746',
-                                backgroundColor:'rgba(242,119,70,0.05)', borderRadius: '20px'}}
-                            inputProps={{ 'aria-label': 'search' }}
-                            startAdornment={<IconButton onClick={onClickSearch} className={classes.searchIcon}>
-                                <SearchIcon style={{color:'#F27746', height:20, width:20}}/>
-                            </IconButton>}
-                        />
-                    </div>
+                    <SearchField searchObj={searchObj} filterString={filterString.getter} objList={currentList}/>
                     <div className={classes.grow} />
                     <div className={classes.sectionDesktop}>
                         {
@@ -271,10 +185,6 @@ export default function PrimarySearchAppBar({data, filtersString, searchesString
                         </IconButton>
                     </div>
                 </Toolbar>
-                <GetFilteredList callServerObj={{getter: callServerSearch, setter: setCallServerSearch}}
-                                 url={`/api/${proposalsOrInfluencers}/${filterString.getter !== '' ? 'search/' : 
-                                     'search-bar/'}/${searchObj.getter}${filterString.getter !== '' ? 
-                                     `/${filterString.getter}`:''}`} itemsList={currentList}/>
             </AppBar>
             {renderMenu}
             <Snackbar open={errFetchNotifications} autoHideDuration={6000} onClose={handleCloseSnackbar}
