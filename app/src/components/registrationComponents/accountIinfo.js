@@ -16,11 +16,11 @@ export default function SignUp(props) {
     const values = props.values
     const [err, setErr] = React.useState({
         emailErr: false,
-        passErr: false,
-        passVErr:false,
+        passwordErr: false,
+        passwordVErr:false,
         emailMsg: '',
-        passMsg: '',
-        passVMsg: ''
+        passwordMsg: '',
+        passwordVMsg: ''
     })
     const errors = {
         getter: err,
@@ -55,10 +55,10 @@ export default function SignUp(props) {
         badEmail = !ValidateEmail(values.getter.email)
         if (passEmpty || passVEmpty || emailEmpty || badEmail || (values.getter.password.length < 6) || (values.getter.password !== values.getter.passwordV)) {
             setErr({
-                passMsg: passEmpty ? required_txt : values.getter.password.length < 6 ? 'Minimum length for a password is 6 characters' : '',
-                passErr: passEmpty || values.getter.password.length < 6,
-                passVErr: passVEmpty || values.getter.password !== values.getter.passwordV,
-                passVMsg: passVEmpty ? required_txt : values.getter.password !== values.getter.passwordV ? 'The passwords don\'t match' : '',
+                passwordMsg: passEmpty ? required_txt : values.getter.password.length < 6 ? 'Minimum length for a password is 6 characters' : '',
+                passwordErr: passEmpty || values.getter.password.length < 6,
+                passwordVErr: passVEmpty || values.getter.password !== values.getter.passwordV,
+                passwordVMsg: passVEmpty ? required_txt : values.getter.password !== values.getter.passwordV ? 'The passwords don\'t match' : '',
                 emailErr: badEmail,
                 emailMsg: emailEmpty ? required_txt : badEmail ? 'The email entered is not in the correct format' : ''
             })

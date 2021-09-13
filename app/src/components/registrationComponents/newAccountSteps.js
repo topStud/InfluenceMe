@@ -137,7 +137,7 @@ export default function ContentBelowStepper(props) {
         phoneErr: false,
         phoneMsg: ''
     })
-    const [errCompanyBio, setErrCompanyBio] = React.useState({
+    const [errBio, setErrBio] = React.useState({
         bioErr: false,
         bioMsg: ''
     })
@@ -168,6 +168,10 @@ export default function ContentBelowStepper(props) {
                 getter: bioInfluencer,
                 setter: setBioInfluencer
             },
+            err: {
+                getter: errBio,
+                setter: setErrBio
+            }
         }
     }
 
@@ -188,8 +192,8 @@ export default function ContentBelowStepper(props) {
                 setter: setBioCompany
             },
             err: {
-                getter: errCompanyBio,
-                setter: setErrCompanyBio
+                getter: errBio,
+                setter: setErrBio
             }
         }
     }
@@ -235,6 +239,15 @@ export default function ContentBelowStepper(props) {
                     categoryErr: categoryErr
                 })
             }
+        } else if (activeStep === 2) {
+            let bioEmpty = bioInfluencer === ''
+            if (bioEmpty) {
+                mayContinue = false
+            }
+            setErrBio({
+                bioErr: bioEmpty,
+                bioMsg: bioEmpty ? required_txt : ''
+            })
         }
         if (mayContinue)
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -263,7 +276,7 @@ export default function ContentBelowStepper(props) {
             if (bioEmpty) {
                 mayContinue = false
             }
-            setErrCompanyBio({
+            setErrBio({
                 bioErr: bioEmpty,
                 bioMsg: bioEmpty ? required_txt : ''
             })
@@ -290,7 +303,7 @@ export default function ContentBelowStepper(props) {
 
     const handleBackStandardCompany = () => {
         if(activeStep === 1) {
-            setErrCompanyBio({
+            setErrBio({
                 bioErr: false,
                 bioMsg: ''
             })

@@ -62,7 +62,7 @@ FilteringCards.propTypes = {
         getter: PropTypes.string,
         setter: PropTypes.func
     }).isRequired,
-    objList: PropTypes.arrayOf(PropTypes.object).isRequired
+    objList: PropTypes.object.isRequired
 }
 
 export default function FilteringCards({objList, display, backdrop, setClickedCard, filterStringObj, searchStringObj}) {

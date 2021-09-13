@@ -121,8 +121,8 @@ export default function PrimarySearchAppBar({data, filtersString, searchesString
     const [notificationsList, setNotificationsList] = React.useState(null)
 
     // search related
-    const proposalsOrInfluencers = userType === 'companies' && pathname.split('/')[3] === 'proposals' ?
-        'collaboration_proposals' : 'influencers'
+    const proposalsOrInfluencers = (userType === 'companies' && pathname.split('/')[3] === 'proposals')
+        || userType === 'influencers' ? 'collaboration_proposals' : 'influencers'
     const filterString = proposalsOrInfluencers === 'influencers' ? filtersString.influencers : filtersString.proposals
     const searchObj = proposalsOrInfluencers === 'influencers' ? searchesString.influencers : searchesString.proposals
     const currentList = proposalsOrInfluencers === 'influencers' ? itemsLists.influencers : itemsLists.proposals
