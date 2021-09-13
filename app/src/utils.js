@@ -41,12 +41,14 @@ export const AnswerOfServer = ({callServerObj, url, methodObj, sucMsg, failMsg, 
                 }
                 return res.json()
             }).then(response => {
-                if (response.status === 'ok') {
+                if (response.status === 'ok' && sucMsg !== '') {
                     setSeverity('success')
                     setErrMsg(sucMsg)
                     sucFunc()
                     callServerObj.setter(false)
                     setOpen(true)
+                } else if (response.status === 'ok'){
+                    sucFunc()
                 } else {
                     setSeverity('error')
                     setOpen(true)

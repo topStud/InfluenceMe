@@ -147,7 +147,7 @@ export default function PersonalInfluencerDataPage() {
                     influencerEmail: influencer.email,
                     companyID: proposal.companyID,
                     companyName: companyData.response.name,
-                    companyEmail: proposal.email,
+                    companyEmail: proposal.email === null ? '' : proposal.email,
                     companyPhone: proposal.phone === null ? '' : proposal.phone,
                     categories: proposal.categories,
                     title: proposal.title

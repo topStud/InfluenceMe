@@ -2,11 +2,11 @@ import React from "react";
 import Badge from "@material-ui/core/Badge";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import IconButton from "@material-ui/core/IconButton";
-import {Divider, Menu, MenuItem, Snackbar, withStyles} from "@material-ui/core";
+import {Divider, Menu, MenuItem, withStyles} from "@material-ui/core";
 import {Link} from 'react-router-dom';
 import Typography from "@material-ui/core/Typography";
 import CloseIcon from '@material-ui/icons/Close';
-import {Alert} from "@material-ui/lab";
+import {AnswerOfServer} from "../../utils";
 
 const viewMoreJump = 3
 
@@ -41,24 +41,29 @@ class Notification extends React.Component {
         this.state = {
             listItems: [],
             anchorEl: null,
-            snackbarError: {
-                msg: '',
-                open: false
+            callServer: {
+                delete: false,
+                seen: false,
+                clearAll: false,
+                handedNotification: {}
             },
-            expandNotificationsNumber: 1
+            expandNotificationsNumber: 1,
         };
     }
     componentDidMount() {
         this.setState({...this.state, listItems: this.props.listItems });
     }
+
     componentDidUpdate(previousProps,prevState, snapShot) {
         if (previousProps.listItems !== this.props.listItems) {
             this.setState({...this.state, listItems: this.props.listItems });
         }
     }
+
     toggleNotification = (event) => {
-        this.setState({...this.state, anchorEl: event.currentTarget});
+        this.setState({...this.state, expandNotificationsNumber:1, anchorEl: event.currentTarget});
     };
+
     generateDate = timeStamp => {
         const d = new Date(timeStamp);
         const n = d.getDate();
@@ -84,70 +89,52 @@ class Notification extends React.Component {
         this.setState({
             ...this.state,
             anchorEl: null,
-            expandNotificationsNumber: 1
         })
     }
+
     onNotificationClick = (notification) => {
         if (notification.seen === true) {
             this.closeNotifications()
             return
         }
-        fetch(`/api/notifications/${notification._id}`, {method: 'PUT'}).then(res=>{
-            if (!res.ok) {
-                this.setState({
-                    ...this.state,
-                    snackbarError: {
-                        msg: 'Connection problem',
-                        open: true
-                    },
-                    anchorEl: null
-                })
-            }
-            return res.json()
-        }).then(res=>{
-            if (res.status === 'error') {
-                this.setState({
-                    ...this.state,
-                    snackbarError: {
-                        msg: res.error,
-                        open: true
-                    },
-                    anchorEl: null
-                })
-            } else {
-                // updating the notifications' list
-                let items = [...this.state.listItems];
-                let index = items.findIndex(i=> i._id === notification._id)
-                notification.seen = true
-                items[index] = notification
-                this.setState({
-                    ...this.state,
-                    listItems: items,
-                    anchorEl: null,
-                })
-            }
-        }).catch((error) => {
-            console.log(error)
-        });
-    }
-    onClickClearAll = () => {
-        console.log('clear all')
-    }
-    handleCloseSnackbar = () => {
         this.setState({
             ...this.state,
-            snackbarError: {
-                msg: '',
-                open: false
+            callServer: {
+                ...this.state.callServer,
+                handedNotification: notification,
+                seen: true
             }
         })
     }
+
+    deleteNotification = (notification) => {
+        this.setState({
+            ...this.state,
+            callServer: {
+                ...this.state.callServer,
+                handedNotification: notification,
+                delete: true
+            }
+        })
+    }
+
+    onClickClearAll = () => {
+        this.setState({
+            ...this.state,
+            callServer: {
+                ...this.state.callServer,
+                clearAll: true
+            }
+        })
+    }
+
     onViewMoreClick = () => {
         this.setState({
             ...this.state,
             expandNotificationsNumber: this.state.expandNotificationsNumber + 1
         })
     }
+
     render() {
         const { classes } = this.props;
         const { listItems } = this.state;
@@ -176,7 +163,7 @@ class Notification extends React.Component {
         allTimestamp[1].fullList.sort((a, b) => (a.createdAt < b.createdAt) ? 1 : -1)
         allTimestamp[0].list = allTimestamp[0].fullList.slice(0,Math.min(viewMoreJump * this.state.expandNotificationsNumber, allTimestamp[0].fullList.length))
         if (allTimestamp[0].list.length < this.state.expandNotificationsNumber * viewMoreJump){
-            allTimestamp[1].list = allTimestamp[1].fullList.slice(0,Math.min(viewMoreJump * this.state.expandNotificationsNumber - allTimestamp[0].list.length, allTimestamp[0].fullList.length))
+            allTimestamp[1].list = allTimestamp[1].fullList.slice(0,Math.min(viewMoreJump * this.state.expandNotificationsNumber - allTimestamp[0].list.length, allTimestamp[1].fullList.length))
         }
         return (
             <>
@@ -205,7 +192,7 @@ class Notification extends React.Component {
                             Get New Notifications </Typography> :
                         <div>
                             <div style={{display: "flex", justifyContent: 'flex-end'}}>
-                                <button onClick={this.onClickClearAll} className={classes.clearAll} style={{
+                                <button onClick={()=>this.onClickClearAll()} className={classes.clearAll} style={{
                                     backgroundColor: "transparent",
                                     border: '1px solid transparent',
                                     cursor: "pointer"
@@ -284,7 +271,7 @@ class Notification extends React.Component {
                                                             marginTop: '-8%',
                                                             marginRight: 15
                                                         }}
-                                                        onClick={() => {}}>
+                                                        onClick={() => this.deleteNotification(obj)}>
                                                         <CloseIcon className={classes.small} style={{color: '#A68617'}}/>
                                                     </IconButton>
                                                     <Divider style={{backgroundColor: 'rgba(31,117,166,0.08)', height:3}}/>
@@ -295,19 +282,58 @@ class Notification extends React.Component {
                                     </div>
                                 );
                             })}
-                            {this.props.listItems.length > (this.state.expandNotificationsNumber * viewMoreJump) && <MenuItem style={{display: "flex", justifyContent: 'center', color: '#F27746'}}
+                            {this.state.listItems.length >= (this.state.expandNotificationsNumber * viewMoreJump) && <MenuItem style={{display: "flex", justifyContent: 'center', color: '#F27746'}}
                                       onClick={this.onViewMoreClick}>
                                 VIEW MORE
                             </MenuItem>}
                         </div>}
                     </Menu>
                 }
-                <Snackbar open={this.state.snackbarError.open} autoHideDuration={6000} onClose={this.handleCloseSnackbar}
-                          anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}>
-                    <Alert onClose={this.handleCloseSnackbar} severity={'error'} style={{fontSize:14, fontFamily:'Rubik'}}>
-                        <div>{this.state.snackbarError.msg}</div>
-                    </Alert>
-                </Snackbar>
+                {this.state.callServer.delete && <AnswerOfServerClassOption
+                    url={`/api/notifications/${this.state.callServer.handedNotification._id}/${this.props.id}`}
+                    methodObj={{method: 'DELETE'}} sucMsg={''} failMsg={'Couldn\'t delete notification'} sucFunc={()=> {
+                    this.setState({
+                        ...this.state,
+                        listItems: this.state.listItems.filter(o => o._id !== this.state.callServer.handedNotification._id),
+                        callServer: {
+                            ...this.state.callServer,
+                            delete: false,
+                            handedNotification: {}
+                        }
+                    });
+                }}/>}
+                {this.state.callServer.seen && <AnswerOfServerClassOption
+                    url={`/api/notifications/${this.state.callServer.handedNotification._id}`} methodObj={{method: 'PUT'}}
+                    sucMsg={''} failMsg={'An Error occurred'} sucFunc={()=> {
+                        // updating the notifications' list
+                        let items = [...this.state.listItems];
+                        let index = items.findIndex(i=> i._id === this.state.callServer.handedNotification._id)
+                        this.state.callServer.handedNotification.seen = true
+                        items[index] = this.state.callServer.handedNotification
+                        this.setState({
+                            ...this.state,
+                            listItems: items,
+                            anchorEl: null,
+                            callServer:{
+                                ...this.state,
+                                seen: false,
+                                handedNotification: {}
+                            }
+                        })
+                }}/>}
+                {this.state.callServer.clearAll && <AnswerOfServerClassOption
+                    url={`/api/notifications/${this.props.id}`} methodObj={{method: 'DELETE'}}
+                    sucMsg={''} failMsg={'An Error occurred'} sucFunc={()=> {
+                    this.setState({
+                        ...this.state,
+                        listItems: [],
+                        anchorEl: null,
+                        callServer: {
+                            ...this.state,
+                            clearAll: false,
+                        }
+                    })
+                }}/>}
             </>
         );
     }
@@ -322,6 +348,12 @@ function hoursDifferent(timestamp) {
 function daysDifferent(timestamp) {
     let diffInMilliSeconds = Math.abs(new Date().getTime() - new Date(timestamp).getTime()) / 1000;
     return Math.floor(diffInMilliSeconds / 86400);
+}
+
+const AnswerOfServerClassOption = ({url, methodObj, sucMsg, failMsg, sucFunc}) => {
+     const [callServer, setCallServer] = React.useState(true)
+     return (<AnswerOfServer callServerObj={{getter: callServer, setter: setCallServer}} failMsg={failMsg}
+                             methodObj={methodObj} sucMsg={sucMsg} url={url} sucFunc={sucFunc}/>)
 }
 
 export default withStyles(styles)(Notification);
