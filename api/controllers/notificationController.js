@@ -4,6 +4,7 @@ const influencerModel = require('../models/influencer')
 const collaborationModel = require('../models/collaboration')
 const contractModel = require('../models/contract')
 
+
 const sendNotification = async (req, res) => {
     // The receiver is a company and the sender is an influencer
     if (req.body.messageType === 1 || req.body.messageType === 3){
@@ -28,6 +29,8 @@ const sendNotification = async (req, res) => {
                         return res.status(500).json({status: 'error', 'error': 'could not save'})
                     })
                 })
+                // make the item to not change anymore.
+                await updateCanEdit(req, res)
             } else{
                 message = 'You and ' + req.body.senderName
                     + ' are now collaborating on '+ req.body.itemName
@@ -47,6 +50,21 @@ const sendNotification = async (req, res) => {
             await createNotificationTo(influencer, req, res, message)
         })
     }
+}
+
+async function updateCanEdit(req, res) {
+    await collaborationModel.
+    findOne({ _id: req.body.itemID}, async (err, cp) => {
+        if (err || cp === null){
+            return res.status(400).json({status: 'error', 'error': 'collaboration proposal not exist'})
+        }
+        // change seen field from false to true
+        cp.canEdit = false
+        cp.save().catch((err) => {
+            return res.status(500).json({status: 'error', 'error': 'could not save collaboration proposal'})
+        })
+        return res.json({status: 'ok'})
+    })
 }
 
 async function createNotificationTo(user, req, res, message) {

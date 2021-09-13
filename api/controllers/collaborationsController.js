@@ -101,36 +101,8 @@ const collaborationProposalsOf = async (req, res) => {
     })
 }
 
-const updateCanEdit = async (req, res) => {
-    await collaborationModel.
-    findOne({ _id: req.params.id}, async (err, cp) => {
-        if (err || cp === null){
-            return res.status(400).json({status: 'error', 'error': 'collaboration proposal not exist'})
-        }
-        // change seen field from false to true
-        cp.canEdit = false
-        cp.save().catch((err) => {
-            return res.status(500).json({status: 'error', 'error': 'could not save collaboration proposal'})
-        })
-        return res.json({status: 'ok'})
-    })
-}
-
-
 const update = async (req, res) => {
-    // check if canEdit is true and then update
-    await collaborationModel.
-    findOne({ _id: req.params.id}, async (err, cp) => {
-        if (err || cp === null) {
-            return res.status(400).json({status: 'error', 'error': 'collaboration proposal not exist'})
-        }
-        if(cp.canEdit === true){
-            await commonController.update(collaborationModel, req, res)
-        } else {
-            return res.status(400).json({status: 'error', 'error': 'collaboration already in use'})
-        }
-    })
-
+    await commonController.update(collaborationModel, req, res)
 }
 
 // accept string with ' ' delimiter
@@ -155,7 +127,6 @@ module.exports = {
     specificCollaborationProposal,
     collaborationProposalsOf,
     update,
-    updateCanEdit,
     searchBySearchBarAndCategories,
     searchBySearchBar,
     searchByCategories

@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken')
 const companyModel = require('../models/company')
 const commonController = require('./commonController')
 const collaborationModel = require('../models/collaboration')
+const influencerModel = require('../models/influencer')
 
 const JWT_SECRET = 'gkdd462gfkbjfoh#$#54*jfdsdf&$&$#)fhdsadfkl676q3478dfcSgd'
 
@@ -18,6 +19,13 @@ const company = async (req, res) => {
 
 const companyRegister = async (req, res) => {
     const { email, password : plainTextPassword, name, siteUrl, photo, photoName, phone, bio, disabled } = req.body
+
+    // check if the email is used by an influencer
+    const influ = await influencerModel.findOne({ email: email }).lean()
+    if(influ !== null){
+        return res.status(400).json({status: 'error', 'error': 'email already in use by an influencer'})
+    }
+
     const password = await bcrypt.hash(plainTextPassword ,10)
     try{
         const response = await companyModel.create({
