@@ -3,7 +3,6 @@ const mongoose = require('mongoose')
 const ContractSchema = new mongoose.Schema({
     companyID: { type: String, required: true },
     title: {type: String, required: true},
-    isApproved: {type: Boolean, default: false }, // to know if it got approved
     companyName: {type: String, required: true},
     companyPhone: { type: String },
     companyEmail: { type: String, required: true },

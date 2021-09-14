@@ -12,7 +12,8 @@ const CompanySchema = new mongoose.Schema({
     bio: { type: String, required: true },
     disabled: {type: Boolean, default: false},
     CollaborationProposals: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Collaborations' }],
-    Contracts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Contracts' }],
+    currentContracts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Contracts' }],
+    pendingContracts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Contracts' }],
     Notifications: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notifications' }],
     unseenNotification: {type: Number, default: 0}
 })

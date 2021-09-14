@@ -16,7 +16,8 @@ const InfluencerSchema = new mongoose.Schema({
     categories: { type: [String], required: true },
     bio: { type: String, required: true },
     disabled: {type: Boolean, default: false},
-    Contracts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Contracts' }],
+    currentContracts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Contracts' }],
+    pendingContracts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Contracts' }],
     Notifications: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notifications' }],
     clickedCollaborations: [{ type: mongoose.Schema.Types.ObjectId }],
     unseenNotification: {type: Number, default: 0}
