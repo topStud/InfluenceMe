@@ -80,7 +80,7 @@ export default function FilteringCards({objList, display, backdrop, setClickedCa
         Clothing: false,
         Beauty: false
     })
-
+    console.log(objList.getter.filtered)
     function onClickClearAll() {
         setChecked({
             Lifestyle: false,

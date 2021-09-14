@@ -11,11 +11,13 @@ const useStyles = makeStyles((theme) => ({
         color: 'inherit',
     },
     inputInput: {
-        padding: theme.spacing(1, 1, 1, 0),
+        padding: theme.spacing(1, 1, 1, 2),
         // vertical padding + font size from searchIcon
         marginLeft: `calc(1em + ${theme.spacing(4)}px)`,
         transition: theme.transitions.create('width'),
         width: '100%',
+        borderBottomRightRadius: '20px',
+        borderTopRightRadius: '20px',
         [theme.breakpoints.up('md')]: {
             width: '100%',
         },
@@ -56,10 +58,11 @@ SearchField.propTypes = {
             filtered: PropTypes.array
         }),
         setter: PropTypes.func
-    }).isRequired
+    }).isRequired,
+    urlType: PropTypes.string.isRequired
 }
 
-export default function SearchField({searchObj, filterString, objList}) {
+export default function SearchField({searchObj, filterString, objList, urlType}) {
     const classes = useStyles();
     const [searchValue, setSearchValue] = React.useState('')
     const [callServerSearch, setCallServerSearch] = React.useState(false)
@@ -106,7 +109,7 @@ export default function SearchField({searchObj, filterString, objList}) {
                 />
             </div>
             <GetFilteredList callServerObj={{getter: callServerSearch, setter: setCallServerSearch}}
-                             url={`/api/collaboration_proposals/${filterString !== '' ? 'search/' :
+                             url={`/api/${urlType}/${filterString !== '' ? 'search/' :
                                  'search-bar/'}/${searchObj.getter}${filterString !== '' ?
                                  `/${filterString}`:''}`} itemsList={objList}/>
         </>

@@ -101,7 +101,7 @@ export default function ViewProposals() {
                 <Grid item xs={4}/>
                 <Grid item xs={6}>
                     <SearchField objList={{getter: proposals, setter: setProposals}} filterString={filterString}
-                                 searchObj={{getter: searchString, setter: setSearchString}}/>
+                                 searchObj={{getter: searchString, setter: setSearchString}} urlType={'collaboration_proposals'}/>
                 </Grid>
             </Grid>
             {proposals.original !== null && <FilteringCards display={'proposals'}

@@ -75,6 +75,12 @@ export default function SignIn() {
         setCallServer(false)
     }
 
+    const onKeyDownSearchInput = (e) => {
+        if (e.key === 'Enter') {
+            logInClicked()
+        }
+    }
+
     return (
         <div className={"App"}>
             <Container component="div" maxWidth="xs">
@@ -100,6 +106,7 @@ export default function SignIn() {
                             onClick={onClickEmail}
                         />
                         <TextField
+                            onKeyDown={onKeyDownSearchInput}
                             style={{height: 50}}
                             margin={"normal"}
                             required

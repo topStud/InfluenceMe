@@ -110,6 +110,7 @@ export const GetFilteredList = ({callServerObj, url, itemsList}) => {
                 } else {
                     callServerObj.setter(false)
                     let tempList = response.docs
+                    console.log(tempList)
                     tempList = tempList.map(item => itemsList.getter.original.find(i=> i._id === item._id))
                     itemsList.setter({
                         ...itemsList.getter,

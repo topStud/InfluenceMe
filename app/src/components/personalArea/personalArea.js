@@ -44,7 +44,6 @@ function a11yProps(index) {
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
-        backgroundColor: theme.palette.background.paper,
         display: 'flex',
     },
     tabs: {
@@ -82,7 +81,7 @@ export default function PersonalArea({objData, setObjData}) {
             <Grid item sm={10}>
                 <div className={classes.root}>
                     <div style={{display: "flex", flexDirection: "column",marginLeft:20, width: 250}}>
-                        <div style={{padding:10, boxShadow: '-5px 3px 5px #A68617', marginBottom:5, width: '100%', display: "flex"}}>
+                        <div style={{padding:10, marginBottom:5, width: '100%', display: "flex"}}>
                             {objData.photo !== null ?
                                 <Avatar src={objData.photo} className={classes.small}/> :
                                 userType === 'influencers' ?

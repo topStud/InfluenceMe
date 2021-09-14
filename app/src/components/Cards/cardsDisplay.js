@@ -21,8 +21,11 @@ export default function CardsDisplay({objList, display, backdrop, setClickedCard
 
     useEffect(()=>{
         if (objList !== null) {
-            setCount(Math.ceil(objList.length / PER_PAGE))
-            setPage(1)
+            let newCount = Math.ceil(objList.length / PER_PAGE)
+            setCount(newCount)
+            if (page > newCount) {
+                setPage(newCount)
+            }
         }
     }, [JSON.stringify(objList)])
 

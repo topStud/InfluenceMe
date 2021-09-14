@@ -68,6 +68,7 @@ export default function PrimarySearchAppBar({data, filtersString, searchesString
     const classes = useStyles();
     const { pathname } = useLocation();
     const userType = pathname.split('/')[1]
+    const isPersonal = pathname.split('/')[3] === 'personal'
     const [anchorEl, setAnchorEl] = React.useState(null);
 
     const isMenuOpen = Boolean(anchorEl);
@@ -155,7 +156,8 @@ export default function PrimarySearchAppBar({data, filtersString, searchesString
                         </Typography>
                     </Link>
                     <div className={classes.grow} />
-                    <SearchField searchObj={searchObj} filterString={filterString.getter} objList={currentList}/>
+                    {!isPersonal && <SearchField searchObj={searchObj} filterString={filterString} objList={currentList}
+                                                 urlType={proposalsOrInfluencers}/>}
                     <div className={classes.grow} />
                     <div className={classes.sectionDesktop}>
                         {

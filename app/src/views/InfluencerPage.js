@@ -136,7 +136,7 @@ export default function InfluencerPage() {
         <MuiThemeProvider theme={theme}>
             {influencerData &&
                 <>
-                    <AppBar data={influencerData} filtersString={{proposals: filterStringObj, influencers: null}}
+                    <AppBar data={influencerData} filtersString={{proposals: filterStringObj.getter, influencers: null}}
                             searchesString={{proposals: searchStringObj, influencers: null}} itemsLists={{proposals:
                             {getter: proposalsList, setter: setProposalsList}, influencers: null}}/>
                     <Switch>

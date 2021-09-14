@@ -131,8 +131,8 @@ export default function CompanyPage() {
             <MuiThemeProvider theme={theme}>
                 {companyInfo !== null &&
                     <>
-                        <AppBar data={companyInfo} filtersString={{proposals: filterStringObjProposals,
-                            influencers: filterStringObjInfluencers}} searchesString={{proposals: searchStringProposalsObj,
+                        <AppBar data={companyInfo} filtersString={{proposals: filterStringObjProposals.getter,
+                            influencers: filterStringObjInfluencers.getter}} searchesString={{proposals: searchStringProposalsObj,
                             influencers: searchStringInfluencersObj}} itemsLists={{proposals:{getter: proposalsList,
                                 setter: setProposalsList}, influencers: {getter: influencersList, setter: setInfluencersList}}}/>
                         <Switch>
