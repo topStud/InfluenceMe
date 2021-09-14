@@ -3,11 +3,23 @@ import {blue} from "@material-ui/core/colors";
 import AddPhotoAlternateIcon from "@material-ui/icons/AddPhotoAlternate";
 import React from "react";
 import Resizer from "react-image-file-resizer";
+import PropTypes from "prop-types";
+
+InputImage.propTypes = {
+    val: PropTypes.exact({
+        getter: PropTypes.object,
+        setter: PropTypes.func
+    }).isRequired,
+    info: PropTypes.exact({
+        label: PropTypes.string, //text that will be shown next to upload image button
+    }).isRequired,
+    err: PropTypes.exact({
+        getter: PropTypes.object,
+        setter: PropTypes.func
+    }).isRequired,
+}
 
 export default function InputImage(props) {
-    // the data in info that needs to be sent:
-    // label - text that will be shown next to upload image button.
-
     const handleUploadClick = async event => {
         let file = event.target.files[0];
 

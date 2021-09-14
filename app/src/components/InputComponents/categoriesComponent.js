@@ -1,6 +1,18 @@
 import {FormGroup, FormHelperText, FormLabel} from "@material-ui/core";
 import React from "react";
 import Chip from "@material-ui/core/Chip";
+import PropTypes from "prop-types";
+
+CategoriesComponent.propTypes = {
+    val: PropTypes.exact({
+        getter: PropTypes.object,
+        setter: PropTypes.func
+    }).isRequired,
+    err: PropTypes.exact({
+        getter: PropTypes.object,
+        setter: PropTypes.func
+    }).isRequired,
+}
 
 export default function CategoriesComponent(props) {
     function handleChipClick(label) {

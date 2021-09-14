@@ -12,6 +12,7 @@ import BusinessIcon from '@material-ui/icons/Business';
 import MyDetailsCompany from "./myDetailsComapny";
 import Grid from "@material-ui/core/Grid";
 import ChangePassword from "./ChangePassword";
+import CurrentCollaborations from './currentCollaborations'
 
 function TabPanel(props) {
     const { children, setValue, ...other } = props;
@@ -31,7 +32,6 @@ function TabPanel(props) {
 
 TabPanel.propTypes = {
     children: PropTypes.node,
-    // setValue: PropTypes.func.isRequired
 };
 
 function a11yProps(index) {
@@ -124,7 +124,7 @@ export default function PersonalArea({objData, setObjData}) {
                         </Route>
                         <Route path={`/${userType}/${objData._id}/personal/currentCollaborations`}>
                             <TabPanel>
-                                Item Two
+                                <CurrentCollaborations setValue={setValue} index={3}/>
                             </TabPanel>
                         </Route>
                         <Route path={`/${userType}/${objData._id}/personal/changePassword`}>

@@ -10,6 +10,7 @@ import PersonalArea from "../components/personalArea/personalArea";
 import FullInfoProposal from "../components/Cards/fullInfoProposal";
 import BackDrop from "@material-ui/core/Backdrop";
 import {AnswerOfServer, FetchError} from "../utils";
+import ContractAcceptDecline from "../components/notifications/ContractAcceptDecline";
 
 const theme = createTheme({
     palette: {
@@ -165,6 +166,9 @@ export default function InfluencerPage() {
                         </Route>
                         <Route path={`/influencers/${id}/personal`}>
                             <PersonalArea objData={influencerData} setObjData={setInfluencerData} />
+                        </Route>
+                        <Route path={`/influencers/${id}/contract/:contractID`}>
+                            <ContractAcceptDecline influencerID={id}/>
                         </Route>
                     </Switch>
                 </>

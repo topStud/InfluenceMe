@@ -11,6 +11,10 @@ InputDate.propTypes = {
         id: PropTypes.string,
         label: PropTypes.string,
         name: PropTypes.string
+    }).isRequired,
+    err: PropTypes.exact({
+        getter: PropTypes.object,
+        setter: PropTypes.func
     }).isRequired
 }
 

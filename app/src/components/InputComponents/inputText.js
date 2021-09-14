@@ -17,7 +17,6 @@ TextInput.propTypes = {
         getter: PropTypes.object,
         setter: PropTypes.func
     }).isRequired,
-    defaultValue: PropTypes.string
 }
 
 export default function TextInput(props) {

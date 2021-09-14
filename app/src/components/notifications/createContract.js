@@ -38,6 +38,8 @@ export default function CreateContractDialog({backdrop, contractValues, setCallS
 
     const [backdropConfirmationDialog, setBackdropConfirmationDialog] = React.useState(false)
 
+    console.log('create contract')
+    console.log(contractValues)
     function usePrevious(value) {
         const ref = useRef(value);
         return ref.current;

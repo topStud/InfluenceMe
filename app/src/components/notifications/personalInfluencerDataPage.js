@@ -4,7 +4,7 @@ import {AccountCircle} from "@material-ui/icons";
 import {useLocation, useParams} from "react-router-dom";
 import React from 'react'
 import {makeStyles} from "@material-ui/core/styles";
-import {AnswerOfServer, calculateAge, FetchError} from "../../utils";
+import {AnswerOfServer, calculateAge, FetchError, parseJwt} from "../../utils";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import CreateContractDialog from "./createContract";
@@ -70,19 +70,22 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-export default function PersonalInfluencerDataPage() {
+export default function PersonalInfluencerDataPage({company}) {
     const { search } = useLocation();
     const match = search.match(/id=(.*)/);
     const itemID = match?.[1];
-
+    console.log(itemID)
     const {influencerId} = useParams()
     const classes = useStyles()
     const [errFetchData, setErrFetchData] = React.useState(false)
     const [influencerData, setInfluencerData] = React.useState(null)
+
     const [callServerCreateContract, setCallServerCreateContract] = React.useState(false)
+    const [callServerSendNotification, setCallServerSendNotification] = React.useState(false)
 
     const [contractBackdrop, setContractBackdrop] = React.useState(false)
     const [contractCreated, setContractCreated] = React.useState(false)
+    const [createdContractID, setCreatedContractID] = React.useState('')
 
     const [contractValues, setContractValues] = React.useState({
         companyID: '',
@@ -96,8 +99,8 @@ export default function PersonalInfluencerDataPage() {
         categories: [],
         details: '',
         payment: '',
-        startDay: undefined,
-        endDay: undefined
+        startDay: '',
+        endDay: ''
     })
     const values = {
         getter: contractValues,
@@ -129,24 +132,13 @@ export default function PersonalInfluencerDataPage() {
                 throw new Error('Couldn\'t get proposal\'s data');
             } else {
                 proposal = proposalInfo.response
-                return fetch(`/api/companies/${proposal.companyID}`)
-            }
-        }).then(res => {
-            if (!res.ok) {
-                throw new Error('Couldn\'t get company\'s data');
-            }
-            return res.json()
-        }).then(companyData => {
-            if ('status' in companyData) {
-                throw new Error('Couldn\'t get proposal\'s data');
-            } else {
                 setContractValues({
                     ...contractValues,
                     influencerName: influencer.firstName + ' ' + influencer.lastName,
                     influencerPhone: influencer.phone,
                     influencerEmail: influencer.email,
                     companyID: proposal.companyID,
-                    companyName: companyData.response.name,
+                    companyName: company.name,
                     companyEmail: proposal.email === null ? '' : proposal.email,
                     companyPhone: proposal.phone === null ? '' : proposal.phone,
                     categories: proposal.categories,
@@ -157,7 +149,7 @@ export default function PersonalInfluencerDataPage() {
             setErrFetchData(true)
             console.log(error)
         });
-    },[])
+    },[itemID])
 
     function onClickCreate() {
         setContractBackdrop(true)
@@ -193,9 +185,9 @@ export default function PersonalInfluencerDataPage() {
                             </div>
                         </div>
                     </div>
-                    <div className={classes.body}>
+                    <p className={classes.body}>
                         {influencerData.bio}
-                    </div>
+                    </p>
                     <div className={classes.contact}>
                         My email address is
                         <span className={classes.selectable}>
@@ -219,22 +211,33 @@ export default function PersonalInfluencerDataPage() {
                 </Grid>
                 <Grid item xs={3} className={classes.contract}>
                     <Button disabled={contractCreated} variant={'contained'} color={"primary"} onClick={onClickCreate}>Create Contract</Button>
+                    {contractCreated && <Typography>Contract created Successfully!</Typography>}
                 </Grid>
             </Grid>
             }
             <Backdrop open={contractBackdrop} className={classes.backdrop}>
-                {contractValues.companyID !== '' && <CreateContractDialog
+                {contractValues.title !== '' && <CreateContractDialog
                     backdrop={{getter: contractBackdrop, setter: setContractBackdrop}}
                     contractValues={values} setCallServer={setCallServerCreateContract}/>}
             </Backdrop>
-            <AnswerOfServer failMsg={'Couldn\'t save the contract'} methodObj={{method: 'POST',
+            <AnswerOfServer failMsg={"Couldn't save the contract"} methodObj={{method: 'POST',
                 headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
                 body: JSON.stringify({...contractValues})
-            }}  sucMsg={'Saved successfully and sent to Corresponding Influencer'} url={`/api/contracts`}
+            }}  sucMsg={''} url={`/api/contracts`}
                 callServerObj={{getter: callServerCreateContract, setter: setCallServerCreateContract}}
-                sucFunc={()=>{
+                sucFunc={(response)=>{
                     setContractCreated(true);
+                    setCallServerSendNotification(true)
+                    setCreatedContractID(parseJwt(response.data).id)
                 }}/>
+            {createdContractID !== '' &&
+            <AnswerOfServer failMsg={"Couldn't notify the influencer of the new contract"}
+                            methodObj={{method: 'POST', headers: {'Accept': 'application/json',
+                                    'Content-type': 'application/json'}, body: JSON.stringify({itemID: createdContractID,
+                                    itemName: contractValues.title, receiverID: influencerId, senderID: contractValues.companyID,
+                                    senderName: contractValues.companyName, messageType: 2})}}
+                            sucMsg={''} url={`/api/notifications`} callServerObj={{getter: callServerSendNotification,
+                            setter: setCallServerSendNotification}}/>}
             {errFetchData && <FetchError name={''}/>}
         </div>
     )

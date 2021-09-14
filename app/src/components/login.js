@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import { Link } from 'react-router-dom'
@@ -10,9 +10,7 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import IconButton from "@material-ui/core/IconButton";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
-import {Snackbar} from "@material-ui/core";
-import {Alert} from "@material-ui/lab";
-import {parseJwt} from '../utils'
+import {AnswerOfServer, parseJwt} from '../utils'
 
 export default function SignIn() {
     const [emailValue, setEmailValue] = React.useState('')
@@ -151,9 +149,14 @@ export default function SignIn() {
                             </Grid>
                         </Grid>
                         { callServer &&
-                            <>
-                                <AnswerOfServer setCallServer={setCallServer} obj={{email: emailValue, password: passValue}}/>
-                            </>
+                            <AnswerOfServer failMsg={"Something went wrong"} methodObj={{method: 'POST',
+                                headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+                                body: JSON.stringify({email: emailValue, password: passValue})
+                            }} sucMsg={''} url={'api/login'} callServerObj={{getter: callServer, setter: setCallServer}}
+                            sucFunc={(response)=>{
+                                let dic = parseJwt(response.data)
+                                window.location.href= `/${dic.type}/${dic.id}`
+                            }}/>
                         }
                     </form>
                 </div>
@@ -165,49 +168,4 @@ export default function SignIn() {
 function ValidateEmail(email)
 {
     return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email);
-}
-
-
-const AnswerOfServer = ({ setCallServer,obj }) => {
-    const [open, setOpen] = React.useState(false)
-    const [errMsg, setErrMsg] = React.useState('')
-
-    useEffect(() => {
-        fetch('api/login', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(obj)
-        }).then(res => {
-            if (!res.ok) {
-                setOpen(true)
-                setErrMsg('Connection problem')
-            }
-            return res.json()
-        }).then(data => {
-            if (data.status === 'error') {
-                setOpen(true)
-                setErrMsg(data.error)
-            } else {
-                // moves to correct window
-                let dic = parseJwt(data.data)
-                window.location.href= `/${dic.type}/${dic.id}`
-            }
-        })
-    },[])
-
-    const handleClose = () => {
-        setOpen(false)
-        setCallServer(false)
-    };
-
-    return (
-      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}>
-          <Alert onClose={handleClose} severity="error" style={{fontSize:14, fontFamily:'Rubik'}}>
-              <div>{errMsg}</div>
-          </Alert>
-      </Snackbar>
-    )
 }

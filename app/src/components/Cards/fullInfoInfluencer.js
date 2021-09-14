@@ -12,11 +12,15 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Zoom ref={ref} {...props} />;
 });
 
-FullInfoProposal.propTypes = {
-    userType: PropTypes.oneOf(['influencers', 'companies'])
+FullInfoInfluencer.propTypes = {
+    backdrop: PropTypes.exact({
+        getter: PropTypes.bool,
+        setter: PropTypes.func
+    }).isRequired,
+    influencerObj: PropTypes.object.isRequired
 }
 
-export default function FullInfoProposal({backdrop, influencerObj}) {
+export default function FullInfoInfluencer({backdrop, influencerObj}) {
     function onClickCancelFinish() {
         backdrop.setter(false)
     }

@@ -56,7 +56,12 @@ const Background = styled.div({
 
 HoverCard.propTypes = {
     infoObj: PropTypes.object.isRequired,
-    cardType: PropTypes.oneOf(['influencers', 'proposals'])
+    cardType: PropTypes.oneOf(['influencers', 'proposals']),
+    backdrop: PropTypes.exact({
+        getter: PropTypes.bool,
+        setter: PropTypes.func
+    }).isRequired,
+    setClickedCard: PropTypes.func.isRequired
 }
 
 export default function HoverCard({infoObj, cardType, backdrop, setClickedCard}) {

@@ -14,7 +14,6 @@ export default class InputPhone extends React.Component {
             this.props.val.setter({
                 ...this.props.val.getter,
                 [this.props.info.name]: value
-                // phone: value
             })
         }
     }
@@ -24,8 +23,6 @@ export default class InputPhone extends React.Component {
             ...this.props.err.getter,
             [this.props.info.name+'Err']: false,
             [this.props.info.name+'Msg']: ''
-            // phoneErr: false,
-            // phoneMsg: ''
         })
     }
 
@@ -58,6 +55,5 @@ InputPhone.propTypes = {
     }).isRequired,
     info: PropTypes.exact({
         name: PropTypes.string
-    }),
-    defaultValue: PropTypes.string
+    }).isRequired,
 }

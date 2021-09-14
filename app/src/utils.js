@@ -44,11 +44,11 @@ export const AnswerOfServer = ({callServerObj, url, methodObj, sucMsg, failMsg, 
                 if (response.status === 'ok' && sucMsg !== '') {
                     setSeverity('success')
                     setErrMsg(sucMsg)
-                    sucFunc()
+                    sucFunc(response)
                     callServerObj.setter(false)
                     setOpen(true)
                 } else if (response.status === 'ok'){
-                    sucFunc()
+                    sucFunc(response)
                 } else {
                     setSeverity('error')
                     setOpen(true)
@@ -110,7 +110,6 @@ export const GetFilteredList = ({callServerObj, url, itemsList}) => {
                 } else {
                     callServerObj.setter(false)
                     let tempList = response.docs
-                    console.log(tempList)
                     tempList = tempList.map(item => itemsList.getter.original.find(i=> i._id === item._id))
                     itemsList.setter({
                         ...itemsList.getter,

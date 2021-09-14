@@ -4,11 +4,25 @@ import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import TextField from "@material-ui/core/TextField";
 import React from "react";
+import PropTypes from "prop-types";
+
+InputPassword.propTypes = {
+    val: PropTypes.exact({
+        getter: PropTypes.object,
+        setter: PropTypes.func
+    }).isRequired,
+    info: PropTypes.exact({
+        id: PropTypes.string,
+        label: PropTypes.string,
+        name: PropTypes.string
+    }).isRequired,
+    err: PropTypes.exact({
+        getter: PropTypes.object,
+        setter: PropTypes.func
+    }).isRequired,
+}
 
 export default function InputPassword(props) {
-    // the data in info that needs to be sent:
-    // id, label, name
-
     const [showPass, setShowPass] = React.useState(false)
 
     function onPassChange(e) {

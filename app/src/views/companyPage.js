@@ -156,7 +156,9 @@ export default function CompanyPage() {
                             <Route path={`/companies/${id}/personal`}>
                                 <PersonalArea objData={companyInfo} setObjData={setCompanyInfo}/>
                             </Route>
-                            <Route path='/companies/:id/:influencerId' component={PersonalInfluencerDataPage}/>
+                            <Route path='/companies/:id/:influencerId'>
+                                <PersonalInfluencerDataPage company={companyInfo}/>
+                            </Route>
                         </Switch>
                     </>
                 }

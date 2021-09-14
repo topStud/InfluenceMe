@@ -6,12 +6,10 @@ export default function Bio(props) {
     }
 
     function onClick() {
-        // if('err' in props.values) {
-            props.values.err.setter({
-                bioMsg: '',
-                bioErr: false
-            })
-        // }
+        props.values.err.setter({
+            bioMsg: '',
+            bioErr: false
+        })
     }
 
     return (
