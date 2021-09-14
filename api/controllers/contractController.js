@@ -1,6 +1,7 @@
 const companyModel = require('../models/company')
 const influencerModel = require('../models/influencer')
 const contractModel = require('../models/contract')
+const commonController = require('./commonController')
 const jwt = require('jsonwebtoken')
 
 const JWT_SECRET = 'gkdd462gfkbjfoh#$#54*jfdsdf&$&$#)fhdsadfkl676q3478dfcSgd'
@@ -101,27 +102,17 @@ async function findContractsOf(user, req, res) {
                         })
                 })
     })
+}
 
-    /*
-    const now = new Date(new Date().setUTCHours(0, 0, 0, 0))
-    contractModel.find(
-        {$and: [{'_id': { $in: user.currentContracts}},
-                { $or:[{endDay: { $exists: false }}, {endDay: { $gte: now}}]}]},
-function(err, current) {
-    console.log(new Date(new Date().setUTCHours(0, 0, 0, 0)))
-        console.log("batellllll hamalka\n"+current)
-        if (err) return res.status(400).json({status: 'error', 'error': 'can\'t find batel'})
-        return res.status(200).json({
-            status: 'ok',
-            currentContracts: current
-        })
-    })*/
-
+// find specific contract by id
+const findContract = async (req, res) => {
+    await commonController.findOne(contractModel, req, res)
 }
 
 
 
 module.exports = {
-addContract,
-contractsOf
+    addContract,
+    contractsOf,
+    findContract
 }
