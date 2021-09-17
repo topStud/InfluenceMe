@@ -203,20 +203,35 @@ const deleteSpecificNotification = async (req, res) => {
 
 // todo: to finish it
 const deleteNotifications = async (req, res) => {
-    companyModel.findOneAndUpdate({_id: req.params.userID},
-        {$pull: {Notifications: req.params.notificationID}},
-        { new: true },
-        function(err){
-            influencerModel.findOneAndUpdate({_id: req.params.userID},
-                {$pull: {Notifications: req.params.notificationID}},
-                { new: true },
-                function(err){
-                    if(err) return res.status(500).json({status: 'error'})
-                })
-        })
+    // delete notifications
+    await companyModel.
+    findOne({ _id: req.params.userID}, async (err, company) => {
+        if (err || company === null){
+            await influencerModel.
+            findOne({ _id: req.params.userID}, async (err, influencer) => {
+                if (err || influencer === null){
+                    return res.status(400).json({status: 'error', 'error': 'user not exist'})
+                }
+                await deleteArray(influencer, req, res)
+            })
+        } else {
+            await deleteArray(company, req, res)
+        }
+    })
+
 }
 
-
+// delete notifications array from user
+async function deleteArray(user, req, res) {
+    await notificationModel.deleteMany({'_id': {$in: user.Notifications}}).catch((err) => {
+        return res.status(500).json({status: 'error', 'error': 'could not delete'})
+    })
+    user.set({Notifications: []})
+    user.save().catch((err) => {
+        return res.status(500).json({status: 'error', 'error': 'could not save'})
+    })
+    res.json({status: 'ok'})
+}
 
 module.exports = {
     sendNotification,

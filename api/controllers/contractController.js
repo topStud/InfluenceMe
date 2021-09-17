@@ -49,7 +49,9 @@ const addContract = async (req, res) => {
                 return res.json({status: 'ok', data: token})
             }).catch((err) => {
                 if (err.code === 11000) {
-                    return res.status(400).json({status: 'error', 'error': 'title + influencer name already in use'})
+                    return res.status(400).json({
+                        status: 'error',
+                        'error': 'Hey there, it seems like you have already created a contract with this influencer.'})
                 }
                 console.log("here")
                 return res.status(500).json({status: 'error', 'error': 'could not save'})
