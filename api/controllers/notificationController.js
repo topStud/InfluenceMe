@@ -7,7 +7,7 @@ const contractModel = require('../models/contract')
 
 const sendNotification = async (req, res) => {
     // The receiver is a company and the sender is an influencer
-    if (req.body.messageType === 1 || req.body.messageType === 3){
+    if (req.body.messageType === 1 || req.body.messageType === 3 || req.body.messageType === 4){
         await companyModel.
         findOne({ _id: req.body.receiverID }, async (err, company) => {
             if (err || company === null){
@@ -17,9 +17,14 @@ const sendNotification = async (req, res) => {
             if(req.body.messageType === 1){
                 message = req.body.senderName +
                     ' has sent a collaboration request for the proposal named ' + req.body.itemName
-            } else{
+            }
+            if(req.body.messageType === 3){
                 message = 'You and ' + req.body.senderName
                     + ' are now collaborating on '+ req.body.itemName
+            }
+            if(req.body.messageType === 4){
+                message = req.body.senderName
+                    + ' declined your contract for the proposal named '+ req.body.itemName
             }
 
             await createNotificationTo(company, req, res, message)
@@ -104,6 +109,32 @@ async function createNotificationTo(user, req, res, message) {
                 function(err){
                     if(err) return res.status(500).json({status: 'error'})
                 })
+        }
+
+        // delete declined contract from pending contracts
+        if(req.body.messageType === 4){
+            await influencerModel.
+            findOne({ _id: req.body.senderID}, async (err, influencer) => {
+                if (err || influencer === null) {
+                    return res.status(400).json({status: 'error', 'error': 'Influencer not exist'})
+                }
+                await contractModel.findOne({_id: req.body.itemID}, async (err, contract) => {
+                    if (err || contract === null) {
+                        return res.status(400).json({status: 'error', 'error': 'contract not exist'})
+                    }
+                    user.pendingContracts.pull(contract)
+                    user.save().catch((err) => {
+                        return res.status(500).json({status: 'error', 'error': 'could not save'})
+                    })
+                    influencer.pendingContracts.pull(contract)
+                    influencer.save().catch((err) => {
+                        return res.status(500).json({status: 'error', 'error': 'could not save'})
+                    })
+                    contract.remove(function (err) {
+                        if (err) return res.status(500).json({status: 'error'})
+                    })
+                })
+            })
         }
 
         if(req.body.messageType === 1) {
