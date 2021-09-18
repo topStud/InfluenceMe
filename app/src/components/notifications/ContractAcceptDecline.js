@@ -8,6 +8,7 @@ import Button from "@material-ui/core/Button";
 import {Link} from 'react-router-dom'
 import PropTypes from 'prop-types'
 import Contract from "./contract";
+import {Alert, AlertTitle} from "@material-ui/lab";
 
 const useStyles = makeStyles(() => ({
     contact:{
@@ -54,6 +55,7 @@ export default function ContractAcceptDecline({influencer}) {
     const [callServer, setCallServer] = React.useState(false)
     const [serverUpdatedSuccessfully, setServerUpdatedSuccessfully] = React.useState(false)
     const contractExists = influencer.currentContracts.includes(contractID)
+    const [contractDeleted, setContractDeleted] = React.useState(false)
 
     const [contractInfo, setContractInfo] = React.useState(null)
     const [errFetch, setErrFetch] = React.useState(false)
@@ -68,7 +70,12 @@ export default function ContractAcceptDecline({influencer}) {
             if ('status' in contractData) {
                 throw new Error("Couldn't get contract info")
             } else {
-                setContractInfo(contractData.response)
+                let data = contractData.response
+                if (data === null) {
+                    setContractDeleted(true)
+                } else {
+                    setContractInfo(data)
+                }
             }
         }).catch((error) => {
             setErrFetch(true)
@@ -161,6 +168,10 @@ export default function ContractAcceptDecline({influencer}) {
                                 setServerUpdatedSuccessfully(true)
                     }}/>}
                 </>}
+            {contractDeleted && <Alert severity="error" style={{margin:50, fontFamily: 'Rubik'}}>
+                <AlertTitle><span style={{fontFamily: 'Rubik', fontSize: '1.2em'}}>Error</span></AlertTitle>
+                The contract you are looking for does not exist anymore due to your disagreement on it.
+            </Alert>}
             { errFetch && <FetchError name={'contract\'s'}/>}
         </>
     )

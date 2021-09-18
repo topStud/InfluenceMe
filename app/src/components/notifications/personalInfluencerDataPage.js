@@ -235,12 +235,12 @@ export default function PersonalInfluencerDataPage({company}) {
                     setCreatedContractID(parseJwt(response.data).id)
                 }}/>
             {createdContractID !== '' &&
-            <AnswerOfServer failMsg={"Couldn't notify the influencer of the new contract"}
+            <AnswerOfServer failMsg={"Saved Contract but couldn't notify the influencer of the new contract"}
                             methodObj={{method: 'POST', headers: {'Accept': 'application/json',
                                     'Content-type': 'application/json'}, body: JSON.stringify({itemID: createdContractID,
                                     itemName: contractValues.title, receiverID: influencerId, senderID: contractValues.companyID,
                                     senderName: contractValues.companyName, messageType: 2})}}
-                            sucMsg={''} url={`/api/notifications`} callServerObj={{getter: callServerSendNotification,
+                            sucMsg={'Contract created successfully and sent to use'} url={`/api/notifications`} callServerObj={{getter: callServerSendNotification,
                             setter: setCallServerSendNotification}}/>}
             {errFetchData && <FetchError name={''}/>}
         </div>
