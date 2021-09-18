@@ -72,7 +72,7 @@ export default function ProposalsOfCompany({companyInfo, filterStringObj, propos
                 throw new Error('Couldn\'t get proposals\' data');
             } else {
                 // creating object of proposal
-                let proposals = proposalData.response.map(proposal => {
+                let proposals = proposalData.response.reverse().map(proposal => {
                     proposal.companyName = companyInfo.name
                     proposal.companySite = companyInfo.siteUrl
                     proposal.photo = companyInfo.photo

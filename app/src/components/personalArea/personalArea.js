@@ -15,16 +15,16 @@ import ChangePassword from "./ChangePassword";
 import CurrentCollaborations from './currentCollaborations'
 
 function TabPanel(props) {
-    const { children, setValue, ...other } = props;
+    const { children, ...other } = props;
 
     return (
         <div
             role="tabpanel"
             {...other}
-            style={{height: '100%', width: '100%'}}
+            style={{height: 'inherit', width: '100%'}}
         >
-            <Box style={{marginLeft: 60, marginRight: 60, marginBottom: 40}}>
-                <div>{children}</div>
+            <Box style={{marginLeft: 60, marginRight: 60, marginBottom: 40, height:'100%'}}>
+                <div style={{height: '100%'}}>{children}</div>
             </Box>
         </div>
     );
@@ -124,7 +124,7 @@ export default function PersonalArea({objData, setObjData}) {
                         </Route>
                         <Route path={`/${userType}/${objData._id}/personal/currentCollaborations`}>
                             <TabPanel>
-                                <CurrentCollaborations setValue={setValue} index={3}/>
+                                <CurrentCollaborations setValue={setValue} index={1} id={objData._id}/>
                             </TabPanel>
                         </Route>
                         <Route path={`/${userType}/${objData._id}/personal/changePassword`}>

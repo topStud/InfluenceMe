@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useRef} from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -9,10 +9,9 @@ import InputText from '../InputComponents/inputText'
 import Grid from "@material-ui/core/Grid";
 import CategoriesComponent from "../InputComponents/categoriesComponent";
 import InputTextArea from "../InputComponents/InputTextArea";
-import {Checkbox, FormControlLabel, FormGroup, Snackbar, TextField} from "@material-ui/core";
+import {Checkbox, FormControlLabel, FormGroup, TextField} from "@material-ui/core";
 import PropTypes from 'prop-types'
 import {AnswerOfServer, ErrorSnackbar, parseJwt, required_txt, TransitionSlide} from "../../utils";
-import {Alert} from "@material-ui/lab";
 
 CreateProposalDialog.propTypes = {
     val: PropTypes.object.isRequired,
@@ -213,9 +212,26 @@ export default function CreateProposalDialog(props) {
                 </DialogActions>
             )}
             {props.option === 'create' ?
-                <AnswerOfServerForCreate callServerObj={{getter: sendToServerCreate, setter: setSendToServerCreate}}
-                                         proposalsList={props.proposalList} companyInfo={props.companyInfo}
-                                         val={props.val} setProposalAccepted={setProposalAccepted}/>
+                <AnswerOfServer callServerObj={{getter: sendToServerCreate, setter: setSendToServerCreate}}
+                                failMsg={'Failed to create the proposal'} url={'/api/collaboration_proposals'}
+                                methodObj={{method: 'POST', headers: {'Accept': 'application/json', 'Content-Type':
+                                            'application/json'}, body: JSON.stringify({...props.val.getter,
+                                        companyID: props.companyInfo._id})}} sucMsg={'Proposal created successfully'}
+                                sucFunc={(response)=>{
+                                    let dic = parseJwt(response.data)
+                                    const {addPhone: phoneVal, addEmail: emailVal,...otherKeys} = props.val.getter;
+                                    props.proposalList.setter({
+                                        ...props.proposalList.getter,
+                                        original: [{...otherKeys,
+                                            companyID: props.companyInfo._id, companyName: props.companyInfo.name,
+                                            companySite: props.companyInfo.siteUrl, photo: props.companyInfo.photo,
+                                            bio: props.companyInfo.bio, email: emailVal ? props.companyInfo.email : null,
+                                            phone: phoneVal ? props.companyInfo.phone : null, contact:
+                                                {phone: props.companyInfo.phone, email: props.companyInfo.email},
+                                            canEdit: true, collaborationsNumber:0, _id: dic.id}, ...props.proposalList.getter.original]
+                                    })
+                                    setProposalAccepted(true)
+                                }}/>
                  :
                 <AnswerOfServer callServerObj={{getter: sendToServerEdit, setter: setSendToServerEdit}}
                                 url={`/api/collaboration_proposals/${props.val.getter._id}`}
@@ -239,73 +255,4 @@ export default function CreateProposalDialog(props) {
         </Dialog>
 
     );
-}
-
-const AnswerOfServerForCreate = ({callServerObj, val, companyInfo, proposalsList, setProposalAccepted}) => {
-    const [open, setOpen] = React.useState(false)
-    const [errMsg, setErrMsg] = React.useState('')
-    const [severity, setSeverity] = React.useState('error')
-
-    useEffect(() => {
-        if(callServerObj.getter) {
-            fetch('/api/collaboration_proposals', {
-                method: 'POST',
-                headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
-                body: JSON.stringify({...val.getter, companyID: companyInfo._id})
-            }).then(res => {
-                if (!res.ok) {
-                    setOpen(true)
-                    setSeverity('error')
-                    setErrMsg('Connection problem')
-                    throw new Error('Couldn\'t save new proposal');
-                }
-                return res.json()
-            }).then(response => {
-                if (response.status === 'error') {
-                    setSeverity('error')
-                    setOpen(true)
-                    if ('error' in response) {
-                        setErrMsg(response.error)
-                    } else {
-                        setErrMsg('Failed to create the proposal')
-                    }
-                    throw new Error('Couldn\'t save new proposal');
-                } else {
-                    setSeverity('success')
-                    setErrMsg('Proposal created successfully')
-                    callServerObj.setter(false)
-                    setOpen(true)
-
-                    let dic = parseJwt(response.data)
-                    const {addPhone: phoneVal, addEmail: emailVal,...otherKeys} = val.getter;
-                    proposalsList.setter({
-                        ...proposalsList.getter,
-                        original: [...proposalsList.getter.original, {...otherKeys,
-                            companyID: companyInfo._id, companyName: companyInfo.name,
-                            companySite: companyInfo.siteUrl, photo: companyInfo.photo,
-                            bio: companyInfo.bio, email: emailVal ? companyInfo.email : null,
-                            phone: phoneVal ? companyInfo.phone : null, contact:
-                                {phone: companyInfo.phone, email: companyInfo.email},
-                            canEdit: true, collaborationsNumber:0, _id: dic.id}]
-                    })
-                    setProposalAccepted(true)
-                }
-            }).catch((error) => {
-                console.log(error)
-            });
-        }
-    },[callServerObj.getter])
-
-    const handleClose = () => {
-        setOpen(false)
-        callServerObj.setter(false)
-    };
-
-    return (
-        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}>
-            <Alert onClose={handleClose} severity={severity} style={{fontSize:14, fontFamily:'Rubik'}}>
-                <div>{errMsg}</div>
-            </Alert>
-        </Snackbar>
-    )
 }

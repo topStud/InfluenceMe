@@ -54,7 +54,7 @@ export default function CompanyPage() {
         setter: setFilterStringInfluencers
     }
 
-    // filtering string - influencers
+    // filtering string - proposals
     const [filterStringProposals, setFilterStringProposals] = React.useState('')
     const filterStringObjProposals = {
         getter: filterStringProposals,
@@ -150,7 +150,7 @@ export default function CompanyPage() {
                             </Route>
                             <Route path={`/companies/${id}/proposals`}>
                                 <ProposalsOfCompany companyInfo={companyInfo} searchStringObj={searchStringProposalsObj}
-                                                    filterStringObj={filterStringObjInfluencers}
+                                                    filterStringObj={filterStringObjProposals}
                                                     proposalsListObj={{getter: proposalsList, setter: setProposalsList}}/>
                             </Route>
                             <Route path={`/companies/${id}/personal`}>

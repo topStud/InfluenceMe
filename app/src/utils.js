@@ -110,7 +110,7 @@ export const GetFilteredList = ({callServerObj, url, itemsList}) => {
                 } else {
                     callServerObj.setter(false)
                     let tempList = response.docs
-                    tempList = tempList.map(item => itemsList.getter.original.find(i=> i._id === item._id))
+                    tempList = tempList.reverse().map(item => itemsList.getter.original.find(i=> i._id === item._id))
                     itemsList.setter({
                         ...itemsList.getter,
                         filtered: tempList
@@ -136,6 +136,18 @@ export const GetFilteredList = ({callServerObj, url, itemsList}) => {
     )
 }
 
+GetFilteredList.propTypes = {
+    callServerObj: PropTypes.exact({
+        getter: PropTypes.bool,
+        setter: PropTypes.func
+    }).isRequired,
+    url: PropTypes.string.isRequired,
+    itemsList: PropTypes.exact({
+        getter: PropTypes.object,
+        setter: PropTypes.func
+    }).isRequired
+}
+
 AnswerOfServer.propTypes = {
     callServerObj: PropTypes.object.isRequired,
     url: PropTypes.string.isRequired,
@@ -150,6 +162,10 @@ export function calculateAge(birthday) { // birthday is a date
     let ageDifMs = Date.now() - birthday.getTime();
     let ageDate = new Date(ageDifMs);
     return Math.abs(ageDate.getUTCFullYear() - 1970);
+}
+
+FetchError.propTypes = {
+    name: PropTypes.string.isRequired
 }
 
 export function FetchError({name}) {

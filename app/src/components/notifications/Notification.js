@@ -282,7 +282,7 @@ class Notification extends React.Component {
                                     </div>
                                 );
                             })}
-                            {this.state.listItems.length >= (this.state.expandNotificationsNumber * viewMoreJump) && <MenuItem style={{display: "flex", justifyContent: 'center', color: '#F27746'}}
+                            {this.state.listItems.length > (this.state.expandNotificationsNumber * viewMoreJump) && <MenuItem style={{display: "flex", justifyContent: 'center', color: '#F27746'}}
                                       onClick={this.onViewMoreClick}>
                                 VIEW MORE
                             </MenuItem>}

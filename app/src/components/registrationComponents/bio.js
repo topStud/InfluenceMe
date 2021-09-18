@@ -13,7 +13,7 @@ export default function Bio(props) {
     }
 
     return (
-        <TextField maxRows={12} minRows={15} variant={"outlined"} multiline fullWidth style={{display: "block",
+        <TextField maxRows={11} minRows={11} variant={"outlined"} multiline fullWidth style={{display: "block",
             maxHeight: '250px', width: '100%', height: '400px', fontFamily: 'Rubik', fontWeight:300, fontSize:17,
             padding: 7}} placeholder={'Tell us more about yourself here...'} value={props.values.val.getter}
                    onChange={handleChange} error={props.values.err.getter.bioErr}

@@ -114,7 +114,7 @@ export default function InfluencerPage() {
                 setErrFetchProposalsData(true)
                 throw new Error('Couldn\'t get proposals\' data');
             } else {
-                let tempProposalsList = proposalsData.response.map((proposal)=> {
+                let tempProposalsList = proposalsData.response.reverse().map((proposal)=> {
                     let company = companiesList.find(company => company._id === proposal.companyID)
                     proposal.companyName = company.name
                     proposal.companySite = company.siteUrl
@@ -168,7 +168,7 @@ export default function InfluencerPage() {
                             <PersonalArea objData={influencerData} setObjData={setInfluencerData} />
                         </Route>
                         <Route path={`/influencers/${id}/contract/:contractID`}>
-                            <ContractAcceptDecline influencerID={id}/>
+                            <ContractAcceptDecline influencer={influencerData}/>
                         </Route>
                     </Switch>
                 </>

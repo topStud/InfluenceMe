@@ -80,7 +80,6 @@ export default function FilteringCards({objList, display, backdrop, setClickedCa
         Clothing: false,
         Beauty: false
     })
-    console.log(objList.getter.filtered)
     function onClickClearAll() {
         setChecked({
             Lifestyle: false,
@@ -181,7 +180,15 @@ export default function FilteringCards({objList, display, backdrop, setClickedCa
                             </Toolbar>
                         </AppBar>
                         }
-                        <CardsDisplay display={display} backdrop={backdrop} setClickedCard={setClickedCard} objList={objList.getter.filtered}/>
+                        {objList.getter.filtered.length !== 0 ? <CardsDisplay display={display} backdrop={backdrop}
+                                                                              setClickedCard={setClickedCard}
+                                                                              objList={objList.getter.filtered}/> :
+                        <div style={{display: "flex", justifyContent: "center", alignItems:"center", height: '100%'}}>
+                            <Divider style={{width: '20%',height: 5, backgroundColor: '#F2C116'}}/>
+                            <Typography color={"secondary"} style={{fontSize: '3em', fontWeight: 900, padding:' 0px 10px'}}>No Results</Typography>
+                            <Divider style={{width: '20%',height: 5, backgroundColor: '#F2C116'}}/>
+                        </div>
+                        }
                     </main>
                     <GetFilteredList cardType={display} callServerObj={{getter: callServerFilter, setter: setCallServerFilter}}
                                      filterString={filterStringObj.getter + ' ' + searchStringObj.getter} itemsList={objList}

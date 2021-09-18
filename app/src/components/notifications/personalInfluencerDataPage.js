@@ -27,7 +27,8 @@ const useStyles = makeStyles((theme) => ({
         display: "flex",
         flexDirection: "column",
         alignItems:"center",
-        fontSize: '0.8em'
+        fontSize: '0.8em',
+        marginTop: 70,
     },
     identity: {
         display: "flex",
@@ -60,7 +61,8 @@ const useStyles = makeStyles((theme) => ({
     },
     contract: {
         display: "flex",
-        justifyContent: 'flex-end',
+        justifyContent: 'center',
+        marginTop: 50,
         alignItems: "flex-start",
         paddingRight: '2%'
     },
@@ -68,6 +70,11 @@ const useStyles = makeStyles((theme) => ({
         zIndex: theme.zIndex.drawer + 1,
         color: '#fff',
     },
+    container: {
+        boxShadow: '1px 10px 10px gray',
+        backgroundColor: 'white',
+        padding: 30
+    }
 }))
 
 export default function PersonalInfluencerDataPage({company}) {
@@ -84,7 +91,6 @@ export default function PersonalInfluencerDataPage({company}) {
     const [callServerSendNotification, setCallServerSendNotification] = React.useState(false)
 
     const [contractBackdrop, setContractBackdrop] = React.useState(false)
-    const [contractCreated, setContractCreated] = React.useState(false)
     const [createdContractID, setCreatedContractID] = React.useState('')
 
     const [contractValues, setContractValues] = React.useState({
@@ -149,7 +155,7 @@ export default function PersonalInfluencerDataPage({company}) {
             setErrFetchData(true)
             console.log(error)
         });
-    },[itemID])
+    },[itemID, influencerId])
 
     function onClickCreate() {
         setContractBackdrop(true)
@@ -160,7 +166,7 @@ export default function PersonalInfluencerDataPage({company}) {
             {influencerData !== null &&
             <Grid container>
                 <Grid item xs={3}/>
-                <Grid item xs={6}>
+                <Grid item xs={6} className={classes.container}>
                     <div className={classes.header}>
                         {influencerData.photo !== null ? <Avatar src={influencerData.photo} className={classes.photo}/>
                             : <AccountCircle className={classes.photo}/>}
@@ -208,10 +214,9 @@ export default function PersonalInfluencerDataPage({company}) {
                             </span>
                         </>}
                     </div>
-                </Grid>
-                <Grid item xs={3} className={classes.contract}>
-                    <Button disabled={contractCreated} variant={'contained'} color={"primary"} onClick={onClickCreate}>Create Contract</Button>
-                    {contractCreated && <Typography>Contract created Successfully!</Typography>}
+                    <div className={classes.contract}>
+                        <Button variant={'contained'} color={"primary"} onClick={onClickCreate}>Create Contract</Button>
+                    </div>
                 </Grid>
             </Grid>
             }
@@ -226,7 +231,6 @@ export default function PersonalInfluencerDataPage({company}) {
             }}  sucMsg={''} url={`/api/contracts`}
                 callServerObj={{getter: callServerCreateContract, setter: setCallServerCreateContract}}
                 sucFunc={(response)=>{
-                    setContractCreated(true);
                     setCallServerSendNotification(true)
                     setCreatedContractID(parseJwt(response.data).id)
                 }}/>

@@ -12,7 +12,7 @@ import {AnswerOfServer, required_txt, validateWebsiteUrl} from "../../utils";
 const useStyles = makeStyles(() => ({
     container: {
         boxShadow: '1px 5px 10px #A68617',
-        padding:20
+        padding:30
     },
 }));
 
@@ -54,6 +54,7 @@ export default function MyDetailsInfluencer({setValue, influencerData, setInflue
         followersMsg: '',
         instagramUrlMsg: '',
     })
+    const [errBio, setErrBio] = React.useState(influencerData.bio)
     const myDetailsObj={
         val:{
             getter: valuesMyDetails,
@@ -68,6 +69,10 @@ export default function MyDetailsInfluencer({setValue, influencerData, setInflue
         val:{
             getter: bio,
             setter: setBio
+        },
+        err: {
+            getter: errBio,
+            setter: setErrBio
         }
     }
     const [prevMyDetailsData, setPrevMyDetailsData] = React.useState(valuesMyDetails)
@@ -100,6 +105,14 @@ export default function MyDetailsInfluencer({setValue, influencerData, setInflue
             followersErr: instaFollowersErr,
             followersMsg: instaFollowersErr ? required_txt : '',
             categoryErr: categoryErr
+        })
+        let bioEmpty = bio === ''
+        if (bioEmpty) {
+            mayContinue = false
+        }
+        setErrBio({
+            bioErr: bioEmpty,
+            bioMsg: bioEmpty ? required_txt : ''
         })
         // call to server to update info
         if (mayContinue) {
