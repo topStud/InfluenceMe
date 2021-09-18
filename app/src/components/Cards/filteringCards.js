@@ -11,6 +11,9 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import PropTypes from 'prop-types'
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
 const drawerWidth = 240;
 
@@ -44,6 +47,18 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: "transparent",
         border: '1px solid transparent',
         alignSelf: "flex-end"
+    },
+    formControl: {
+        minWidth: 120,
+        display:"flex",
+        flexDirection:'row!important',
+        alignItems: "center",
+        justifyContent:"flex-start",
+        marginBottom:'15px!important'
+    },
+    select: {
+        marginTop: '0 !important',
+        width: 200
     }
 }));
 
@@ -71,6 +86,7 @@ FilteringCards.propTypes = {
 export default function FilteringCards({objList, display, backdrop, setClickedCard, filterStringObj, searchStringObj}) {
     const classes = useStyles();
     const [callServerFilter, setCallServerFilter] = React.useState(false)
+    const [sortOption, setSortOption] = React.useState('')
 
     const [checked, setChecked] = React.useState({
         Lifestyle: false,
@@ -105,6 +121,7 @@ export default function FilteringCards({objList, display, backdrop, setClickedCa
                 filtered: objList.getter.original
             })
         }
+        setSortOption('')
     }
 
     useEffect(()=>{
@@ -116,6 +133,7 @@ export default function FilteringCards({objList, display, backdrop, setClickedCa
         } else {
             setCallServerFilter(true)
         }
+        setSortOption('')
     },[JSON.stringify(objList.getter.original)])
 
     function onCategoryClick(text) {
@@ -144,7 +162,31 @@ export default function FilteringCards({objList, display, backdrop, setClickedCa
         } else {
             setCallServerFilter(true)
         }
+        setSortOption('')
     }
+
+    const handleChange = (event) => {
+        setSortOption(event.target.value);
+        let field = event.target.value
+        if (field !== '') {
+            objList.setter({
+                ...objList.getter,
+                filtered: objList.getter.filtered.sort((a,b)=>{
+                    if (field === 'followersAmount') {
+                        if (a[field] === b[field]) {
+                            return 0
+                        } else if (a[field] < b[field]) {
+                            return -1
+                        } else {
+                            return 1
+                        }
+                    } else {
+                        return a[field].localeCompare(b[field])
+                    }
+                })
+            })
+        }
+    };
 
     return (
         <Grid container>
@@ -170,6 +212,29 @@ export default function FilteringCards({objList, display, backdrop, setClickedCa
                         </List>
                     </div>
                     <main className={classes.content}>
+                        <FormControl variant="standard" className={classes.formControl}>
+                            <label style={{fontSize: '1.2em', width: 90}}>Sort By:</label>
+                            <Select
+                                value={sortOption}
+                                onChange={handleChange}
+                                displayEmpty
+                                className={classes.select}
+                                MenuProps={{
+                                    anchorOrigin:{ vertical: 'bottom', horizontal: 'right' },
+                                    transformOrigin:{ vertical: 'top', horizontal: 'right' }
+                                }}
+                            >
+                                <MenuItem value="">
+                                    <em>None</em>
+                                </MenuItem>
+                                <MenuItem value={display === 'influencers' ? 'instagramUser' : 'title'}>
+                                    {display === 'influencers' ? 'Instagram Username' : 'Title of Proposal'}
+                                </MenuItem>
+                                <MenuItem value={display === 'influencers' ? 'followersAmount':'companyName'}>
+                                    {display === 'influencers' ? 'Followers Number' : 'Company Name'}
+                                </MenuItem>
+                            </Select>
+                        </FormControl>
                         {searchStringObj.getter !== '' &&
                         <AppBar variant={"outlined"} position={"relative"} style={{padding:0,backgroundColor: "transparent", borderBottom:'3px solid #F27746'}}>
                             <Toolbar style={{display: "flex", justifyContent: "space-between"}}>
