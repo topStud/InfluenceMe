@@ -4,63 +4,11 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Box from '@material-ui/core/Box';
 import {FetchError} from "../../utils";
-import Select from '@atlaskit/select';
-import ContractCarousel from "./contractCarousel";
-import {useLocation} from "react-router-dom";
+import CollaborationDisplay from "./collaborationDisplay";
 
-const SelectSingle = ({titleList, valueObj}) => (
-    <>
-        <div style={{marginBottom:10}}>
-            <label>What is the title of the contracts you would like to see?</label>
-        </div>
-        <Select
-            value={{label:valueObj.getter, value: valueObj.getter}}
-            onChange={(newValue)=>{if(newValue !== null) valueObj.setter(newValue.value);}}
-            inputId="single-select"
-            className={useStyles().select}
-            options={titleList}
-        />
-    </>
-);
-
-function TabPanel(props) {
+function PanelTab(props) {
     const { value, index, contracts, type,id , ...other } = props;
-    const [selectOption, setSelectOption] = React.useState('Choose title here...')
-
-    const { pathname } = useLocation();
-    const userType = pathname.split('/')[1]
-
-    let field = [userType === 'companies' ? 'title' : 'companyName']
-
-    const groupedContracts = [];
-    const selectList = []
-    contracts.map((i) => {
-        const test = groupedContracts.filter(
-            item => item[field] === i[field]
-        );
-        if (test.length === 0) {
-            const itemObj = {
-                [field]: i[field],
-                list: []
-            };
-            groupedContracts.push(itemObj);
-            selectList.push({label: i[field], value: i[field]})
-        }
-    });
-    contracts.map((i) => {
-        const currentTitle = i[field];
-        const contractsWithSameTitle = groupedContracts.filter(function(k) {
-            return k[field] === currentTitle;
-        });
-        const key = contractsWithSameTitle.length && contractsWithSameTitle[0][field];
-        groupedContracts.map(item => {
-        if (item[field] === key) {
-            item.list.push(i);
-        }
-      });
-    });
 
     return (
         <div
@@ -71,23 +19,18 @@ function TabPanel(props) {
             style={{height:'100%'}}
             {...other}
         >
-            {value === index && (
-                <Box p={3} style={{height:'100%'}}>
-                    <SelectSingle valueObj={{getter: selectOption, setter: setSelectOption}} titleList={selectList}/>
-                    <div style={{marginTop: 20}}>
-                        {selectOption !== 'Choose title here...' && <ContractCarousel userID={id} contracts={groupedContracts.find(o=>o[field] === selectOption).list} type={type}/>}
-                    </div>
-                </Box>
-            )}
+            {value === index &&
+                <CollaborationDisplay id={id} contracts={contracts} type={type}/>
+            }
         </div>
     );
 }
 
-TabPanel.propTypes = {
+PanelTab.propTypes = {
     index: PropTypes.any.isRequired,
     value: PropTypes.any.isRequired,
     contracts: PropTypes.array.isRequired,
-    type: PropTypes.oneOf(['pending','current']).isRequired,
+    type: PropTypes.oneOf(['pending','exists']).isRequired,
     id: PropTypes.string.isRequired
 };
 
@@ -106,10 +49,6 @@ const useStyles = makeStyles((theme) => ({
     },
     selectEmpty: {
         marginTop: theme.spacing(2),
-    },
-    select: {
-        fontSize: 13,
-        fontWeight: 500
     }
 }));
 
@@ -172,8 +111,8 @@ export default function CurrentCollaborations({id, setValue, index}) {
                 </Tabs>
             </AppBar>
             {contracts.current !== null && <>
-                <TabPanel value={valueTabs} id={id} index={0} dir={theme.direction} contracts={contracts.current} type={'current'}/>
-                <TabPanel value={valueTabs} id={id} index={1} dir={theme.direction} contracts={contracts.pending} type={'pending'}/>
+                <PanelTab value={valueTabs} id={id} index={0} dir={theme.direction} contracts={contracts.current} type={'exists'}/>
+                <PanelTab value={valueTabs} id={id} index={1} dir={theme.direction} contracts={contracts.pending} type={'pending'}/>
             </>}
             {errFetch && <FetchError name={'contracts\''}/>}
         </div>

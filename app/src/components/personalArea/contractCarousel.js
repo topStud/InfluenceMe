@@ -21,7 +21,7 @@ const useStyles = makeStyles({
 
 ContractCarousel.propTypes = {
     contracts: PropTypes.array.isRequired,
-    type: PropTypes.oneOf(['pending', 'current']).isRequired,
+    type: PropTypes.oneOf(['pending', 'exists']).isRequired,
     userID: PropTypes.string.isRequired
 }
 

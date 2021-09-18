@@ -13,6 +13,7 @@ import MyDetailsCompany from "./myDetailsComapny";
 import Grid from "@material-ui/core/Grid";
 import ChangePassword from "./ChangePassword";
 import CurrentCollaborations from './currentCollaborations'
+import PastCollaborations from "./pastCollaborations";
 
 function TabPanel(props) {
     const { children, ...other } = props;
@@ -119,7 +120,7 @@ export default function PersonalArea({objData, setObjData}) {
                         </Route>
                         <Route path={`/${userType}/${objData._id}/personal/pastCollaborations`}>
                             <TabPanel>
-                                Item One
+                                <PastCollaborations index={0} setValue={setValue} id={objData._id}/>
                             </TabPanel>
                         </Route>
                         <Route path={`/${userType}/${objData._id}/personal/currentCollaborations`}>
