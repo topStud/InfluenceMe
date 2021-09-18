@@ -8,13 +8,15 @@ import NotFound from './views/notFoundPage'
 import InfluencerPage from './views/InfluencerPage'
 import ViewProposals from "./views/ViewProposals";
 import './styles/globals.css'
+import ForgotPassword from "./views/forgotPassword";
 
 ReactDOM.render(
     <Router>
         <Switch>
             <Route exact path='/' component={App}/>
-            <Route path='/view' component={ViewProposals}/>
+            <Route exact path='/view' component={ViewProposals}/>
             <Route exact path='/register' component={Register}/>
+            <Route exact path='/forgotPassword' component={ForgotPassword}/>
             <Route path='/companies/:id' component={CompanyPage}/>
             <Route path='/influencers/:id' component={InfluencerPage}/>
             <Route component={NotFound}/>

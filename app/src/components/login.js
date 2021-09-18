@@ -141,7 +141,12 @@ export default function SignIn() {
                         >
                             Log In
                         </Button>
-                        <Grid container justifyContent="flex-end">
+                        <Grid container justifyContent="space-between">
+                            <Grid item>
+                                <Link to='/forgotPassword' className={styles.link}>
+                                    Forgot password?
+                                </Link>
+                            </Grid>
                             <Grid item>
                                 <Link to='/register' className={styles.link}>
                                     Create an account
