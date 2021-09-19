@@ -7,6 +7,7 @@ import {Link} from 'react-router-dom';
 import Typography from "@material-ui/core/Typography";
 import CloseIcon from '@material-ui/icons/Close';
 import {AnswerOfServer} from "../../utils";
+import {Avatar} from "@mui/material";
 
 const viewMoreJump = 3
 
@@ -211,9 +212,9 @@ class Notification extends React.Component {
                                                 display: "initial"
                                             }}
                                         >
-                                <span style={{display: "inline-block", width: "50%", marginBottom: 10, marginTop: 10}}>
-                                  {timestamp.groupName}
-                                </span>
+                                            <span style={{display: "inline-block", width: "50%", marginBottom: 10, marginTop: 10}}>
+                                              {timestamp.groupName}
+                                            </span>
                                         </p>}
                                         {timestamp.list.map((obj, key) => {
                                             // calculates time for current day
@@ -241,6 +242,7 @@ class Notification extends React.Component {
                                                                 justifyContent: 'space-between',
                                                                 width: '320px'
                                                             }}>
+                                                                <Avatar src={obj.photo} style={{marginRight: 10, alignSelf: "center", width:50, height:50}}/>
                                                                 <Typography style={{
                                                                     fontFamily: 'Rubik',
                                                                     fontSize: "13px",

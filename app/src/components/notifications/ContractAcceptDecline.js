@@ -161,7 +161,7 @@ export default function ContractAcceptDecline({influencer}) {
                             {'Accept': 'application/json', 'Content-type': 'application/json'},
                         body: JSON.stringify({itemID: contractID, itemName: contractInfo.title,
                             receiverID: contractInfo.companyID, senderID: influencer._id,
-                            senderName: contractInfo.influencerName,
+                            senderName: contractInfo.influencerName, photo: influencer.photo,
                             messageType: answerOfInfluencer === 'decline' ? 4 : 3})}} sucMsg={''}
                                     url={`/api/notifications`} callServerObj={{getter: callServer, setter: setCallServer}}
                             sucFunc={()=>{

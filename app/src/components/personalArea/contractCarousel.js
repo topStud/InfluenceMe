@@ -78,7 +78,7 @@ export default function ContractCarousel({contracts, type, objData}) {
                                 {'Accept': 'application/json', 'Content-type': 'application/json'},
                             body: JSON.stringify({itemID: item._id, itemName: item.title,
                                 receiverID: item.companyID, senderID: objData.getter._id,
-                                senderName: item.influencerName,
+                                senderName: item.influencerName, photo: objData.getter.photo,
                                 messageType: answerOfInfluencer === 'decline' ? 4 : 3})}} sucMsg={''}
                                                                       url={`/api/notifications`} callServerObj={{getter: callServer, setter: setCallServer}}
                                                                       sucFunc={()=>{

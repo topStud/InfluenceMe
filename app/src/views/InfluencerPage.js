@@ -159,7 +159,7 @@ export default function InfluencerPage() {
                             <AnswerOfServer callServerObj={{getter: callServerInterested, setter: setCallServerInterested}}
                                             url={`/api/notifications`} methodObj={{method: 'POST', headers:
                                     {'Accept': 'application/json', 'Content-type': 'application/json'},
-                                body: JSON.stringify({itemID: proposalClickedForInfo._id,
+                                body: JSON.stringify({itemID: proposalClickedForInfo._id, photo: influencerData.photo,
                                     itemName: proposalClickedForInfo.title, receiverID: proposalClickedForInfo.companyID,
                                     senderID: influencerData._id, senderName: influencerData.firstName + ' ' +
                                         influencerData.lastName, messageType: 1})}} sucMsg={'Request sent successfully'}

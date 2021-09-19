@@ -240,7 +240,7 @@ export default function PersonalInfluencerDataPage({company}) {
                             methodObj={{method: 'POST', headers: {'Accept': 'application/json',
                                     'Content-type': 'application/json'}, body: JSON.stringify({itemID: createdContractID,
                                     itemName: contractValues.title, receiverID: influencerId, senderID: contractValues.companyID,
-                                    senderName: contractValues.companyName, messageType: 2})}}
+                                    senderName: contractValues.companyName, messageType: 2, photo: company.photo})}}
                             sucMsg={'Contract created successfully and sent to use'} url={`/api/notifications`} callServerObj={{getter: callServerSendNotification,
                             setter: setCallServerSendNotification}}/>}
             {errFetchData && <FetchError name={''}/>}
