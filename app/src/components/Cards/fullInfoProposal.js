@@ -135,7 +135,7 @@ export default function FullInfoProposal({backdrop, proposalObj, setCallToServer
                             </>}
                             {proposalObj.getter.companySite !== '' &&
                             <>
-                                Visit out website <span style={{textDecoration: "underline", userSelect: 'text', msUserSelect: 'text'}}>{proposalObj.getter.companySite}</span>
+                                Visit out website <a href={(new RegExp('^([a-z]+://|//)', 'i').test(proposalObj.getter.companySite) ?'':'//')+proposalObj.getter.companySite} target={'_blank'} style={{textDecoration: "underline", userSelect: 'text', msUserSelect: 'text'}}>{proposalObj.getter.companySite}</a>
                             </>}
                             </div>
                         </>

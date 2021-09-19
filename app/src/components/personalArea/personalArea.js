@@ -6,6 +6,7 @@ import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 import MyDetailsInfluencer from "./myDetailsInfluencer";
 import {Link, Route, Switch, useLocation} from "react-router-dom";
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import {Avatar} from "@material-ui/core";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import BusinessIcon from '@material-ui/icons/Business';
@@ -14,6 +15,9 @@ import Grid from "@material-ui/core/Grid";
 import ChangePassword from "./ChangePassword";
 import CurrentCollaborations from './currentCollaborations'
 import PastCollaborations from "./pastCollaborations";
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import PersonIcon from "@material-ui/icons/Person";
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 function TabPanel(props) {
     const { children, ...other } = props;
@@ -48,8 +52,8 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
     },
     tabs: {
-        minWidth: '250px',
-        height: "285px",
+        minWidth: '264px',
+        height: "300px",
     },
     small: {
         width: theme.spacing(12),
@@ -59,6 +63,21 @@ const useStyles = makeStyles((theme) => ({
         boxShadow: '1px 5px 10px #A68617',
         padding:20
     },
+    iconLabelWrapper: {
+        flexDirection: "row",
+        justifyContent: "flex-start",
+        alignItems: 'center'
+    },
+    icon: {
+        marginBottom:0,
+        marginRight:10
+    },
+    tabStyle: {
+        boxShadow: '1px 3px 5px #A68617',
+        marginBottom:5,
+        width: '100%',
+        minHeight: '50px',
+    }
 }));
 
 PersonalArea.propTypes = {
@@ -81,7 +100,7 @@ export default function PersonalArea({objData, setObjData}) {
             <Grid item sm={1}/>
             <Grid item sm={10}>
                 <div className={classes.root}>
-                    <div style={{display: "flex", flexDirection: "column",marginLeft:20, width: 250}}>
+                    <div style={{display: "flex", flexDirection: "column",marginLeft:20, width: 300}}>
                         <div style={{padding:10, marginBottom:5, width: '100%', display: "flex"}}>
                             {objData.photo !== null ?
                                 <Avatar src={objData.photo} className={classes.small}/> :
@@ -102,11 +121,31 @@ export default function PersonalArea({objData, setObjData}) {
                             aria-label="Vertical tabs example"
                             className={classes.tabs}
                         >
-                            <Tab onClick={()=>handleChange(0)} style={{boxShadow: '1px 3px 5px #A68617', marginBottom:5, width: '100%'}} component={Link} to={`/${userType}/${objData._id}/personal/pastCollaborations`} label="Past Collaborations" {...a11yProps(0)} />
-                            <Tab onClick={()=>handleChange(1)} style={{boxShadow: '1px 3px 5px #A68617', marginBottom:5, width: '100%'}} component={Link} to={`/${userType}/${objData._id}/personal/currentCollaborations`} label="Current Collaborations" {...a11yProps(1)} />
-                            <Tab onClick={()=>handleChange(2)} style={{boxShadow: '1px 3px 5px #A68617', marginBottom:5, width: '100%'}} component={Link} to={`/${userType}/${objData._id}/personal/myDetails`} label="My Details" {...a11yProps(2)} />
-                            <Tab onClick={()=>handleChange(3)} style={{boxShadow: '1px 3px 5px #A68617', marginBottom:5, width: '100%'}} component={Link} to={`/${userType}/${objData._id}/personal/changePassword`} label="Change Password" {...a11yProps(3)} />
-                            <Tab onClick={()=>handleChange(4)} style={{boxShadow: '1px 3px 5px #A68617', marginBottom:5, width: '100%'}} component={Link} to={`/${userType}/${objData._id}/personal/logOut`} label="Log out" {...a11yProps(4)} />
+                            <Tab icon={<AccessTimeIcon fontSize={'small'} className={classes.icon}/>}
+                                 classes={{wrapper: classes.iconLabelWrapper}} onClick={()=>handleChange(0)}
+                                 className={classes.tabStyle} component={Link}
+                                 to={`/${userType}/${objData._id}/personal/pastCollaborations`}
+                                 label="Past Collaborations" {...a11yProps(0)} />
+                            <Tab icon={<img src="https://img.icons8.com/ios-glyphs/480/handshake.png"
+                                            alt="InfluenceMe Logo" width={20} height={20} className={classes.icon}/>}
+                                 classes={{wrapper: classes.iconLabelWrapper}} onClick={()=>handleChange(1)}
+                                 className={classes.tabStyle} component={Link}
+                                 to={`/${userType}/${objData._id}/personal/currentCollaborations`}
+                                 label="Current Collaborations" {...a11yProps(1)} />
+                            <Tab icon={<PersonIcon fontSize={'small'} className={classes.icon}/>}
+                                 classes={{wrapper: classes.iconLabelWrapper}} onClick={()=>handleChange(2)}
+                                 className={classes.tabStyle} component={Link}
+                                 to={`/${userType}/${objData._id}/personal/myDetails`}
+                                 label="My Details" {...a11yProps(2)} />
+                            <Tab icon={<LockOutlinedIcon fontSize={'small'} className={classes.icon}/>}
+                                 classes={{wrapper: classes.iconLabelWrapper}} onClick={()=>handleChange(3)}
+                                 className={classes.tabStyle} component={Link}
+                                 to={`/${userType}/${objData._id}/personal/changePassword`} label="Change Password"
+                                 {...a11yProps(3)} />
+                            <Tab icon={<ExitToAppIcon fontSize={'small'} className={classes.icon}/>}
+                                 classes={{wrapper: classes.iconLabelWrapper}} onClick={()=>handleChange(4)}
+                                 className={classes.tabStyle} component={Link}
+                                 to={`/${userType}/${objData._id}/personal/logOut`} label="Sign out" {...a11yProps(4)} />
                         </Tabs>
                     </div>
                     <Switch>
@@ -125,7 +164,7 @@ export default function PersonalArea({objData, setObjData}) {
                         </Route>
                         <Route path={`/${userType}/${objData._id}/personal/currentCollaborations`}>
                             <TabPanel>
-                                <CurrentCollaborations setValue={setValue} index={1} id={objData._id}/>
+                                <CurrentCollaborations setValue={setValue} index={1} objData={{getter: objData, setter: setObjData}}/>
                             </TabPanel>
                         </Route>
                         <Route path={`/${userType}/${objData._id}/personal/changePassword`}>

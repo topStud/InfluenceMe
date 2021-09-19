@@ -64,7 +64,7 @@ export default function FullInfoInfluencer({backdrop, influencerObj}) {
                     </>}
                     {influencerObj.instagramUrl !== '' &&
                     <>
-                        Check out my instagram account <span style={{textDecoration: "underline", userSelect: 'text', msUserSelect: 'text'}}>{influencerObj.instagramUrl}</span>
+                        Check out my instagram account <a target={'_blank'} href={(new RegExp('^([a-z]+://|//)', 'i').test(influencerObj.instagramUrl) ?'':'//')+influencerObj.instagramUrl} style={{textDecoration: "underline", userSelect: 'text', msUserSelect: 'text'}}>{influencerObj.instagramUrl}</a>
                     </>}
                 </div>
             </DialogContent>

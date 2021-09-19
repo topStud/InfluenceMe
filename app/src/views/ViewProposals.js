@@ -92,29 +92,31 @@ export default function ViewProposals() {
 
     return (
         <MuiThemeProvider theme={theme}>
-            <Typography component="h1" variant={"h2"} style={{textAlign:'left',fontFamily: 'Rubik',fontWeight: 800, marginBottom: 30,color: '#1F75A6', margin:20}}>
-                <Link to={'/'}>
-                    Influence<span style={{color: '#A64B28'}}>Me</span>
-                </Link>
-            </Typography>
-            <Grid container>
-                <Grid item xs={4}/>
-                <Grid item xs={6}>
-                    <SearchField objList={{getter: proposals, setter: setProposals}} filterString={filterString}
-                                 searchObj={{getter: searchString, setter: setSearchString}} urlType={'collaboration_proposals'}/>
+            <div style={{minHeight: 'calc(100vh - 60px)'}}>
+                <Typography component="h1" variant={"h2"} style={{textAlign:'left',fontFamily: 'Rubik',fontWeight: 800, marginBottom: 40,color: '#1F75A6', margin:20, marginLeft: '8%'}}>
+                    <Link to={'/'}>
+                        Influence<span style={{color: '#A64B28'}}>Me</span>
+                    </Link>
+                </Typography>
+                <Grid container>
+                    <Grid item xs={4}/>
+                    <Grid item xs={6}>
+                        <SearchField objList={{getter: proposals, setter: setProposals}} filterString={filterString}
+                                     searchObj={{getter: searchString, setter: setSearchString}} urlType={'collaboration_proposals'}/>
+                    </Grid>
                 </Grid>
-            </Grid>
-            {proposals.original !== null && <FilteringCards display={'proposals'}
-                                                            objList={{getter: proposals, setter: setProposals}}
-                                                            backdrop={backdropObj} setClickedCard={setProposalClicked}
-                                                            filterStringObj={{getter:filterString, setter: setFilterString}}
-                                                            searchStringObj={{getter:searchString, setter: setSearchString}}/>
-            }
-            <BackDrop className={classes.backdrop} open={openBackdrop}>
-                {proposalClicked !== null &&
-                <FullInfoProposal backdrop={backdropObj} proposalObj={{getter: proposalClicked, setter: setProposalClicked}}/>}
-            </BackDrop>
-            { errFetch && <FetchError name={'proposals\''}/>}
+                {proposals.original !== null && <FilteringCards display={'proposals'}
+                                                                objList={{getter: proposals, setter: setProposals}}
+                                                                backdrop={backdropObj} setClickedCard={setProposalClicked}
+                                                                filterStringObj={{getter:filterString, setter: setFilterString}}
+                                                                searchStringObj={{getter:searchString, setter: setSearchString}}/>
+                }
+                <BackDrop className={classes.backdrop} open={openBackdrop}>
+                    {proposalClicked !== null &&
+                    <FullInfoProposal backdrop={backdropObj} proposalObj={{getter: proposalClicked, setter: setProposalClicked}}/>}
+                </BackDrop>
+                { errFetch && <FetchError name={'proposals\''}/>}
+            </div>
             <Footer/>
         </MuiThemeProvider>
     )

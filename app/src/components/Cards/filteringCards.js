@@ -249,9 +249,9 @@ export default function FilteringCards({objList, display, backdrop, setClickedCa
                                                                               setClickedCard={setClickedCard}
                                                                               objList={objList.getter.filtered}/> :
                         <div style={{display: "flex", justifyContent: "center", alignItems:"center", height: '100%'}}>
-                            <Divider style={{width: '20%',height: 5, backgroundColor: '#F2C116'}}/>
-                            <Typography color={"secondary"} style={{fontSize: '3em', fontWeight: 900, padding:' 0px 10px'}}>No Results</Typography>
-                            <Divider style={{width: '20%',height: 5, backgroundColor: '#F2C116'}}/>
+                            <Divider style={{width: '20%', backgroundColor: '#F27746'}}/>
+                            <Typography style={{fontSize: '1em', padding:' 0px 10px', color: 'black'}}>No Results</Typography>
+                            <Divider style={{width: '20%', backgroundColor: '#F27746'}}/>
                         </div>
                         }
                     </main>

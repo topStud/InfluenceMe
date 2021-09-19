@@ -195,8 +195,8 @@ export default function CreateContractDialog({backdrop, contractValues, setCallS
                 <ConfirmationDialog
                     backdrop={{getter: backdropConfirmationDialog, setter: setBackdropConfirmationDialog}}
                     setDialogOpen={backdrop.setter} type={'create'} setCallServer={setCallServer}
-                    msg={`Are you sure you want to create this contract for the proposal
-                     '${contractValues.getter.title}'? Note, you won't be able to edit it later on.`}/>
+                    msg={<>Are you sure you want to create this contract for the proposal
+                        {contractValues.getter.title}?<br/><b>Note, you won't be able to edit it later on!</b></>}/>
             </Backdrop>
         </Dialog>
     )

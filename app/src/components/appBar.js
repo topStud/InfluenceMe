@@ -8,13 +8,18 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import Chip from "@material-ui/core/Chip";
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import PersonIcon from '@mui/icons-material/Person';
 import {Link, useLocation} from 'react-router-dom';
 import {Avatar, Snackbar} from "@material-ui/core";
+import ListItemText from '@mui/material/ListItemText';
+import ListItemIcon from '@mui/material/ListItemIcon';
 import BusinessIcon from '@material-ui/icons/Business';
 import SearchField from './InputComponents/searchField'
 import Notification from "./notifications/Notification";
 import {Alert} from "@material-ui/lab";
 import PropTypes from 'prop-types'
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
 const useStyles = makeStyles((theme) => ({
     grow: {
@@ -37,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
         paddingRight:8,
     },
     sectionDesktop: {
+        marginRight: '5%',
         display: 'none',
         [theme.breakpoints.up('md')]: {
             display: 'flex',
@@ -128,19 +134,47 @@ export default function PrimarySearchAppBar({data, filtersString, searchesString
             onClose={handleMenuClose}
         >
             <Typography style={{marginLeft:10, marginBottom:10}}>
-                Hi,<br/><strong>{userType === 'influencers'? data.firstName : data.name}</strong>
+                Hi, <strong>{userType === 'influencers'? data.firstName : data.name}</strong>
             </Typography>
             <Link to={`/${userType}/${data._id}/personal/pastCollaborations`}>
-                <MenuItem onClick={handleMenuClose} className={classes.menuItem}>Past Collaborations</MenuItem>
+                <MenuItem onClick={handleMenuClose} className={classes.menuItem}>
+                    <ListItemIcon style={{minWidth: 30}}>
+                        <AccessTimeIcon fontSize="small"/>
+                    </ListItemIcon>
+                    <ListItemText>
+                        Past Collaborations
+                    </ListItemText>
+                </MenuItem>
             </Link>
             <Link to={`/${userType}/${data._id}/personal/currentCollaborations`}>
-                <MenuItem onClick={handleMenuClose} className={classes.menuItem}>Current Collaborations</MenuItem>
+                <MenuItem onClick={handleMenuClose} className={classes.menuItem}>
+                    <ListItemIcon style={{minWidth: 30}}>
+                        <img style={{filter: 'opacity(0.54)'}} src="https://img.icons8.com/ios-glyphs/480/handshake.png" alt="InfluenceMe Logo" width={20} height={20} />
+                    </ListItemIcon>
+                    <ListItemText>
+                        My Collaborations
+                    </ListItemText>
+                </MenuItem>
             </Link>
             <Link to={`/${userType}/${data._id}/personal/myDetails`}>
-                <MenuItem onClick={handleMenuClose} className={classes.menuItem}>My Details</MenuItem>
+                <MenuItem onClick={handleMenuClose} className={classes.menuItem}>
+                    <ListItemIcon style={{minWidth: 30}}>
+                        <PersonIcon fontSize={"small"}/>
+                    </ListItemIcon>
+                    <ListItemText>
+                        My Details
+                    </ListItemText>
+                </MenuItem>
             </Link>
             <Link to={`/${userType}/${data._id}/personal/logOut`}>
-                <MenuItem onClick={handleMenuClose} className={classes.menuItem}>Log Out</MenuItem>
+                <MenuItem onClick={handleMenuClose} className={classes.menuItem}>
+                    <ListItemIcon style={{minWidth: 30}}>
+                        <ExitToAppIcon fontSize={'small'}/>
+                    </ListItemIcon>
+                    <ListItemText>
+                        Sign Out
+                    </ListItemText>
+                </MenuItem>
             </Link>
         </Menu>
     );
@@ -149,16 +183,15 @@ export default function PrimarySearchAppBar({data, filtersString, searchesString
         <div className={`${classes.grow} ${classes.root}`} style={{marginBottom: 20, position:"sticky", top:0}}>
             <AppBar position="relative">
                 <Toolbar style={{backgroundColor: "white", borderBottom: '8px solid #F27746'}}>
-                    <Link to={`/${userType}/${data._id}`}>
-                        <Typography className={classes.title} component={'h2'} variant="h2" noWrap
+                    <Link to={`/${userType}/${data._id}`} style={{marginLeft: '5%'}}>
+                        <Typography className={classes.title} component={'h2'} variant="h2"
                                     style={{fontFamily: 'Rubik', fontWeight:800, color:'#1F75A6',cursor: "pointer"}}>
                             Influence<span style={{color:'#F27746'}}>Me</span>
                         </Typography>
                     </Link>
-                    <div className={classes.grow} />
+                    <div className={classes.grow}/>
                     {isSearch && <SearchField searchObj={searchObj} filterString={filterString} objList={currentList}
                                                  urlType={proposalsOrInfluencers}/>}
-                    <div className={classes.grow} />
                     <div className={classes.sectionDesktop}>
                         {
                             userType === 'companies' &&

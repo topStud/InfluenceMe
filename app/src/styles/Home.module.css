@@ -17,11 +17,9 @@
 
 .footer {
   width: 100%;
-  clear: both;
+  height: 60px;
   position: relative;
   border-top: 1px solid #eaeaea;
-  margin-top: 20px;
-  align-self: flex-end;
   display: flex;
   justify-content: center;
 }

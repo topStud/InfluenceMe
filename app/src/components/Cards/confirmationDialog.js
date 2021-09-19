@@ -13,7 +13,7 @@ ConfirmationDialog.propTypes = {
         setter: PropTypes.func
     }).isRequired,
     setCallServer: PropTypes.func.isRequired,
-    msg: PropTypes.string.isRequired,
+    msg: PropTypes.any.isRequired,
     setDialogOpen: PropTypes.func,
     type: PropTypes.oneOf(['delete', 'interested', 'create'])
 }

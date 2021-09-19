@@ -91,7 +91,7 @@ export default function SignUp(props) {
             <Typography color={"secondary"} component={'h1'} variant={'h3'} style={{margin:0}}>
                 Sign Up
             </Typography>
-            <form style={{width: '100%', marginTop: '5%'}} noValidate>
+            <form style={{width: '100%', marginTop: '5%', marginBottom: '5%'}} noValidate>
                 <Grid container spacing={2}>
                     <Grid item xs={12} style={{height: 70}}>
                         <InputText val={values} err={errors} info={emailObj}/>
@@ -123,7 +123,7 @@ export default function SignUp(props) {
                 <Grid container justifyContent="flex-end">
                     <Grid item>
                         <Link to='/' className={styles.link}>
-                            Back to Log in
+                            Back to Sign In
                         </Link>
                     </Grid>
                 </Grid>

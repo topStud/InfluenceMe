@@ -35,9 +35,9 @@ export default function Layout({ children, pageOption }) {
                         </>
                     ) }
                     {pageOption === 1 && (
-                        <Typography component="h1" variant={"h2"} style={{textAlign:'left', marginBottom: 30, fontFamily: 'Rubik',fontWeight: 400, color: '#1F75A6', margin:20}}>
+                        <Typography component="h1" variant={"h2"} style={{textAlign:'left',fontFamily: 'Rubik',fontWeight: 800, marginBottom: 40,color: '#1F75A6', margin:20, marginLeft: '8%'}}>
                             <Link to={'/'}>
-                               Influence<span style={{color: '#A64B28'}}>Me</span>
+                                Influence<span style={{color: '#A64B28'}}>Me</span>
                             </Link>
                         </Typography>
                     )}

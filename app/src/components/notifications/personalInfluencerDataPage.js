@@ -31,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
         marginTop: 70,
     },
     identity: {
+        marginLeft: 30,
         display: "flex",
         flexDirection: "column",
         justifyContent: "center"
@@ -81,7 +82,7 @@ export default function PersonalInfluencerDataPage({company}) {
     const { search } = useLocation();
     const match = search.match(/id=(.*)/);
     const itemID = match?.[1];
-    console.log(itemID)
+
     const {influencerId} = useParams()
     const classes = useStyles()
     const [errFetchData, setErrFetchData] = React.useState(false)
@@ -178,13 +179,13 @@ export default function PersonalInfluencerDataPage({company}) {
                                 {influencerData.instagramUser}
                             </Typography>
                             <div style={{display: "flex", color:'#747474'}}>
-                                <Typography style={{fontSize:'0.8em'}}>
+                                <Typography style={{fontSize:'0.9em'}}>
                                     Followers: {influencerData.followersAmount}
                                 </Typography>
                                 {influencerData.date !== '' &&
                                 <>
                                     <Divider orientation="vertical" className={classes.divider}/>
-                                    <Typography style={{fontSize:'0.8em'}}>
+                                    <Typography style={{fontSize:'0.9em'}}>
                                         Age: {calculateAge(influencerData.date.substring(0,influencerData.date.indexOf('T')))}
                                     </Typography>
                                 </>}

@@ -22,10 +22,13 @@ const useStyles = makeStyles({
 ContractCarousel.propTypes = {
     contracts: PropTypes.array.isRequired,
     type: PropTypes.oneOf(['pending', 'exists']).isRequired,
-    userID: PropTypes.string.isRequired
+    objData: PropTypes.exact({
+        getter: PropTypes.object,
+        setter: PropTypes.func
+    }).isRequired
 }
 
-export default function ContractCarousel({contracts, type, userID}) {
+export default function ContractCarousel({contracts, type, objData}) {
     const classes = useStyles()
 
     const { pathname } = useLocation();
@@ -74,12 +77,16 @@ export default function ContractCarousel({contracts, type, userID}) {
                         {answerOfInfluencer !== '' && <AnswerOfServer failMsg={"Couldn't notify the company"} methodObj={{method: 'POST', headers:
                                 {'Accept': 'application/json', 'Content-type': 'application/json'},
                             body: JSON.stringify({itemID: item._id, itemName: item.title,
-                                receiverID: item.companyID, senderID: userID,
+                                receiverID: item.companyID, senderID: objData.getter._id,
                                 senderName: item.influencerName,
                                 messageType: answerOfInfluencer === 'decline' ? 4 : 3})}} sucMsg={''}
                                                                       url={`/api/notifications`} callServerObj={{getter: callServer, setter: setCallServer}}
                                                                       sucFunc={()=>{
                                                                           setServerUpdatedSuccessfully(true)
+                                                                          objData.setter({
+                                                                              ...objData.getter,
+                                                                              currentContracts: [...objData.getter.currentContracts, item._id]
+                                                                          })
                                                                       }}/>}
                     </div>
                 )

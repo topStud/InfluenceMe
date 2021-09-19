@@ -135,7 +135,8 @@ export default function InfluencerPage() {
 
     return (
         <MuiThemeProvider theme={theme}>
-            {influencerData &&
+            <div style={{minHeight: 'calc(100vh - 60px)'}}>
+                {influencerData &&
                 <>
                     <AppBar data={influencerData} filtersString={{proposals: filterStringObj.getter, influencers: null}}
                             searchesString={{proposals: searchStringObj, influencers: null}} itemsLists={{proposals:
@@ -157,11 +158,11 @@ export default function InfluencerPage() {
                             {proposalClickedForInfo !== null &&
                             <AnswerOfServer callServerObj={{getter: callServerInterested, setter: setCallServerInterested}}
                                             url={`/api/notifications`} methodObj={{method: 'POST', headers:
-                                            {'Accept': 'application/json', 'Content-type': 'application/json'},
-                                            body: JSON.stringify({itemID: proposalClickedForInfo._id,
-                                            itemName: proposalClickedForInfo.title, receiverID: proposalClickedForInfo.companyID,
-                                            senderID: influencerData._id, senderName: influencerData.firstName + ' ' +
-                                                    influencerData.lastName, messageType: 1})}} sucMsg={'Request sent successfully'}
+                                    {'Accept': 'application/json', 'Content-type': 'application/json'},
+                                body: JSON.stringify({itemID: proposalClickedForInfo._id,
+                                    itemName: proposalClickedForInfo.title, receiverID: proposalClickedForInfo.companyID,
+                                    senderID: influencerData._id, senderName: influencerData.firstName + ' ' +
+                                        influencerData.lastName, messageType: 1})}} sucMsg={'Request sent successfully'}
                                             failMsg={'Failed sending the request'} sucFunc={()=>{proposalClickedForInfo.disabled = true}}/>}
                         </Route>
                         <Route path={`/influencers/${id}/personal`}>
@@ -172,9 +173,10 @@ export default function InfluencerPage() {
                         </Route>
                     </Switch>
                 </>
-            }
-            { errFetchInfluencerData && <FetchError name={'influencer\'s'}/>}
-            { errFetchProposalsData && <FetchError name={'proposals\''}/>}
+                }
+                { errFetchInfluencerData && <FetchError name={'influencer\'s'}/>}
+                { errFetchProposalsData && <FetchError name={'proposals\''}/>}
+            </div>
             <Footer/>
         </MuiThemeProvider>
     )

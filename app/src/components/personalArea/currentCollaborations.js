@@ -8,7 +8,7 @@ import {FetchError} from "../../utils";
 import CollaborationDisplay from "./collaborationDisplay";
 
 function PanelTab(props) {
-    const { value, index, contracts, type,id , ...other } = props;
+    const { value, index, contracts, type,objData , ...other } = props;
 
     return (
         <div
@@ -20,7 +20,7 @@ function PanelTab(props) {
             {...other}
         >
             {value === index &&
-                <CollaborationDisplay id={id} contracts={contracts} type={type}/>
+                <CollaborationDisplay objData={objData} contracts={contracts} type={type}/>
             }
         </div>
     );
@@ -31,7 +31,10 @@ PanelTab.propTypes = {
     value: PropTypes.any.isRequired,
     contracts: PropTypes.array.isRequired,
     type: PropTypes.oneOf(['pending','exists']).isRequired,
-    id: PropTypes.string.isRequired
+    objData: PropTypes.exact({
+        getter: PropTypes.object,
+        setter: PropTypes.func
+    }).isRequired
 };
 
 function a11yProps(index) {
@@ -53,12 +56,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 CurrentCollaborations.propTypes = {
-    id: PropTypes.string.isRequired,
+    objData: PropTypes.object.isRequired,
     setValue: PropTypes.func.isRequired,
     index: PropTypes.number.isRequired
 }
 
-export default function CurrentCollaborations({id, setValue, index}) {
+export default function CurrentCollaborations({objData, setValue, index}) {
     const classes = useStyles();
     const theme = useTheme();
 
@@ -71,7 +74,7 @@ export default function CurrentCollaborations({id, setValue, index}) {
 
     useEffect(()=> {
         setValue(index)
-        fetch(`/api/contracts/of/${id}`).then(res => {
+        fetch(`/api/contracts/of/${objData.getter._id}`).then(res => {
             if (!res.ok) {
                 throw new Error("Couldn't get contract info")
             }
@@ -111,8 +114,8 @@ export default function CurrentCollaborations({id, setValue, index}) {
                 </Tabs>
             </AppBar>
             {contracts.current !== null && <>
-                <PanelTab value={valueTabs} id={id} index={0} dir={theme.direction} contracts={contracts.current} type={'exists'}/>
-                <PanelTab value={valueTabs} id={id} index={1} dir={theme.direction} contracts={contracts.pending} type={'pending'}/>
+                <PanelTab value={valueTabs} objData={objData} index={0} dir={theme.direction} contracts={contracts.current} type={'exists'}/>
+                <PanelTab value={valueTabs} objData={objData} index={1} dir={theme.direction} contracts={contracts.pending} type={'pending'}/>
             </>}
             {errFetch && <FetchError name={'contracts\''}/>}
         </div>

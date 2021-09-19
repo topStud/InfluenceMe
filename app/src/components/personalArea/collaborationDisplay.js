@@ -30,7 +30,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 export default function CollaborationDisplay(props) {
-    const {contracts, type, id} = props;
+    const {contracts, type, objData} = props;
     const [selectOption, setSelectOption] = React.useState('Choose title here...')
 
     const { pathname } = useLocation();
@@ -70,7 +70,7 @@ export default function CollaborationDisplay(props) {
         <Box p={3} style={{height:'100%'}}>
             <SelectSingle valueObj={{getter: selectOption, setter: setSelectOption}} titleList={selectList} userType={userType}/>
             <div style={{marginTop: 20}}>
-                {selectOption !== 'Choose title here...' && <ContractCarousel userID={id} contracts={groupedContracts.find(o=>o[field] === selectOption).list} type={type}/>}
+                {selectOption !== 'Choose title here...' && <ContractCarousel objData={objData} contracts={groupedContracts.find(o=>o[field] === selectOption).list} type={type}/>}
             </div>
         </Box>
     );
@@ -79,5 +79,8 @@ export default function CollaborationDisplay(props) {
 CollaborationDisplay.propTypes = {
     contracts: PropTypes.array.isRequired,
     type: PropTypes.oneOf(['pending','exists']).isRequired,
-    id: PropTypes.string.isRequired
+    objData: PropTypes.exact({
+        getter: PropTypes.object,
+        setter: PropTypes.func
+    }).isRequired
 }

@@ -129,7 +129,8 @@ export default function CompanyPage() {
 
     return(
             <MuiThemeProvider theme={theme}>
-                {companyInfo !== null &&
+                <div style={{minHeight: 'calc(100vh - 60px)'}}>
+                    {companyInfo !== null &&
                     <>
                         <AppBar data={companyInfo} filtersString={{proposals: filterStringObjProposals.getter,
                             influencers: filterStringObjInfluencers.getter}} searchesString={{proposals: searchStringProposalsObj,
@@ -140,11 +141,11 @@ export default function CompanyPage() {
                                 {influencersList.original !== null &&
                                 <FilteringCards display={'influencers'} objList={{getter: influencersList,
                                     setter: setInfluencersList}} backdrop={backdropObj} setClickedCard={setInfluencerClickedForInfo}
-                                    filterStringObj={filterStringObjInfluencers} searchStringObj={searchStringInfluencersObj}/>
+                                                filterStringObj={filterStringObjInfluencers} searchStringObj={searchStringInfluencersObj}/>
                                 }
                                 <BackDrop className={classes.backdrop} open={openBackDrop}>
                                     {influencerClickedForInfo !== null &&
-                                        <FullInfoInfluencer backdrop={backdropObj} influencerObj={influencerClickedForInfo}/>
+                                    <FullInfoInfluencer backdrop={backdropObj} influencerObj={influencerClickedForInfo}/>
                                     }
                                 </BackDrop>
                             </Route>
@@ -161,10 +162,11 @@ export default function CompanyPage() {
                             </Route>
                         </Switch>
                     </>
-                }
-                { errFetchCompanyData && errFetchInfluencersData && <FetchError name={'company\'s and influencers\''}/>}
-                { errFetchCompanyData && !errFetchInfluencersData && <FetchError name={'company\'s'}/>}
-                { errFetchInfluencersData && !errFetchCompanyData && <FetchError name={'influencers\''}/>}
+                    }
+                    { errFetchCompanyData && errFetchInfluencersData && <FetchError name={'company\'s and influencers\''}/>}
+                    { errFetchCompanyData && !errFetchInfluencersData && <FetchError name={'company\'s'}/>}
+                    { errFetchInfluencersData && !errFetchCompanyData && <FetchError name={'influencers\''}/>}
+                </div>
                 <Footer/>
             </MuiThemeProvider>
     )

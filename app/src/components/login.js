@@ -84,7 +84,7 @@ export default function SignIn() {
             <Container component="div" maxWidth="xs">
                 <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                     <Typography color={"secondary"} component={'h1'} variant={'h5'} style={{margin:0}}>
-                        Log in
+                        Sign In
                     </Typography>
                     <form noValidate style={{borderTop: '1px solid #F2C116', width: '100%', marginTop: '10px'}}>
                         <TextField
@@ -139,7 +139,7 @@ export default function SignIn() {
                             style={{fontWeight: 300, marginTop: '10%', marginBottom: '2%'}}
                             onClick={() => logInClicked()}
                         >
-                            Log In
+                            Sign In
                         </Button>
                         <Grid container justifyContent="space-between">
                             <Grid item>

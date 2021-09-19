@@ -252,7 +252,7 @@ class Notification extends React.Component {
                                                                     style={{
                                                                         fontSize: "11px",
                                                                         fontWeight: 700,
-                                                                        color: "#747474",
+                                                                        color: obj.seen ? "#747474" : '#1F75A6',
                                                                         display: "inline-flex",
                                                                         flexDirection: "column",
                                                                         justifyContent: "space-between",

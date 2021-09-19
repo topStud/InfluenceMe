@@ -51,18 +51,22 @@ export default function ForgotPassword() {
 
     return (
         <MuiThemeProvider theme={theme}>
-            <Typography component="h1" variant={"h2"} style={{textAlign:'left',fontFamily: 'Rubik',fontWeight: 800, marginBottom: 30,color: '#1F75A6', margin:20}}>
-                <Link to={'/'}>
-                    Influence<span style={{color: '#A64B28'}}>Me</span>
-                </Link>
-            </Typography>
-            <Grid container>
-                <Grid item xs={3}/>
-                <Grid item xs={6}>
-                    <div className={"App"}>
-                        <Container component="div" maxWidth="sm">
+            <div style={{minHeight: 'calc(100vh - 60px)'}}>
+                <Typography component="h1" variant={"h4"} style={{textAlign:'center',fontFamily: 'Rubik',fontWeight: 800, marginBottom: 10,color: '#1F75A6', margin:20}}>
+                    <Link to={'/'}>
+                        Influence<span style={{color: '#A64B28'}}>Me</span>
+                    </Link>
+                </Typography>
+                <Grid container>
+                    <Grid item xs={3}/>
+                    <Grid item xs={6}>
+                        <Container component="div" maxWidth="sm" style={{
+                            boxShadow: '1px 10px 10px gray',
+                            backgroundColor: 'white',
+                            padding: 30
+                        }}>
                             <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                                <Typography color={"secondary"} component={'h1'} variant={'h5'} style={{margin:0}}>
+                                <Typography color={"secondary"} component={'h1'} variant={'h4'} style={{margin:0}}>
                                     Forgot Password?
                                 </Typography>
                                 <form noValidate style={{borderTop: '1px solid #F2C116'}}>
@@ -95,9 +99,9 @@ export default function ForgotPassword() {
                                 </form>
                             </div>
                         </Container>
-                    </div>
+                    </Grid>
                 </Grid>
-            </Grid>
+            </div>
             <Footer/>
         </MuiThemeProvider>
     )
