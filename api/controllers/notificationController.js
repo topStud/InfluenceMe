@@ -66,7 +66,8 @@ async function createNotificationTo(user, req, res, message) {
         messageType: req.body.messageType,
         message: message,
         createdAt: req.body.createdAt, // just in case
-        seen:req.body.seen
+        seen:req.body.seen,
+        photo:req.body.photo
     }).then(async (notification) => {
         user.Notifications.push(notification)
         user.save().catch((err) => {
@@ -88,7 +89,7 @@ async function createNotificationTo(user, req, res, message) {
                         cp.save().catch((err) => {
                             return res.status(500).json({status: 'error', 'error': 'could not save collaboration proposal'})
                         })
-                        return res.json({status: 'ok'})
+                        //return res.json({status: 'ok'})
                     }
                 })
             })
@@ -174,9 +175,10 @@ const notificationsOf = async (req, res) => {
                 // return influencer's notifications
                 await findNotificationsOf(influencer, req, res)
             })
+        }else{
+            // return company's notifications
+            await findNotificationsOf(company, req, res)
         }
-        // return company's notifications
-        await findNotificationsOf(company, req, res)
     })
 }
 
@@ -232,7 +234,6 @@ const deleteSpecificNotification = async (req, res) => {
     })
 }
 
-// todo: to finish it
 const deleteNotifications = async (req, res) => {
     // delete notifications
     await companyModel.

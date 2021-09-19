@@ -134,6 +134,17 @@ async function passwordUpdate(model, req, res) {
     })
 }
 
+async function forgotPassword(model, req, res) {
+    await model.
+    findOne({ _id: req.params.email}, async (err, user) => {
+        if (err || user === null) {
+            return res.status(400).json({status: 'error', 'error': 'user not exist'})
+        }
+        const token = jwt.sign({id: user._id}, JWT_SECRET, {expiresIn: '20m'})
+    })
+
+}
+
 async function changeStatus(user, req, res, bool) {
     user.disabled = bool
     user.save().catch((err) => {
@@ -152,5 +163,6 @@ module.exports = {
     changeStatus,
     searchByCategories,
     searchBySearchBar,
-    searchBySearchBarAndCategories
+    searchBySearchBarAndCategories,
+    forgotPassword
 }

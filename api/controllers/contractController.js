@@ -53,7 +53,6 @@ const addContract = async (req, res) => {
                         status: 'error',
                         'error': 'Hey there, it seems like you have already created a contract with this influencer.'})
                 }
-                console.log("here")
                 return res.status(500).json({status: 'error', 'error': 'could not save'})
             })
         })

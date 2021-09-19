@@ -11,6 +11,7 @@ router.get('/search-categories/:categories', influencerController.searchByCatego
 router.get('/search-bar/:searchBar', influencerController.searchBySearchBar)
 router.get('/search/:searchBar/:categories', influencerController.searchBySearchBarAndCategories)
 router.put('/change-password/:id', influencerController.passwordUpdate)
+router.put('/forgot-password/:email', influencerController.forgotPassword)
 router.put('/disable/:id', influencerController.makeDisabled)
 router.put('/activate/:id', influencerController.makeActive)
 

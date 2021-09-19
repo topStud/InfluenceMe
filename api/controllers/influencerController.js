@@ -76,9 +76,12 @@ const searchBySearchBarAndCategories = async (req, res) => {
     await commonController.searchBySearchBarAndCategories(influencerModel, req, res)
 }
 
-
 const passwordUpdate = async (req, res) => {
     await commonController.passwordUpdate(influencerModel, req, res)
+}
+
+const forgotPassword = async (req, res) => {
+    await commonController.forgotPassword(influencerModel, req, res)
 }
 
 const makeDisabled = async (req, res) => {
@@ -110,5 +113,6 @@ module.exports = {
     makeActive,
     searchBySearchBarAndCategories,
     searchBySearchBar,
-    searchByCategories
+    searchByCategories,
+    forgotPassword
 }

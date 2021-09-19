@@ -19,7 +19,7 @@ const InfluencerSchema = new mongoose.Schema({
     currentContracts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Contracts' }],
     pendingContracts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Contracts' }],
     Notifications: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notifications' }],
-    clickedCollaborations: [{ type: mongoose.Schema.Types.ObjectId }],
+    clickedCollaborations: [{ type: mongoose.Schema.Types.ObjectId }], // todo: check if working without ref
     unseenNotification: {type: Number, default: 0}
 
 })
