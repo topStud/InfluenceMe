@@ -10,8 +10,8 @@ import {useLocation} from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        width: 250,
-        height: 220,
+        width: 270,
+        height: 240,
         marginTop:5,
         marginRight:20,
         display: "flex",
