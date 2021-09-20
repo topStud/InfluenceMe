@@ -1,48 +1,53 @@
 import Grid from "@material-ui/core/Grid";
-import React, {useEffect} from 'react'
-import {Pagination} from "@material-ui/lab";
+import React, {useCallback, useEffect, useRef} from 'react'
 import HoverCard from "./hoverCard";
 
 export default function CardsDisplay({objList, display, backdrop, setClickedCard}) {
-    // pagination
-    let [page, setPage] = React.useState(1);
-    const PER_PAGE = 6;
-    const [count ,setCount] = React.useState(Math.ceil(objList.length / PER_PAGE))
+    const pageSize = 6
+    const [currentData, setCurrentData] = React.useState(objList.slice(0,pageSize))
+    const [pageNumber, setPageNumber] = React.useState(1)
+    const [loading, setLoading] = React.useState(false)
 
-    const handleChange = (e, p) => {
-        setPage(p);
-    };
-
-    function currentData(data) {
-        const begin = (page - 1) * PER_PAGE;
-        const end = begin + PER_PAGE;
-        return data.slice(begin, end);
-    }
+    const observer = useRef()
+    const lastBookElementRef = useCallback(node => {
+        if (loading) return
+        if (observer.current) observer.current.disconnect()
+        observer.current = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && objList.length > currentData.length) {
+                setPageNumber(prevPageNumber => prevPageNumber + 1)
+                setLoading(true)
+                setCurrentData(prev=>[...prev,...objList.slice(pageNumber*pageSize,pageNumber*pageSize + Math.min(pageSize, objList.length)) ])
+                setLoading(false)
+            }
+        })
+        if (node) observer.current.observe(node)
+    }, [loading, objList])
 
     useEffect(()=>{
-        if (objList !== null) {
-            let newCount = Math.ceil(objList.length / PER_PAGE)
-            setCount(newCount)
-            if (page > newCount) {
-                setPage(newCount)
-            }
-        }
-    }, [JSON.stringify(objList)])
+        setCurrentData([...objList.slice(0,pageNumber*pageSize) ])
+    },[JSON.stringify(objList)])
 
     return (
         <>
             <Grid container style={{marginLeft:0, width:'inherit', gridColumn: 1}}>
-                {currentData(objList).map((obj) => (
-                    <Grid item style={{margin:2}} key={obj._id}>
-                        <HoverCard infoObj={obj} cardType={display} backdrop={backdrop} setClickedCard={setClickedCard}/>
-                    </Grid>
-                ))}
-                {
-                    count > 1 &&
-                    <Grid item sm={12} style={{display: "flex", justifyContent:"center", marginTop:20, alignItems: "flex-end"}}>
-                        <Pagination variant="outlined" color="secondary" count={count} page={page} onChange={handleChange}/>
-                    </Grid>
-                }
+                {currentData.map((obj, index) => {
+                    if (index + 1 === currentData.length) {
+                        console.log(obj.title)
+                        return (
+                            <Grid ref={lastBookElementRef} item style={{margin: 2}} key={obj._id}>
+                                <HoverCard infoObj={obj} cardType={display} backdrop={backdrop}
+                                           setClickedCard={setClickedCard}/>
+                            </Grid>
+                        )
+                    } else {
+                        return (
+                            <Grid item style={{margin: 2}} key={obj._id}>
+                                <HoverCard infoObj={obj} cardType={display} backdrop={backdrop}
+                                           setClickedCard={setClickedCard}/>
+                            </Grid>
+                        )
+                    }
+                })}
             </Grid>
         </>
     )

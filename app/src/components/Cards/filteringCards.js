@@ -14,6 +14,8 @@ import PropTypes from 'prop-types'
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import {useTheme} from "@mui/material";
+import {useLocation} from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -38,6 +40,7 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
         backgroundColor: theme.palette.background.default,
         padding: theme.spacing(3),
+        // marginLeft: drawerWidth,
     },
     clearAll: {
         "&:hover": {
@@ -49,6 +52,7 @@ const useStyles = makeStyles((theme) => ({
         alignSelf: "flex-end"
     },
     formControl: {
+        height: 50,
         minWidth: 120,
         display:"flex",
         flexDirection:'row!important',
@@ -85,8 +89,12 @@ FilteringCards.propTypes = {
 
 export default function FilteringCards({objList, display, backdrop, setClickedCard, filterStringObj, searchStringObj}) {
     const classes = useStyles();
+    const theme = useTheme()
     const [callServerFilter, setCallServerFilter] = React.useState(false)
     const [sortOption, setSortOption] = React.useState('')
+
+    const { pathname } = useLocation();
+    const type = pathname.split('/')[1]
 
     const [checked, setChecked] = React.useState({
         Lifestyle: false,
@@ -195,7 +203,7 @@ export default function FilteringCards({objList, display, backdrop, setClickedCa
                 <div className={classes.root}>
                     <div
                         className={classes.drawer}
-                        style={{position:"relative !important", paddingLeft: 10}}
+                        style={{paddingLeft: 10, position: "sticky", top: type === 'view' ? 20:70, height: 200}}
                     >
                         <div className={classes.toolbar}>
                             Categories
@@ -212,7 +220,7 @@ export default function FilteringCards({objList, display, backdrop, setClickedCa
                         </List>
                     </div>
                     <main className={classes.content}>
-                        <FormControl variant="standard" className={classes.formControl}>
+                        <FormControl variant="standard" className={classes.formControl} style={{position: "sticky", top: type === 'view' ? 0 : 79.5, height:60, zIndex: theme.zIndex.drawer, backgroundColor: '#fafafa', width: '100%'}}>
                             <label style={{fontSize: '1.2em', width: 90}}>Sort By:</label>
                             <Select
                                 value={sortOption}
@@ -245,15 +253,17 @@ export default function FilteringCards({objList, display, backdrop, setClickedCa
                             </Toolbar>
                         </AppBar>
                         }
+                        <div >
                         {objList.getter.filtered.length !== 0 ? <CardsDisplay display={display} backdrop={backdrop}
                                                                               setClickedCard={setClickedCard}
                                                                               objList={objList.getter.filtered}/> :
-                        <div style={{display: "flex", justifyContent: "center", alignItems:"center", height: '100%'}}>
-                            <Divider style={{width: '20%', backgroundColor: '#F27746'}}/>
-                            <Typography style={{fontSize: '1em', padding:' 0px 10px', color: 'black'}}>No Results</Typography>
-                            <Divider style={{width: '20%', backgroundColor: '#F27746'}}/>
-                        </div>
+                            <div style={{display: "flex", justifyContent: "center", alignItems:"center", height: '100%'}}>
+                                <Divider style={{width: '20%', backgroundColor: '#F27746'}}/>
+                                <Typography style={{fontSize: '1em', padding:' 0px 10px', color: 'black'}}>No Results</Typography>
+                                <Divider style={{width: '20%', backgroundColor: '#F27746'}}/>
+                            </div>
                         }
+                        </div>
                     </main>
                     <GetFilteredList cardType={display} callServerObj={{getter: callServerFilter, setter: setCallServerFilter}}
                                      filterString={filterStringObj.getter + ' ' + searchStringObj.getter} itemsList={objList}
@@ -262,6 +272,7 @@ export default function FilteringCards({objList, display, backdrop, setClickedCa
             </Grid>
             <Grid item xs={1}/>
         </Grid>
+
     );
 }
 

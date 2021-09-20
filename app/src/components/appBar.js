@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
     },
     root: {
-        zIndex: theme.zIndex.drawer
+        zIndex: theme.zIndex.drawer,
     },
     title: {
         display: 'none',
@@ -181,7 +181,7 @@ export default function PrimarySearchAppBar({data, filtersString, searchesString
 
     return (
         <div className={`${classes.grow} ${classes.root}`} style={{marginBottom: 20, position:"sticky", top:0}}>
-            <AppBar position="relative">
+            <AppBar position="relative" style={{boxShadow: '0px 0px 0px transparent'}}>
                 <Toolbar style={{backgroundColor: "white", borderBottom: '8px solid #F27746'}}>
                     <Link to={`/${userType}/${data._id}`} style={{marginLeft: '5%'}}>
                         <Typography className={classes.title} component={'h2'} variant="h2"
