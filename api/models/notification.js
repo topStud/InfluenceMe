@@ -7,7 +7,7 @@ const NotificationSchema = new mongoose.Schema({
     message : { type : String, required: true },
     createdAt : { type : Date, default: Date.now },
     seen:{ type: Boolean, default: false },
-    seen:{ type: String }
+    photo:{ type: String }
 })
 
 NotificationSchema.index({senderID: 1, itemID: 1, messageType: 1}, {unique: true})
