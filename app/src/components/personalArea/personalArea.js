@@ -145,7 +145,7 @@ export default function PersonalArea({objData, setObjData}) {
                             <Tab icon={<ExitToAppIcon fontSize={'small'} className={classes.icon}/>}
                                  classes={{wrapper: classes.iconLabelWrapper}} onClick={()=>handleChange(4)}
                                  className={classes.tabStyle} component={Link}
-                                 to={`/${userType}/${objData._id}/personal/logOut`} label="Sign out" {...a11yProps(4)} />
+                                 to={`/`} label="Sign out" {...a11yProps(4)} />
                         </Tabs>
                     </div>
                     <Switch>
@@ -170,11 +170,6 @@ export default function PersonalArea({objData, setObjData}) {
                         <Route path={`/${userType}/${objData._id}/personal/changePassword`}>
                             <TabPanel>
                                 <ChangePassword userType={userType} infoObj={objData} setValue={setValue} index={3}/>
-                            </TabPanel>
-                        </Route>
-                        <Route path={`/${userType}/${objData._id}/personal/logOut`}>
-                            <TabPanel>
-                                Item Five
                             </TabPanel>
                         </Route>
                     </Switch>

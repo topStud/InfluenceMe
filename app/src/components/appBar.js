@@ -166,7 +166,7 @@ export default function PrimarySearchAppBar({data, filtersString, searchesString
                     </ListItemText>
                 </MenuItem>
             </Link>
-            <Link to={`/${userType}/${data._id}/personal/logOut`}>
+            <Link to={`/`}>
                 <MenuItem onClick={handleMenuClose} className={classes.menuItem}>
                     <ListItemIcon style={{minWidth: 30}}>
                         <ExitToAppIcon fontSize={'small'}/>
