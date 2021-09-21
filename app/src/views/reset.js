@@ -1,4 +1,4 @@
-import {Link, useParams} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 import {createTheme, MuiThemeProvider} from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
@@ -21,7 +21,11 @@ const theme = createTheme({
 });
 
 export default function Reset() {
-    const {token} = useParams()
+    const { search } = useLocation();
+    const match = search.match(/token=(.*)/);
+    const token = match?.[1];
+
+    console.log(token)
 
     const [callServer, setCallServer] = React.useState(false)
     const [passUpdated, setPassUpdated] = React.useState(false)
