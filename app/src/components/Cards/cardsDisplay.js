@@ -32,7 +32,6 @@ export default function CardsDisplay({objList, display, backdrop, setClickedCard
             <Grid container style={{marginLeft:0, width:'inherit', gridColumn: 1}}>
                 {currentData.map((obj, index) => {
                     if (index + 1 === currentData.length) {
-                        console.log(obj.title)
                         return (
                             <Grid ref={lastBookElementRef} item style={{margin: 2}} key={obj._id}>
                                 <HoverCard infoObj={obj} cardType={display} backdrop={backdrop}

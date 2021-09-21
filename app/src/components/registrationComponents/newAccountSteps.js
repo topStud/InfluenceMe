@@ -18,7 +18,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import BusinessIcon from '@material-ui/icons/Business'
 import CompanyData from "./companyData";
 import isMobilePhone from "validator/es/lib/isMobilePhone";
-import {calculateAge, parseJwt} from '../../utils'
+import {calculateAge, invalid_phone, invalid_url, parseJwt} from '../../utils'
 import {required_txt, validateWebsiteUrl} from "../../utils";
 
 function getSteps(userType) {
@@ -215,7 +215,7 @@ export default function ContentBelowStepper(props) {
                 lastNameErr: lNameErr,
                 lastNameMsg: lNameErr ? required_txt : '',
                 phoneErr: phoneNumberErr,
-                phoneMsg: phoneNumberErr ? 'Phone number is not valid' : '',
+                phoneMsg: phoneNumberErr ? invalid_phone : '',
                 dateErr: invalidAge,
                 dateMsg: invalidAge ? 'Invalid Age' : ''
             })
@@ -231,7 +231,7 @@ export default function ContentBelowStepper(props) {
                 mayContinue = false
                 setErrInstaAccount({
                     instagramUrlErr: linkErr,
-                    instagramUrlMsg: linkErr ? 'Url format is invalid' : '',
+                    instagramUrlMsg: linkErr ? invalid_url : '',
                     instagramUserErr: instaUserEmpty || instagramUserTooLong,
                     instagramUserMsg: instaUserEmpty ? required_txt : instagramUserTooLong ? 'Username too long. The length\'s limit is 50 characters' : '',
                     followersErr: instaFollowersErr,
@@ -267,9 +267,9 @@ export default function ContentBelowStepper(props) {
                 companyNameErr: compNameEmpty || companyNameTooLong,
                 companyNameMsg: compNameEmpty ? required_txt : companyNameTooLong ? 'Name too long. The length\'s limit is 30 characters' : '',
                 siteUrlErr: linkErr,
-                siteUrlMsg: linkErr ? 'Url format is invalid' : '',
+                siteUrlMsg: linkErr ? invalid_url : '',
                 phoneErr: phoneNumberErr,
-                phoneMsg: phoneNumberErr ? 'Phone number is not valid' : ''
+                phoneMsg: phoneNumberErr ? invalid_phone : ''
             })
         } else if (activeStep === 1) {
             let bioEmpty = bioCompany === ''

@@ -53,7 +53,7 @@ export default function GeneralCard({infoObj, cardType}) {
 
     return (
         <Card className={classes.root}>
-            {userType === 'companies' && <CardContent className={classes.collaborationsNumber}>
+            {userType === 'companies' && cardType === 'proposals' && <CardContent className={classes.collaborationsNumber}>
                 {infoObj.collaborationsNumber}
                 <PeopleIcon style={{marginLeft: 7}}/>
             </CardContent>}
@@ -62,7 +62,7 @@ export default function GeneralCard({infoObj, cardType}) {
                     infoObj.photo !== null ?
                         <Avatar src={infoObj.photo} alt={infoObj.className} className={classes.big}/> : <AccountCircle style={{color: 'black'}} className={classes.big}/>
                 }
-                className={`${classes.header} ${userType === 'companies' ? classes.company : ''}`}
+                className={`${classes.header} ${userType === 'companies' && cardType === 'proposals' ? classes.company : ''}`}
                 title={cardType === 'proposals' ? infoObj.title : infoObj.instagramUser}
                 subheader={cardType === 'proposals' ? infoObj.companyName: infoObj.followersAmount}
                 subheaderTypographyProps={{style:{fontSize:'1em', fontFamily: 'Rubik', fontWeight: 200, overflowWrap: "anywhere"}}}

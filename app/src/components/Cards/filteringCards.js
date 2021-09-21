@@ -40,7 +40,6 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
         backgroundColor: theme.palette.background.default,
         padding: theme.spacing(3),
-        // marginLeft: drawerWidth,
     },
     clearAll: {
         "&:hover": {
@@ -92,6 +91,7 @@ export default function FilteringCards({objList, display, backdrop, setClickedCa
     const theme = useTheme()
     const [callServerFilter, setCallServerFilter] = React.useState(false)
     const [sortOption, setSortOption] = React.useState('')
+    const [filteredWithoutSort, setFilteredWithoutSort] = React.useState([...objList.getter.filtered])
 
     const { pathname } = useLocation();
     const type = pathname.split('/')[1]
@@ -115,7 +115,7 @@ export default function FilteringCards({objList, display, backdrop, setClickedCa
         })
         objList.setter({
             ...objList.getter,
-            filtered: objList.getter.original
+            filtered: [...objList.getter.original]
         })
     }
 
@@ -126,7 +126,7 @@ export default function FilteringCards({objList, display, backdrop, setClickedCa
         } else {
             objList.setter({
                 ...objList.getter,
-                filtered: objList.getter.original
+                filtered: [...objList.getter.original]
             })
         }
         setSortOption('')
@@ -136,12 +136,11 @@ export default function FilteringCards({objList, display, backdrop, setClickedCa
         if (filterStringObj.getter === '' && searchStringObj.getter === '') {
             objList.setter({
                 ...objList.getter,
-                filtered: objList.getter.original
+                filtered: [...objList.getter.original]
             })
         } else {
             setCallServerFilter(true)
         }
-        setSortOption('')
     },[JSON.stringify(objList.getter.original)])
 
     function onCategoryClick(text) {
@@ -165,7 +164,7 @@ export default function FilteringCards({objList, display, backdrop, setClickedCa
         if (searchString === '' && searchStringObj.getter === '') {
             objList.setter({
                 ...objList.getter,
-                filtered: objList.getter.original
+                filtered: [...objList.getter.original]
             })
         } else {
             setCallServerFilter(true)
@@ -177,13 +176,14 @@ export default function FilteringCards({objList, display, backdrop, setClickedCa
         setSortOption(event.target.value);
         let field = event.target.value
         if (field !== '') {
+            setFilteredWithoutSort([...objList.getter.filtered])
             objList.setter({
                 ...objList.getter,
                 filtered: objList.getter.filtered.sort((a,b)=>{
-                    if (field === 'followersAmount') {
+                    if (field === 'followersAmount' || field === 'collaborationsNumber') {
                         if (a[field] === b[field]) {
                             return 0
-                        } else if (a[field] < b[field]) {
+                        } else if (a[field] > b[field]) {
                             return -1
                         } else {
                             return 1
@@ -192,6 +192,11 @@ export default function FilteringCards({objList, display, backdrop, setClickedCa
                         return a[field].localeCompare(b[field])
                     }
                 })
+            })
+        } else {
+            objList.setter({
+                ...objList.getter,
+                filtered: filteredWithoutSort
             })
         }
     };
@@ -203,7 +208,7 @@ export default function FilteringCards({objList, display, backdrop, setClickedCa
                 <div className={classes.root}>
                     <div
                         className={classes.drawer}
-                        style={{paddingLeft: 10, position: "sticky", top: type === 'view' ? 20:70, height: 200}}
+                        style={{paddingLeft: 10, position: "sticky", top: type === 'view' ? 20:70, height: 300}}
                     >
                         <div className={classes.toolbar}>
                             Categories
@@ -235,12 +240,13 @@ export default function FilteringCards({objList, display, backdrop, setClickedCa
                                 <MenuItem value="">
                                     <em>None</em>
                                 </MenuItem>
-                                <MenuItem value={display === 'influencers' ? 'instagramUser' : 'title'}>
+                                <MenuItem value={display === 'influencers' ? 'followersAmount':type === 'companies'? 'collaborationsNumber':'companyName'}>
+                                    {display === 'influencers' ? 'Followers Number' : type === 'companies' ? 'Collaborations Number':'Company Name'}
+                                </MenuItem>
+                                <MenuItem value={display === 'influencers' ? 'instagramUser':'title'}>
                                     {display === 'influencers' ? 'Instagram Username' : 'Title of Proposal'}
                                 </MenuItem>
-                                <MenuItem value={display === 'influencers' ? 'followersAmount':'companyName'}>
-                                    {display === 'influencers' ? 'Followers Number' : 'Company Name'}
-                                </MenuItem>
+
                             </Select>
                         </FormControl>
                         {searchStringObj.getter !== '' &&
@@ -253,7 +259,6 @@ export default function FilteringCards({objList, display, backdrop, setClickedCa
                             </Toolbar>
                         </AppBar>
                         }
-                        <div >
                         {objList.getter.filtered.length !== 0 ? <CardsDisplay display={display} backdrop={backdrop}
                                                                               setClickedCard={setClickedCard}
                                                                               objList={objList.getter.filtered}/> :
@@ -263,7 +268,6 @@ export default function FilteringCards({objList, display, backdrop, setClickedCa
                                 <Divider style={{width: '20%', backgroundColor: '#F27746'}}/>
                             </div>
                         }
-                        </div>
                     </main>
                     <GetFilteredList cardType={display} callServerObj={{getter: callServerFilter, setter: setCallServerFilter}}
                                      filterString={filterStringObj.getter + ' ' + searchStringObj.getter} itemsList={objList}

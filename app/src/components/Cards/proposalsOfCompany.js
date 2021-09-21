@@ -96,10 +96,10 @@ export default function ProposalsOfCompany({companyInfo, filterStringObj, propos
 
     return (
         <>
-            <div style={{display: "flex", justifyContent: "flex-end", marginRight:30}}>
+            {!companyInfo.disabled && <div style={{display: "flex", justifyContent: "flex-end", marginRight:30}}>
                 <Chip label="NEW PROPOSAL" icon={<AddIcon />} color={"primary"} clickable variant="outlined"
                       style={{border: 'transparent', fontSize:15}} onClick={onClickNewProposal}/>
-            </div>
+            </div>}
             {proposalsListObj.getter.original !== null && <FilteringCards display={'proposals'}
                     backdrop={backdropObjFullInfo} setClickedCard={setProposalClicked} objList={proposalsListObj}
                     filterStringObj={filterStringObj} searchStringObj={searchStringObj}/>}

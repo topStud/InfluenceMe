@@ -153,7 +153,7 @@ export default function InfluencerPage() {
                                 {proposalClickedForInfo !== null &&
                                 <FullInfoProposal setCallToServer={setCallServerInterested} backdrop={backdropObj}
                                                   proposalObj={{getter: proposalClickedForInfo,
-                                                      setter: setProposalClickedForInfo}}/>}
+                                                      setter: setProposalClickedForInfo}} disabled={influencerData.disabled}/>}
                             </BackDrop>
                             {proposalClickedForInfo !== null &&
                             <AnswerOfServer callServerObj={{getter: callServerInterested, setter: setCallServerInterested}}

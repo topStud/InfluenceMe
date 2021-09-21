@@ -33,9 +33,9 @@ export default function PastCollaborations({setValue, index, id}) {
     },[])
 
     return (
-        <>
-            {contracts !== null && <CollaborationDisplay contracts={contracts} type={'exists'} id={id}/>}
+        <div style={{minWidth:420}}>
+            {contracts !== null && <CollaborationDisplay contracts={contracts} type={'exists'}/>}
             {errFetch && <FetchError name={'contracts\''}/>}
-        </>
+        </div>
     )
 }

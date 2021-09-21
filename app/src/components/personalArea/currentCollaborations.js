@@ -48,7 +48,8 @@ const useStyles = makeStyles((theme) => ({
     root: {
         backgroundColor: theme.palette.background.paper,
         width: '100%',
-        height: '100%'
+        height: '100%',
+        minWidth:420
     },
     selectEmpty: {
         marginTop: theme.spacing(2),

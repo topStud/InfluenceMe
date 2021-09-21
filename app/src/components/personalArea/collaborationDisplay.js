@@ -82,5 +82,5 @@ CollaborationDisplay.propTypes = {
     objData: PropTypes.exact({
         getter: PropTypes.object,
         setter: PropTypes.func
-    }).isRequired
+    })
 }

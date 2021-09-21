@@ -33,7 +33,8 @@ const useStyles = makeStyles(() => ({
     },
     userContactTitle: {
         textDecoration: 'underline',
-        color: '#A68617'
+        color: '#A68617',
+        textAlign: "center"
     },
     contactInfo: {
         userSelect: 'text',

@@ -12,11 +12,7 @@ InputImage.propTypes = {
     }).isRequired,
     info: PropTypes.exact({
         label: PropTypes.string, //text that will be shown next to upload image button
-    }).isRequired,
-    err: PropTypes.exact({
-        getter: PropTypes.object,
-        setter: PropTypes.func
-    }).isRequired,
+    }).isRequired
 }
 
 export default function InputImage(props) {

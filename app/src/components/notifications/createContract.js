@@ -1,7 +1,7 @@
 import DialogTitle from "@material-ui/core/DialogTitle";
 import React, {useRef} from "react";
 import {Backdrop, Dialog, DialogActions, DialogContent} from "@material-ui/core";
-import {required_txt, TransitionSlide, ValidateEmail} from "../../utils";
+import {email_bad_format, invalid_phone, required_txt, TransitionSlide, ValidateEmail} from "../../utils";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import InputTextArea from "../InputComponents/InputTextArea";
@@ -96,9 +96,9 @@ export default function CreateContractDialog({backdrop, contractValues, setCallS
                 detailsErr: detailsEmpty,
                 detailsMsg: detailsEmpty ? required_txt : '',
                 companyPhoneErr: invalidPhone,
-                companyPhoneMsg: invalidPhone ? 'Phone number is not valid' : '',
+                companyPhoneMsg: invalidPhone ? invalid_phone : '',
                 companyEmailErr: invalidEmail,
-                companyEmailMsg: contractValues.getter.companyEmail === '' ? required_txt : invalidEmail ? 'The email entered is not in the correct format' : '',
+                companyEmailMsg: contractValues.getter.companyEmail === '' ? required_txt : invalidEmail ? email_bad_format : '',
                 startDayErr: invalidDates || invalidStartDay,
                 startDayMsg: invalidDates ? 'The collaboration needs first to start' : invalidStartDay ? 'Invalid Date' : '',
                 endDayErr: invalidEndDay || invalidDates,

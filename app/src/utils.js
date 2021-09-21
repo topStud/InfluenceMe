@@ -16,6 +16,10 @@ export function parseJwt (token) {
 }
 
 export const required_txt = 'This field is required'
+export const short_pass = 'Minimum length for a password is 6 characters'
+export const email_bad_format = 'The email entered is not in the correct format'
+export const invalid_phone = 'Phone number is not valid'
+export const invalid_url = 'Url format is invalid'
 
 export const validateWebsiteUrl = websiteUrl => {
     const urlRegEx = new RegExp(/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=+$,\w]+@)?[A-Za-z0-9.-]+|(?:www\.|[-;:&=+$,\w]+@)[A-Za-z0-9.-]+)((?:\/[+~%/.\w\-_]*)?\??#?)?)/);
@@ -49,6 +53,7 @@ export const AnswerOfServer = ({callServerObj, url, methodObj, sucMsg, failMsg, 
                     setOpen(true)
                 } else if (response.status === 'ok'){
                     sucFunc(response)
+                    callServerObj.setter(false)
                 } else {
                     setSeverity('error')
                     setOpen(true)

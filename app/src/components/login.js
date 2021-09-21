@@ -10,7 +10,7 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import IconButton from "@material-ui/core/IconButton";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
-import {AnswerOfServer, parseJwt} from '../utils'
+import {AnswerOfServer, email_bad_format, parseJwt, required_txt} from '../utils'
 
 export default function SignIn() {
     const [emailValue, setEmailValue] = React.useState('')
@@ -28,14 +28,14 @@ export default function SignIn() {
         if (!ValidateEmail(emailValue) || passValue === '') {
             if (emailValue === '') {
                 setEmailError(true)
-                setEmailMes('This field is required')
+                setEmailMes(required_txt)
             } else if (!ValidateEmail(emailValue)) {
                 setEmailError(true)
-                setEmailMes('The email entered is not in the correct format')
+                setEmailMes(email_bad_format)
             }
             if (passValue === '') {
                 setPassError(true)
-                setPassMes('This field is required')
+                setPassMes(required_txt)
             }
         } else {
             // removes the error annotation

@@ -40,10 +40,11 @@ FullInfoProposal.propTypes = {
     proposalList: PropTypes.exact({
         getter: PropTypes.object,
         setter: PropTypes.func
-    })
+    }),
+    disabled: PropTypes.bool
 }
 
-export default function FullInfoProposal({backdrop, proposalObj, setCallToServer, proposalList}) {
+export default function FullInfoProposal({backdrop, proposalObj, setCallToServer, proposalList, disabled}) {
     const classes = useStyles()
     const { pathname } = useLocation();
     const userType = pathname.split('/')[1]
@@ -142,7 +143,7 @@ export default function FullInfoProposal({backdrop, proposalObj, setCallToServer
                     }
                 </DialogContent>
                 <DialogActions>
-                    {userType==='influencers' &&
+                    {userType==='influencers' && !disabled &&
                     <Button
                         variant="contained"
                         color="secondary"

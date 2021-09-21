@@ -1,7 +1,7 @@
 import {makeStyles} from "@material-ui/core/styles";
 import React, {useEffect} from "react";
 import isMobilePhone from "validator/es/lib/isMobilePhone";
-import {AnswerOfServer, ErrorSnackbar, required_txt, validateWebsiteUrl} from "../../utils";
+import {AnswerOfServer, ErrorSnackbar, invalid_phone, invalid_url, required_txt, validateWebsiteUrl} from "../../utils";
 import Typography from "@material-ui/core/Typography";
 import {Divider} from "@material-ui/core";
 import Bio from "../registrationComponents/bio";
@@ -12,7 +12,8 @@ import CompanyData from "../registrationComponents/companyData";
 const useStyles = makeStyles(() => ({
     container: {
         boxShadow: '1px 5px 10px #A68617',
-        padding:20
+        padding:20,
+        minWidth:420
     },
 }));
 
@@ -80,9 +81,9 @@ export default function MyDetailsCompany({companyData, setCompanyData,index, set
             nameErr: compNameErr,
             nameMsg: compNameErr ? required_txt : '',
             siteUrlErr: linkErr,
-            siteUrlMsg: linkErr ? 'Url format is invalid' : '',
+            siteUrlMsg: linkErr ? invalid_url : '',
             phoneErr: phoneNumberErr,
-            phoneMsg: phoneNumberErr ? 'Phone number is not valid' : ''
+            phoneMsg: phoneNumberErr ? invalid_phone : ''
         })
         let bioEmpty = bio === ''
         if (bioEmpty) {

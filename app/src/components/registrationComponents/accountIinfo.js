@@ -10,7 +10,7 @@ import {Link} from "react-router-dom";
 import styles from "../../styles/Home.module.css";
 import InputText from '../InputComponents/inputText';
 import InputPassword from '../InputComponents/inputPassword'
-import {required_txt, ValidateEmail} from "../../utils";
+import {email_bad_format, required_txt, short_pass, ValidateEmail} from "../../utils";
 
 export default function SignUp(props) {
     const values = props.values
@@ -55,12 +55,12 @@ export default function SignUp(props) {
         badEmail = !ValidateEmail(values.getter.email)
         if (passEmpty || passVEmpty || emailEmpty || badEmail || (values.getter.password.length < 6) || (values.getter.password !== values.getter.passwordV)) {
             setErr({
-                passwordMsg: passEmpty ? required_txt : values.getter.password.length < 6 ? 'Minimum length for a password is 6 characters' : '',
+                passwordMsg: passEmpty ? required_txt : values.getter.password.length < 6 ? short_pass : '',
                 passwordErr: passEmpty || values.getter.password.length < 6,
                 passwordVErr: passVEmpty || values.getter.password !== values.getter.passwordV,
                 passwordVMsg: passVEmpty ? required_txt : values.getter.password !== values.getter.passwordV ? 'The passwords don\'t match' : '',
                 emailErr: badEmail,
-                emailMsg: emailEmpty ? required_txt : badEmail ? 'The email entered is not in the correct format' : ''
+                emailMsg: emailEmpty ? required_txt : badEmail ? email_bad_format : ''
             })
         } else {
             props.filled(true)

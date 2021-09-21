@@ -7,12 +7,13 @@ import InstagramInfo from "../registrationComponents/instagramInfo";
 import Bio from "../registrationComponents/bio";
 import Button from "@material-ui/core/Button";
 import isMobilePhone from "validator/es/lib/isMobilePhone";
-import {AnswerOfServer, required_txt, validateWebsiteUrl} from "../../utils";
+import {AnswerOfServer, invalid_phone, invalid_url, required_txt, validateWebsiteUrl} from "../../utils";
 
 const useStyles = makeStyles(() => ({
     container: {
         boxShadow: '1px 5px 10px #A68617',
-        padding:30
+        padding:30,
+        minWidth:420
     },
 }));
 
@@ -97,9 +98,9 @@ export default function MyDetailsInfluencer({setValue, influencerData, setInflue
             lastNameErr: lNameErr,
             lastNameMsg: lNameErr ? required_txt : '',
             phoneErr: phoneNumberErr,
-            phoneMsg: phoneNumberErr ? 'Phone number is not valid' : '',
+            phoneMsg: phoneNumberErr ? invalid_phone : '',
             instagramUrlErr: linkErr,
-            instagramUrlMsg: linkErr ? 'Url format is invalid' : '',
+            instagramUrlMsg: linkErr ? invalid_url : '',
             instagramUserErr: instaUserErr,
             instagramUserMsg: instaUserErr ? required_txt : '',
             followersErr: instaFollowersErr,

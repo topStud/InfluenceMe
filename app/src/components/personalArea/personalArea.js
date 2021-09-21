@@ -18,6 +18,9 @@ import PastCollaborations from "./pastCollaborations";
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import PersonIcon from "@material-ui/icons/Person";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import DisableAccount from "./disableAccount";
+import Badge from "@mui/material/Badge";
+import SwitchLeftRoundedIcon from '@mui/icons-material/SwitchLeftRounded';
 
 function TabPanel(props) {
     const { children, ...other } = props;
@@ -53,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
     },
     tabs: {
         minWidth: '264px',
-        height: "300px",
+        height: "340px",
     },
     small: {
         width: theme.spacing(12),
@@ -108,6 +111,18 @@ export default function PersonalArea({objData, setObjData}) {
                                     <AccountCircle style={{color: 'black'}} className={classes.small}/> :
                                     <BusinessIcon style={{color: 'black'}} className={classes.small}/>
                             }
+                            <div style={{height: '100%', display: "flex", alignItems: "flex-end", marginLeft: -20}}>
+                                <Badge
+                                    anchorOrigin={{
+                                        vertical: 'bottom',
+                                        horizontal: 'right',
+                                    }}
+                                    style={{backgroundColor: objData.disabled ? '#c4c4c4' : '#7dca7d', width:25, height:25, borderRadius: '50%'}}
+                                    badgeContent=" "
+                                >
+                                </Badge>
+                            </div>
+
                             <div style={{display: "flex", flexDirection: "column"}}>
                                 <h1 style={{marginBottom:0, marginTop:10, marginLeft:10, fontSize:'1.5em'}}>Hello,</h1>
                                 <h2 style={{marginTop:0, marginLeft:10, fontSize: '1em'}}>
@@ -142,10 +157,15 @@ export default function PersonalArea({objData, setObjData}) {
                                  className={classes.tabStyle} component={Link}
                                  to={`/${userType}/${objData._id}/personal/changePassword`} label="Change Password"
                                  {...a11yProps(3)} />
-                            <Tab icon={<ExitToAppIcon fontSize={'small'} className={classes.icon}/>}
+                            <Tab icon={<SwitchLeftRoundedIcon fontSize={'small'} className={classes.icon}/>}
                                  classes={{wrapper: classes.iconLabelWrapper}} onClick={()=>handleChange(4)}
                                  className={classes.tabStyle} component={Link}
-                                 to={`/`} label="Sign out" {...a11yProps(4)} />
+                                 to={`/${userType}/${objData._id}/personal/disable`} label="Disable account"
+                                 {...a11yProps(4)} />
+                            <Tab icon={<ExitToAppIcon fontSize={'small'} className={classes.icon}/>}
+                                 classes={{wrapper: classes.iconLabelWrapper}} onClick={()=>handleChange(5)}
+                                 className={classes.tabStyle} component={Link}
+                                 to={`/`} label="Sign out" {...a11yProps(5)} />
                         </Tabs>
                     </div>
                     <Switch>
@@ -169,7 +189,12 @@ export default function PersonalArea({objData, setObjData}) {
                         </Route>
                         <Route path={`/${userType}/${objData._id}/personal/changePassword`}>
                             <TabPanel>
-                                <ChangePassword userType={userType} infoObj={objData} setValue={setValue} index={3}/>
+                                <ChangePassword userType={userType} infoObj={objData}/>
+                            </TabPanel>
+                        </Route>
+                        <Route path={`/${userType}/${objData._id}/personal/disable`}>
+                            <TabPanel>
+                                <DisableAccount userData={objData} setUserData={setObjData}/>
                             </TabPanel>
                         </Route>
                     </Switch>

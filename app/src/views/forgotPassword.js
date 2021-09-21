@@ -6,7 +6,7 @@ import {createTheme, MuiThemeProvider} from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import {TextField} from "@material-ui/core";
 import Button from "@material-ui/core/Button";
-import {required_txt, ValidateEmail} from "../utils";
+import {AnswerOfServer, email_bad_format, required_txt, ValidateEmail} from "../utils";
 import Footer from "../components/footer";
 
 const theme = createTheme({
@@ -21,6 +21,9 @@ const theme = createTheme({
 });
 
 export default function ForgotPassword() {
+    const [callServer, setCallServer] = React.useState(false)
+    const [emailSent, setEmailSent] = React.useState(false)
+
     const [email, setEmail] = React.useState('')
     const [errEmail, setErrEmail] = React.useState({
         err: false,
@@ -42,16 +45,16 @@ export default function ForgotPassword() {
         if (!ValidateEmail(email)) {
             setErrEmail({
                 err: true,
-                msg: email === '' ? required_txt : 'The email entered is not in the correct format'
+                msg: email === '' ? required_txt : email_bad_format
             })
         } else {
-            //call to server
+            setCallServer(true)
         }
     }
 
     return (
         <MuiThemeProvider theme={theme}>
-            <div style={{minHeight: 'calc(100vh - 60px)'}}>
+            <div style={{minHeight: 'calc(100vh - 121px)', marginBottom:40}}>
                 <Typography component="h1" variant={"h4"} style={{textAlign:'center',fontFamily: 'Rubik',fontWeight: 800, marginBottom: 10,color: '#1F75A6', margin:20}}>
                     <Link to={'/'}>
                         Influence<span style={{color: '#A64B28'}}>Me</span>
@@ -87,7 +90,7 @@ export default function ForgotPassword() {
                                         helperText={errEmail.msg}
                                         onClick={onInputClick}
                                     />
-                                    <Button
+                                    {!emailSent ? <Button
                                         fullWidth
                                         variant="contained"
                                         color="primary"
@@ -95,13 +98,22 @@ export default function ForgotPassword() {
                                         onClick={() => sendEmailClicked()}
                                     >
                                         Send
-                                    </Button>
+                                    </Button> :
+                                        <Typography style={{textAlign:"center", marginTop:'10%', color: '#A68617'}}>Email has been sent to your email address successfully!</Typography>
+                                    }
                                 </form>
                             </div>
                         </Container>
                     </Grid>
                 </Grid>
             </div>
+            <AnswerOfServer failMsg={"Email couldn't be sent"} methodObj={{method: 'POST',
+                headers: {'Accept': 'application/json', 'Content-type': 'application/json'},
+                body: JSON.stringify({email:email})}} sucMsg={''} url={'/api/forgot-password'}
+                            callServerObj={{getter: callServer, setter: setCallServer}}
+                            sucFunc={()=>{
+                                setEmailSent(true)
+                            }}/>
             <Footer/>
         </MuiThemeProvider>
     )

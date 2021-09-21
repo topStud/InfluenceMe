@@ -9,6 +9,7 @@ import InfluencerPage from './views/InfluencerPage'
 import ViewProposals from "./views/ViewProposals";
 import './styles/globals.css'
 import ForgotPassword from "./views/forgotPassword";
+import Reset from './views/reset'
 
 ReactDOM.render(
     <Router>
@@ -16,6 +17,7 @@ ReactDOM.render(
             <Route exact path='/' component={App}/>
             <Route exact path='/view' component={ViewProposals}/>
             <Route exact path='/register' component={Register}/>
+            <Route exact path='/reset/:token' component={Reset}/>
             <Route exact path='/forgotPassword' component={ForgotPassword}/>
             <Route path='/companies/:id' component={CompanyPage}/>
             <Route path='/influencers/:id' component={InfluencerPage}/>

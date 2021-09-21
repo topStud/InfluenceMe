@@ -20,6 +20,7 @@ import Notification from "./notifications/Notification";
 import {Alert} from "@material-ui/lab";
 import PropTypes from 'prop-types'
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import Badge from '@mui/material/Badge';
 
 const useStyles = makeStyles((theme) => ({
     grow: {
@@ -29,24 +30,18 @@ const useStyles = makeStyles((theme) => ({
         zIndex: theme.zIndex.drawer,
     },
     title: {
-        display: 'none',
-        [theme.breakpoints.up('sm')]: {
-            display: 'block',
-        },
+        display: 'block',
     },
     menuItem: {
-      fontFamily: 'Rubik',
-      fontWeight: 100,
+        fontFamily: 'Rubik',
+        fontWeight: 100,
         paddingLeft:20,
         paddingTop:2,
         paddingRight:8,
     },
     sectionDesktop: {
         marginRight: '5%',
-        display: 'none',
-        [theme.breakpoints.up('md')]: {
-            display: 'flex',
-        },
+        display: 'flex',
     },
     small: {
         width: theme.spacing(5),
@@ -180,19 +175,19 @@ export default function PrimarySearchAppBar({data, filtersString, searchesString
     );
 
     return (
-        <div className={`${classes.grow} ${classes.root}`} style={{marginBottom: 20, position:"sticky", top:0}}>
+        <div className={` ${classes.root}`} style={{marginBottom: 20, position:"sticky", top:0}}>
             <AppBar position="relative" style={{boxShadow: '0px 0px 0px transparent'}}>
                 <Toolbar style={{backgroundColor: "white", borderBottom: '8px solid #F27746'}}>
                     <Link to={`/${userType}/${data._id}`} style={{marginLeft: '5%'}}>
                         <Typography className={classes.title} component={'h2'} variant="h2"
-                                    style={{fontFamily: 'Rubik', fontWeight:800, color:'#1F75A6',cursor: "pointer"}}>
+                                    style={{fontFamily: 'Rubik', fontWeight:800, color:'#1F75A6',cursor: "pointer", marginRight: 30}}>
                             Influence<span style={{color:'#F27746'}}>Me</span>
                         </Typography>
                     </Link>
                     <div className={classes.grow}/>
                     {isSearch && <SearchField searchObj={searchObj} filterString={filterString} objList={currentList}
                                                  urlType={proposalsOrInfluencers}/>}
-                    <div className={classes.sectionDesktop}>
+                    <div className={classes.sectionDesktop} style={{height:'100%'}}>
                         {
                             userType === 'companies' &&
                             <Link to={`/companies/${data._id}/proposals`} style={{marginRight: 20, alignSelf: 'center'}}>
@@ -203,21 +198,34 @@ export default function PrimarySearchAppBar({data, filtersString, searchesString
                         {notificationsList !== null &&
                         <Notification listItems={notificationsList} id={data._id} userType={userType}
                                       unseen={data.unseenNotification}/>}
-                        <IconButton
-                            edge="end"
-                            aria-label="account of current user"
-                            aria-controls={menuId}
-                            aria-haspopup="true"
-                            onClick={handleProfileMenuOpen}
-                            color="inherit"
-                        >
-                            {
-                                data.photo !== null ?
-                                    <Avatar src={data.photo} alt={'avatar of user'} className={classes.small}/> :
-                                userType === 'influencers' ? <AccountCircle style={{color: 'black'}}/> :
-                                    <BusinessIcon style={{color: 'black'}}/>
-                            }
-                        </IconButton>
+                        <div style={{display: "flex", flexDirection: "column"}}>
+                            <IconButton
+                                edge="end"
+                                aria-label="account of current user"
+                                aria-controls={menuId}
+                                aria-haspopup="true"
+                                onClick={handleProfileMenuOpen}
+                                color="inherit"
+                            >
+                                {
+                                    data.photo !== null ?
+                                        <Avatar src={data.photo} alt={'avatar of user'} className={classes.small}/> :
+                                        userType === 'influencers' ? <AccountCircle style={{color: 'black'}}/> :
+                                            <BusinessIcon style={{color: 'black'}}/>
+                                }
+                            </IconButton>
+                            <div style={{width: '100%', display:"flex", justifyContent: "flex-end", marginTop:-20}}>
+                                <Badge
+                                    anchorOrigin={{
+                                        vertical: 'bottom',
+                                        horizontal: 'right',
+                                    }}
+                                    style={{backgroundColor: data.disabled ? '#c4c4c4' : '#7dca7d', width:15, height:15, borderRadius: '50%'}}
+                                    badgeContent=" "
+                                >
+                                </Badge>
+                            </div>
+                        </div>
                     </div>
                 </Toolbar>
             </AppBar>
