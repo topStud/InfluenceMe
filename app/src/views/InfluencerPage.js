@@ -135,7 +135,7 @@ export default function InfluencerPage() {
 
     return (
         <MuiThemeProvider theme={theme}>
-            <div style={{minHeight: 'calc(100vh - 60px)'}}>
+            <div style={{minHeight: 'calc(100vh - 61px)'}}>
                 {influencerData &&
                 <>
                     <AppBar data={influencerData} filtersString={{proposals: filterStringObj.getter, influencers: null}}

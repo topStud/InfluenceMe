@@ -129,7 +129,7 @@ export default function CompanyPage() {
 
     return(
             <MuiThemeProvider theme={theme}>
-                <div style={{minHeight: 'calc(100vh - 60px)'}}>
+                <div style={{minHeight: 'calc(100vh - 61px)'}}>
                     {companyInfo !== null &&
                     <>
                         <AppBar data={companyInfo} filtersString={{proposals: filterStringObjProposals.getter,

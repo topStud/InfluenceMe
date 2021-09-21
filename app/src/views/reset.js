@@ -25,8 +25,6 @@ export default function Reset() {
     const match = search.match(/token=(.*)/);
     const token = match?.[1];
 
-    console.log(token)
-
     const [callServer, setCallServer] = React.useState(false)
     const [passUpdated, setPassUpdated] = React.useState(false)
 
@@ -132,7 +130,7 @@ export default function Reset() {
             </div>
             <AnswerOfServer failMsg={"Password couldn't be reset"} methodObj={{method: 'PUT',
                 headers: {'Content-type': 'application/json; charset=UTF-8'}, body: JSON.stringify({token:token,
-                    password:resetValues.password})}} sucMsg={''} url={'/api/reset-password'}
+                    newPassword:resetValues.password})}} sucMsg={''} url={'/api/reset-password'}
                             callServerObj={{getter: callServer, setter: setCallServer}} sucFunc={()=>{
                                 setPassUpdated(true)
             }}/>

@@ -92,7 +92,7 @@ export default function ViewProposals() {
 
     return (
         <MuiThemeProvider theme={theme}>
-            <div style={{minHeight: 'calc(100vh - 60px)'}}>
+            <div style={{minHeight: 'calc(100vh - 81px)'}}>
                 <Typography component="h1" variant={"h2"} style={{textAlign:'left',fontFamily: 'Rubik',fontWeight: 800, marginBottom: 40,color: '#1F75A6', margin:20, marginLeft: '8%'}}>
                     <Link to={'/'}>
                         Influence<span style={{color: '#A64B28'}}>Me</span>
