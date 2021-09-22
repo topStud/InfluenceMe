@@ -27,6 +27,7 @@ export default function FullInfoInfluencer({backdrop, influencerObj}) {
             TransitionComponent={TransitionZoom}
             keepMounted
             fullWidth
+            scroll={'body'}
             maxWidth={'md'}
             aria-labelledby="alert-dialog-slide-title"
             aria-describedby="alert-dialog-slide-description"

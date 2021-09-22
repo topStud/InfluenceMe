@@ -2,6 +2,8 @@ import React, {useEffect} from "react";
 import CollaborationDisplay from "./collaborationDisplay";
 import PropTypes from 'prop-types';
 import {FetchError} from "../../utils";
+import Typography from "@material-ui/core/Typography";
+import {Divider} from "@material-ui/core";
 
 PastCollaborations.proppTypes = {
     setValue: PropTypes.func.isRequired,
@@ -36,6 +38,10 @@ export default function PastCollaborations({setValue, index, id}) {
 
     return (
         <div style={{minWidth:420}}>
+            <Typography component={'h3'} variant={"h4"} style={{fontFamily: 'Rubik', fontWeight:200, color: '#A68617', padding:30, paddingBottom:0}}>
+                Past Collaborations
+            </Typography>
+            <Divider style={{marginBottom: 20}}/>
             {contracts !== null && <CollaborationDisplay contracts={contracts} type={'exists'}/>}
             {errFetch && <FetchError name={'contracts\''}/>}
         </div>

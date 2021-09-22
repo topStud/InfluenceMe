@@ -118,11 +118,16 @@ export default function FilteringCards({objList, display, backdrop, setClickedCa
             Clothing: false,
             Beauty: false
         })
+        filterStringObj.setter('')
         // sets filtered list to be the original list.
-        objList.setter({
-            ...objList.getter,
-            filtered: [...objList.getter.original]
-        })
+        if (searchStringObj.getter === '') {
+            objList.setter({
+                ...objList.getter,
+                filtered: [...objList.getter.original]
+            })
+        } else  {
+            setCallServerFilter(true)
+        }
     }
 
     function onClickClearSearchString() {
