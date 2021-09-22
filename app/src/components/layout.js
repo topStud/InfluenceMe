@@ -27,15 +27,19 @@ export default function Layout({ children, pageOption }) {
                     {!pageOption && (
                         <>
                             <Link to={'/view'}>
-                                <Button style={{marginTop:'2%', marginLeft:'3%'}} variant={"outlined"}>View Proposals</Button>
+                                <Button style={{marginTop:'2%', marginLeft:'3%'}} variant={"outlined"}>
+                                    View Proposals
+                                </Button>
                             </Link>
-                            <Typography component="h1" variant={"h1"} style={{textAlign:'center', marginTop: 10, marginBottom: 50, fontFamily: 'Rubik',fontWeight: 400, color: '#1F75A6'}}>
+                            <Typography component="h1" variant={"h1"} style={{textAlign:'center', marginTop: 10,
+                                marginBottom: 50, fontFamily: 'Rubik',fontWeight: 400, color: '#1F75A6'}}>
                                 Influence<span style={{color: '#A64B28'}}>Me</span>
                             </Typography>
                         </>
                     ) }
                     {pageOption === 1 && (
-                        <Typography component="h1" variant={"h2"} style={{textAlign:'left',fontFamily: 'Rubik',fontWeight: 800, marginBottom: 40,color: '#1F75A6', margin:20, marginLeft: '8%'}}>
+                        <Typography component="h1" variant={"h2"} style={{textAlign:'left',fontFamily: 'Rubik',
+                            fontWeight: 800, marginBottom: 40,color: '#1F75A6', margin:20, marginLeft: '8%'}}>
                             <Link to={'/'}>
                                 Influence<span style={{color: '#A64B28'}}>Me</span>
                             </Link>

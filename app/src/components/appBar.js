@@ -67,12 +67,16 @@ PrimarySearchAppBar.propsType = {
 
 export default function PrimarySearchAppBar({data, filtersString, searchesString, itemsLists}) {
     const classes = useStyles();
+    // get user type by url - influencers/companies
     const { pathname } = useLocation();
     const userType = pathname.split('/')[1]
+    // checks when search bar should appear
     const isSearch = pathname.split('/').length < 4 || pathname.split('/')[3] === 'proposals'
+    // anchor for menu
     const [anchorEl, setAnchorEl] = React.useState(null);
-
     const isMenuOpen = Boolean(anchorEl);
+
+    // notifications related
     const [errFetchNotifications, setErrFetchNotifications] = React.useState(false)
     const [notificationsList, setNotificationsList] = React.useState(null)
 
@@ -84,6 +88,7 @@ export default function PrimarySearchAppBar({data, filtersString, searchesString
     const currentList = proposalsOrInfluencers === 'influencers' ? itemsLists.influencers : itemsLists.proposals
 
     useEffect(()=> {
+        // gets all notifications of user
         fetch(`/api/notifications/${data._id}`).then(res => {
             if (!res.ok) {
                 throw new Error('Couldn\'t get user\'s notifications');
@@ -144,7 +149,8 @@ export default function PrimarySearchAppBar({data, filtersString, searchesString
             <Link to={`/${userType}/${data._id}/personal/currentCollaborations`}>
                 <MenuItem onClick={handleMenuClose} className={classes.menuItem}>
                     <ListItemIcon style={{minWidth: 30}}>
-                        <img style={{filter: 'opacity(0.54)'}} src="https://img.icons8.com/ios-glyphs/480/handshake.png" alt="InfluenceMe Logo" width={20} height={20} />
+                        <img style={{filter: 'opacity(0.54)'}} src="https://img.icons8.com/ios-glyphs/480/handshake.png"
+                             alt="InfluenceMe Logo" width={20} height={20} />
                     </ListItemIcon>
                     <ListItemText>
                         My Collaborations
@@ -180,7 +186,8 @@ export default function PrimarySearchAppBar({data, filtersString, searchesString
                 <Toolbar style={{backgroundColor: "white", borderBottom: '8px solid #F27746'}}>
                     <Link to={`/${userType}/${data._id}`} style={{marginLeft: '5%'}}>
                         <Typography className={classes.title} component={'h2'} variant="h2"
-                                    style={{fontFamily: 'Rubik', fontWeight:800, color:'#1F75A6',cursor: "pointer", marginRight: 30}}>
+                                    style={{fontFamily: 'Rubik', fontWeight:800, color:'#1F75A6',cursor: "pointer",
+                                        marginRight: 30}}>
                             Influence<span style={{color:'#F27746'}}>Me</span>
                         </Typography>
                     </Link>
@@ -220,7 +227,8 @@ export default function PrimarySearchAppBar({data, filtersString, searchesString
                                         vertical: 'bottom',
                                         horizontal: 'right',
                                     }}
-                                    style={{backgroundColor: data.disabled ? '#c4c4c4' : '#7dca7d', width:15, height:15, borderRadius: '50%'}}
+                                    style={{backgroundColor: data.disabled ? '#c4c4c4' : '#7dca7d', width:15, height:15,
+                                        borderRadius: '50%'}}
                                     badgeContent=" "
                                 >
                                 </Badge>

@@ -3,6 +3,20 @@ import React from "react";
 import PhoneTextField from '../InputComponents/phoneTextField'
 import InputImage from "../InputComponents/inputImage";
 import InputText from '../InputComponents/inputText';
+import PropTypes from "prop-types";
+
+CompanyData.propTypes = {
+    values: PropTypes.exact({
+        val: PropTypes.exact({
+            getter: PropTypes.object,
+            setter: PropTypes.func
+        }),
+        err: PropTypes.exact({
+            getter: PropTypes.object,
+            setter: PropTypes.func
+        })
+    })
+}
 
 export default function CompanyData(props) {
     // values

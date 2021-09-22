@@ -21,10 +21,12 @@ const theme = createTheme({
 });
 
 export default function Reset() {
+    // gets token from url
     const { search } = useLocation();
     const match = search.match(/token=(.*)/);
     const token = match?.[1];
 
+    // calls server when true
     const [callServer, setCallServer] = React.useState(false)
     const [passUpdated, setPassUpdated] = React.useState(false)
 
@@ -38,6 +40,7 @@ export default function Reset() {
         setter: setResetValues
     }
 
+    // exist to indicate errors to user
     const [errReset, setErrReset] = React.useState({
         passwordErr: false,
         passwordVErr: false,
@@ -54,6 +57,7 @@ export default function Reset() {
             passwordVEmpty = resetValues.passwordV === '',
             passwordShort = resetValues.password.length < 6,
             differentPasswords = resetValues.password !== resetValues.passwordV
+        // checks for bad input
         if (passwordVEmpty || passwordEmpty || passwordShort || differentPasswords) {
             setErrReset({
                 passwordErr: passwordEmpty || passwordShort,
@@ -81,7 +85,8 @@ export default function Reset() {
     return (
         <MuiThemeProvider theme={theme}>
             <div style={{minHeight: 'calc(100vh - 121px)', marginBottom: 40}}>
-                <Typography component="h1" variant={"h4"} style={{textAlign:'center',fontFamily: 'Rubik',fontWeight: 800, marginBottom: 10,color: '#1F75A6', margin:20}}>
+                <Typography component="h1" variant={"h4"} style={{textAlign:'center',fontFamily: 'Rubik',
+                    fontWeight: 800, marginBottom: 10,color: '#1F75A6', margin:20}}>
                     <Link to={'/'}>
                         Influence<span style={{color: '#A64B28'}}>Me</span>
                     </Link>
@@ -94,7 +99,8 @@ export default function Reset() {
                             backgroundColor: 'white',
                             padding: 30
                         }}>
-                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', fontFamily: 'Rubik'}}>
+                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center',
+                                fontFamily: 'Rubik'}}>
                                 <Typography color={"secondary"} component={'h1'} variant={'h4'} style={{margin:0}}>
                                     Reset Password
                                 </Typography>
@@ -113,7 +119,8 @@ export default function Reset() {
                                         Reset
                                     </Button> :
                                         <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
-                                            <Typography style={{textAlign: "center", marginTop: '5%', marginBottom: '5%', color: '#1F75A6'}}>
+                                            <Typography style={{textAlign: "center", marginTop: '5%',
+                                                marginBottom: '5%', color: '#1F75A6'}}>
                                                 Your password has been successfully reseted!<br/>
                                                 Click the button to go to home page and sign in there.
                                             </Typography>

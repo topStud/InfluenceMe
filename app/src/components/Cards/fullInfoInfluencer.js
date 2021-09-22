@@ -1,16 +1,11 @@
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
-import {Zoom} from "@material-ui/core";
 import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 import React from "react";
 import PropTypes from 'prop-types'
-import {calculateAge} from "../../utils";
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Zoom ref={ref} {...props} />;
-});
+import {calculateAge, TransitionZoom} from "../../utils";
 
 FullInfoInfluencer.propTypes = {
     backdrop: PropTypes.exact({
@@ -21,6 +16,7 @@ FullInfoInfluencer.propTypes = {
 }
 
 export default function FullInfoInfluencer({backdrop, influencerObj}) {
+    // closes dialog
     function onClickCancelFinish() {
         backdrop.setter(false)
     }
@@ -28,7 +24,7 @@ export default function FullInfoInfluencer({backdrop, influencerObj}) {
     return(
         <Dialog
             open={backdrop.getter}
-            TransitionComponent={Transition}
+            TransitionComponent={TransitionZoom}
             keepMounted
             fullWidth
             maxWidth={'md'}
@@ -37,10 +33,12 @@ export default function FullInfoInfluencer({backdrop, influencerObj}) {
         >
             <DialogTitle id="influencer-dialog-slide-title">
                 <span style={{fontFamily:'Rubik', fontWeight:800, color: '#1F75A6', fontSize:'1.7em'}}>
-                    {influencerObj.instagramUser} <small style={{fontSize:'0.5em', color: '#F27746'}}>({influencerObj.firstName} {influencerObj.lastName})</small>
+                    {influencerObj.instagramUser} <small style={{fontSize:'0.5em', color: '#F27746'}}>
+                    ({influencerObj.firstName} {influencerObj.lastName})</small>
                 </span>
             </DialogTitle>
             <DialogContent>
+                {/*categories*/}
                 <div style={{display:"flex",justifyContent: 'flex-start', fontSize: '1em', marginTop:-10}}>
                     {influencerObj.categories.map((category, i)=>(
                         i < influencerObj.categories.length - 1 ?
@@ -52,20 +50,34 @@ export default function FullInfoInfluencer({backdrop, influencerObj}) {
                             <span key={i}>{category}</span>
                     ))}
                 </div>
+                {/*info about user*/}
                 <h3 style={{color: '#A68617'}}>About Me</h3>
-                {influencerObj.date !== '' && <p>Age: {calculateAge(influencerObj.date.substring(0,influencerObj.date.indexOf('T')))}</p>}
+                {influencerObj.date !== '' &&
+                    <p>
+                        Age: {calculateAge(influencerObj.date.substring(0,influencerObj.date.indexOf('T')))}
+                    </p>
+                }
                 <p>Number of followers: {influencerObj.followersAmount}</p>
                 <p style={{whiteSpace: "pre-line"}}>{influencerObj.bio}</p>
+                {/*contact info*/}
                 <div style={{display:"flex", flexDirection: "column", alignItems:"center"}}>
-                    You can send me emails to <span style={{textDecoration: "underline", userSelect: 'text', msUserSelect: 'text'}}>{influencerObj.email}</span><br/>
+                    You can send me emails to <span style={{textDecoration: "underline", userSelect: 'text',
+                    msUserSelect: 'text'}}>{influencerObj.email}</span><br/>
                     {(influencerObj.phone !== '' && influencerObj.phone !== null) &&
-                    <>
-                        For any need please call to <span style={{textDecoration: "underline", userSelect: 'text', msUserSelect: 'text'}}>{influencerObj.phone}</span><br/>
-                    </>}
+                        <>
+                            For any need please call to <span style={{textDecoration: "underline", userSelect: 'text',
+                            msUserSelect: 'text'}}>{influencerObj.phone}</span><br/>
+                        </>
+                    }
                     {influencerObj.instagramUrl !== '' &&
-                    <>
-                        Check out my instagram account <a target={'_blank'} href={(new RegExp('^([a-z]+://|//)', 'i').test(influencerObj.instagramUrl) ?'':'//')+influencerObj.instagramUrl} style={{textDecoration: "underline", userSelect: 'text', msUserSelect: 'text'}}>{influencerObj.instagramUrl}</a>
-                    </>}
+                        <>
+                            Check out my instagram account
+                            <a target={'_blank'}
+                               href={(new RegExp('^([a-z]+://|//)', 'i').test(influencerObj.instagramUrl) ?'':'//')
+                               +influencerObj.instagramUrl} style={{textDecoration: "underline", userSelect: 'text',
+                                msUserSelect: 'text'}}>{influencerObj.instagramUrl}</a>
+                        </>
+                    }
                 </div>
             </DialogContent>
             <DialogActions>

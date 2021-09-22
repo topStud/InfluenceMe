@@ -38,8 +38,9 @@ export default function InputTextArea(props) {
 
     return (
         <>
-            <TextField maxRows={4} minRows={4} variant={"outlined"} multiline fullWidth style={{display: "block", width: '100%', fontFamily: 'Rubik', fontWeight:300, fontSize:17,
-                padding: 7}} placeholder={props.info.placeholder} value={props.val.getter[props.info.name]}
+            <TextField maxRows={4} minRows={4} variant={"outlined"} multiline fullWidth style={{display: "block",
+                width: '100%', fontFamily: 'Rubik', fontWeight:300, fontSize:17, padding: 7}}
+                       placeholder={props.info.placeholder} value={props.val.getter[props.info.name]}
                        onChange={handleChange} error={props.err.getter[props.info.name+'Err']}
                        helperText={props.err.getter[props.info.name+'Msg']} onClick={onClick} required
                        label={props.info.label} id={props.info.id} name={props.info.name}/>

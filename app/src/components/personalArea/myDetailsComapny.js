@@ -8,7 +8,6 @@ import Bio from "../registrationComponents/bio";
 import Button from "@material-ui/core/Button";
 import CompanyData from "../registrationComponents/companyData";
 
-
 const useStyles = makeStyles(() => ({
     container: {
         boxShadow: '1px 5px 10px #A68617',
@@ -20,8 +19,11 @@ const useStyles = makeStyles(() => ({
 export default function MyDetailsCompany({companyData, setCompanyData,index, setValue}) {
     const classes = useStyles();
     useEffect(()=>{
+        // if we get to page through url, it updates the tabs of personal area.
         setValue(index)
     })
+
+    // current values of user
     const [myDetailsValues, setMyDetailsValues] = React.useState({
         name: companyData.name,
         siteUrl: companyData.siteUrl,
@@ -31,6 +33,7 @@ export default function MyDetailsCompany({companyData, setCompanyData,index, set
     })
     const [bio, setBio] = React.useState(companyData.bio)
 
+    // sets all errors to be false. exist in case user enters bad input.
     const [errMyDetails, setErrMyDetails] = React.useState({
         nameErr: false,
         siteUrlErr: false,
@@ -51,6 +54,7 @@ export default function MyDetailsCompany({companyData, setCompanyData,index, set
             setter: setErrMyDetails
         }
     }
+
     const bioObj = {
         val: {
             getter: bio,
@@ -62,18 +66,23 @@ export default function MyDetailsCompany({companyData, setCompanyData,index, set
         }
     }
 
+    // saves previous values in case the user regrets and won't save changes.
     const [prevMyDetailsData, setPrevMyDetailsData] = React.useState(myDetailsValues)
     const [prevBio, setPrevBio] = React.useState(bio)
 
+    // related to server call
     const [callToServer, setCallToServer] = React.useState(false)
     const [objToServer, setObjToServer] = React.useState({})
+    // true if bad input was entered
     const [inputErr, setInputErr] = React.useState(false)
 
     function onClickSave() {
         let mayContinue = true
-        let phoneNumberErr = !(myDetailsValues.phone === '' || (myDetailsValues.phone.split(" ").length - 1) === 0 || isMobilePhone(myDetailsValues.phone.replace(/\s+/g, ''), 'any'))
+        let phoneNumberErr = !(myDetailsValues.phone === '' || (myDetailsValues.phone.split(" ").length - 1) === 0 ||
+            isMobilePhone(myDetailsValues.phone.replace(/\s+/g, ''), 'any'))
         let compNameErr = myDetailsValues.name === ''
         let linkErr = myDetailsValues.siteUrl !== '' && !validateWebsiteUrl(myDetailsValues.siteUrl)
+        // checks for bad input
         if (compNameErr || linkErr || phoneNumberErr) {
             mayContinue = false
         }
@@ -86,6 +95,7 @@ export default function MyDetailsCompany({companyData, setCompanyData,index, set
             phoneMsg: phoneNumberErr ? invalid_phone : ''
         })
         let bioEmpty = bio === ''
+        // check bio separately
         if (bioEmpty) {
             mayContinue = false
         }
@@ -118,12 +128,17 @@ export default function MyDetailsCompany({companyData, setCompanyData,index, set
             </div>
             <Button
                 disabled={(JSON.stringify(prevMyDetailsData) === JSON.stringify(myDetailsValues)) && prevBio === bio}
-                color={"secondary"} style={{marginTop:20}} fullWidth variant={"contained"} onClick={onClickSave}>Save Changes</Button>
+                color={"secondary"} style={{marginTop:20}} fullWidth variant={"contained"} onClick={onClickSave}>
+                Save Changes
+            </Button>
             <AnswerOfServer callServerObj={{getter: callToServer, setter: setCallToServer}}
                             url={`/api/companies/${companyData._id}`}
-                            methodObj={{method: 'PUT', headers: {'Content-type': 'application/json; charset=UTF-8'}, body: JSON.stringify(objToServer)}}
-                            sucMsg={'Changes saved successfully'} failMsg={'Save Failed'}
-                            sucFunc={()=>{setPrevBio(bio); setPrevMyDetailsData(myDetailsValues); setCompanyData({...companyData,...myDetailsValues, bio: bio})}}/>
+                            methodObj={{method: 'PUT', headers: {'Content-type': 'application/json; charset=UTF-8'},
+                                body: JSON.stringify(objToServer)}} sucMsg={'Changes saved successfully'}
+                            failMsg={'Save Failed'} sucFunc={()=>{
+                                setPrevBio(bio); setPrevMyDetailsData(myDetailsValues);
+                                setCompanyData({...companyData,...myDetailsValues, bio: bio})
+                            }}/>
             <ErrorSnackbar open={inputErr} setOpen={setInputErr}/>
         </>
     )

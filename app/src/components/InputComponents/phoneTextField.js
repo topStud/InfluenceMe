@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 export default class InputPhone extends React.Component {
     constructor(props) {
         super(props);
+        // binds functions to class
         this.handlePhoneChange = this.handlePhoneChange.bind(this);
         this.onClick = this.onClick.bind(this)
     }

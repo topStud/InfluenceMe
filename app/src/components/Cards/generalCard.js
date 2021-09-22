@@ -48,11 +48,13 @@ GeneralCard.propTypes = {
 
 export default function GeneralCard({infoObj, cardType}) {
     const classes = useStyles();
+    // gets user type from url
     const { pathname } = useLocation();
     const userType = pathname.split('/')[1]
 
     return (
         <Card className={classes.root}>
+            {/*number of collaborations on specific proposal is shown to the company*/}
             {userType === 'companies' && cardType === 'proposals' && <CardContent className={classes.collaborationsNumber}>
                 {infoObj.collaborationsNumber}
                 <PeopleIcon style={{marginLeft: 7}}/>
@@ -60,13 +62,16 @@ export default function GeneralCard({infoObj, cardType}) {
             <CardHeader
                 avatar={
                     infoObj.photo !== null ?
-                        <Avatar src={infoObj.photo} alt={infoObj.className} className={classes.big}/> : <AccountCircle style={{color: 'black'}} className={classes.big}/>
+                        <Avatar src={infoObj.photo} alt={infoObj.className} className={classes.big}/> :
+                        <AccountCircle style={{color: 'black'}} className={classes.big}/>
                 }
                 className={`${classes.header} ${userType === 'companies' && cardType === 'proposals' ? classes.company : ''}`}
                 title={cardType === 'proposals' ? infoObj.title : infoObj.instagramUser}
                 subheader={cardType === 'proposals' ? infoObj.companyName: infoObj.followersAmount}
-                subheaderTypographyProps={{style:{fontSize:'1em', fontFamily: 'Rubik', fontWeight: 200, overflowWrap: "anywhere"}}}
-                titleTypographyProps={{style:{fontSize:'1.2em', fontFamily: 'Rubik', fontWeight: 500, color: '#1F75A6', overflowWrap: "anywhere"}}}
+                subheaderTypographyProps={{style:{fontSize:'1em', fontFamily: 'Rubik', fontWeight: 200,
+                        overflowWrap: "anywhere"}}}
+                titleTypographyProps={{style:{fontSize:'1.2em', fontFamily: 'Rubik', fontWeight: 500, color: '#1F75A6',
+                        overflowWrap: "anywhere"}}}
             />
         </Card>
     )

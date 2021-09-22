@@ -8,7 +8,8 @@ export default function Footer() {
                 <Link to={'/'}>
                     &copy;{' ' + new Date().getFullYear() + ' '}InfluenceMe
                     <span className={styles.logo}>
-                    <img src="https://img.icons8.com/ios-glyphs/480/handshake.png" alt="InfluenceMe Logo" width={24} height={24} />
+                    <img src="https://img.icons8.com/ios-glyphs/480/handshake.png" alt="InfluenceMe Logo" width={24}
+                         height={24} />
                 </span>
                 </Link>
             </div>

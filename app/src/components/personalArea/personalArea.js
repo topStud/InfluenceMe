@@ -62,10 +62,6 @@ const useStyles = makeStyles((theme) => ({
         width: theme.spacing(12),
         height: theme.spacing(12),
     },
-    container: {
-        boxShadow: '1px 5px 10px #A68617',
-        padding:20
-    },
     iconLabelWrapper: {
         flexDirection: "row",
         justifyContent: "flex-start",
@@ -90,10 +86,15 @@ PersonalArea.propTypes = {
 
 export default function PersonalArea({objData, setObjData}) {
     const classes = useStyles();
+
+    // gets user type of url - influencers/companies
     const { pathname } = useLocation();
     const userType = pathname.split('/')[1]
+
+    // value of current tab
     const [value, setValue] = React.useState(0);
 
+    // handles current tab change
     const handleChange = (newValue) => {
         setValue(newValue);
     };
@@ -104,6 +105,7 @@ export default function PersonalArea({objData, setObjData}) {
             <Grid item sm={10}>
                 <div className={classes.root}>
                     <div style={{display: "flex", flexDirection: "column",marginLeft:20, width: 300}}>
+                        {/*picture of user with a greeting*/}
                         <div style={{padding:10, marginBottom:5, width: '100%', display: "flex"}}>
                             {objData.photo !== null ?
                                 <Avatar src={objData.photo} className={classes.small}/> :
@@ -117,12 +119,12 @@ export default function PersonalArea({objData, setObjData}) {
                                         vertical: 'bottom',
                                         horizontal: 'right',
                                     }}
-                                    style={{backgroundColor: objData.disabled ? '#c4c4c4' : '#7dca7d', width:25, height:25, borderRadius: '50%'}}
+                                    style={{backgroundColor: objData.disabled ? '#c4c4c4' : '#7dca7d', width:25,
+                                        height:25, borderRadius: '50%'}}
                                     badgeContent=" "
                                 >
                                 </Badge>
                             </div>
-
                             <div style={{display: "flex", flexDirection: "column"}}>
                                 <h1 style={{marginBottom:0, marginTop:10, marginLeft:10, fontSize:'1.5em'}}>Hello,</h1>
                                 <h2 style={{marginTop:0, marginLeft:10, fontSize: '1em'}}>
@@ -172,8 +174,10 @@ export default function PersonalArea({objData, setObjData}) {
                         <Route path={`/${userType}/${objData._id}/personal/myDetails`}>
                             <TabPanel>
                                 {userType === 'influencers' ?
-                                    <MyDetailsInfluencer influencerData={objData} setInfluencerData={setObjData} setValue={setValue} index={2}/> :
-                                    <MyDetailsCompany companyData={objData} setCompanyData={setObjData} setValue={setValue} index={2}/>
+                                    <MyDetailsInfluencer influencerData={objData} setInfluencerData={setObjData}
+                                                         setValue={setValue} index={2}/> :
+                                    <MyDetailsCompany companyData={objData} setCompanyData={setObjData}
+                                                      setValue={setValue} index={2}/>
                                 }
                             </TabPanel>
                         </Route>
@@ -184,7 +188,8 @@ export default function PersonalArea({objData, setObjData}) {
                         </Route>
                         <Route path={`/${userType}/${objData._id}/personal/currentCollaborations`}>
                             <TabPanel>
-                                <CurrentCollaborations setValue={setValue} index={1} objData={{getter: objData, setter: setObjData}}/>
+                                <CurrentCollaborations setValue={setValue} index={1} objData={{getter: objData,
+                                    setter: setObjData}}/>
                             </TabPanel>
                         </Route>
                         <Route path={`/${userType}/${objData._id}/personal/changePassword`}>

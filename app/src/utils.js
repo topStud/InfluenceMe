@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {Snackbar} from "@material-ui/core";
+import {Snackbar, Zoom} from "@material-ui/core";
 import {Alert, AlertTitle} from "@material-ui/lab";
 import PropTypes from 'prop-types'
 import Slide from "@material-ui/core/Slide";
@@ -28,6 +28,10 @@ export const validateWebsiteUrl = websiteUrl => {
 
 export const TransitionSlide = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
+});
+
+export const TransitionZoom = React.forwardRef(function Transition(props, ref) {
+    return <Zoom ref={ref} {...props} />;
 });
 
 export const AnswerOfServer = ({callServerObj, url, methodObj, sucMsg, failMsg, sucFunc}) => {
@@ -81,6 +85,11 @@ export const AnswerOfServer = ({callServerObj, url, methodObj, sucMsg, failMsg, 
             </Alert>
         </Snackbar>
     )
+}
+
+ErrorSnackbar.propTypes = {
+    open: PropTypes.bool.isRequired,
+    setOpen: PropTypes.func.isRequired
 }
 
 export function ErrorSnackbar({open, setOpen}) {

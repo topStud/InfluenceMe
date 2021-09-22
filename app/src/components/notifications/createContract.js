@@ -1,25 +1,17 @@
 import DialogTitle from "@material-ui/core/DialogTitle";
 import React, {useRef} from "react";
-import {Backdrop, Dialog, DialogActions, DialogContent} from "@material-ui/core";
+import {Dialog, DialogActions, DialogContent} from "@material-ui/core";
 import {email_bad_format, invalid_phone, required_txt, TransitionSlide, ValidateEmail} from "../../utils";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import InputTextArea from "../InputComponents/InputTextArea";
 import isMobilePhone from "validator/es/lib/isMobilePhone";
 import InputDate from "../InputComponents/inputDate";
-import {makeStyles} from "@material-ui/core/styles";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import TextInput from "../InputComponents/inputText";
 import InputPhone from '../InputComponents/phoneTextField'
 import ConfirmationDialog from "../Cards/confirmationDialog";
 import PropTypes from 'prop-types'
-
-const useStyles = makeStyles((theme) => ({
-    backdrop: {
-        zIndex: theme.zIndex.drawer + 1,
-        color: '#fff',
-    },
-}));
 
 CreateContractDialog.propTypes = {
     backdrop: PropTypes.exact({
@@ -34,17 +26,16 @@ CreateContractDialog.propTypes = {
 }
 
 export default function CreateContractDialog({backdrop, contractValues, setCallServer}) {
-    const classes = useStyles()
-
+    // when true, dialog is open
     const [backdropConfirmationDialog, setBackdropConfirmationDialog] = React.useState(false)
 
-    console.log('create contract')
-    console.log(contractValues)
+    // function for saving previous state value
     function usePrevious(value) {
         const ref = useRef(value);
         return ref.current;
     }
 
+    // all fields were an error might occur in the form: field_nameErr, field_nameMsg
     const [errContract, setErrContract] = React.useState({
         companyPhoneErr: false,
         companyPhoneMsg: '',
@@ -64,9 +55,11 @@ export default function CreateContractDialog({backdrop, contractValues, setCallS
         setter: setErrContract
     }
 
+    // saves previous states
     const prevErrObj = usePrevious(errContract)
     const preContractValues = usePrevious(contractValues.getter)
 
+    // returns all the fields to their initial state
     function onClickCancel() {
         backdrop.setter(false)
         contractValues.setter(preContractValues)
@@ -74,7 +67,6 @@ export default function CreateContractDialog({backdrop, contractValues, setCallS
     }
 
     function onClickCreate() {
-        let mayContinue = true
         let currentDate = new Date().setHours(0,0,0,0),
             startDate = new Date(contractValues.getter.startDay).setHours(0,0,0,0),
             endDate = new Date(contractValues.getter.endDay).setHours(0,0,0,0)
@@ -87,9 +79,9 @@ export default function CreateContractDialog({backdrop, contractValues, setCallS
         let invalidPhone = !(contractValues.getter.companyPhone === '' ||
             (contractValues.getter.companyPhone.split(" ").length - 1) === 0 ||
             isMobilePhone(contractValues.getter.companyPhone.replace(/\s+/g, ''), 'any'))
+        // checks for mistakes
         if (detailsEmpty || paymentEmpty || invalidEmail || invalidPhone ||
             invalidDates || invalidStartDay || invalidEndDay) {
-            mayContinue = false
             setErrContract({
                 paymentErr: paymentEmpty,
                 paymentMsg: paymentEmpty ? required_txt : '',
@@ -104,9 +96,9 @@ export default function CreateContractDialog({backdrop, contractValues, setCallS
                 endDayErr: invalidEndDay || invalidDates,
                 endDayMsg: invalidDates ? 'The collaboration needs first to start' : invalidEndDay ? 'Invalid Date' : ''
             })
-        }
-        if (mayContinue)
+        } else {
             setBackdropConfirmationDialog(true)
+        }
     }
 
     const detailsInfoObj = {
@@ -191,13 +183,12 @@ export default function CreateContractDialog({backdrop, contractValues, setCallS
                     Create
                 </Button>
             </DialogActions>
-            <Backdrop open={backdropConfirmationDialog} className={classes.backdrop}>
-                <ConfirmationDialog
-                    backdrop={{getter: backdropConfirmationDialog, setter: setBackdropConfirmationDialog}}
-                    setDialogOpen={backdrop.setter} type={'create'} setCallServer={setCallServer}
-                    msg={<>Are you sure you want to create this contract for the proposal
-                        {contractValues.getter.title}?<br/><b>Note, you won't be able to edit it later on!</b></>}/>
-            </Backdrop>
+            <ConfirmationDialog
+                backdrop={{getter: backdropConfirmationDialog, setter: setBackdropConfirmationDialog}}
+                setDialogOpen={backdrop.setter} type={'create'} setCallServer={setCallServer}
+                msg={<>Are you sure you want to create this contract for the proposal
+                    {contractValues.getter.title}?<br/><b>Note, you won't be able to edit it later on!</b></>}/>
+
         </Dialog>
     )
 }

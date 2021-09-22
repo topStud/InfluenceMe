@@ -22,8 +22,10 @@ ChangePassword.propTypes = {
 
 export default function ChangePassword({userType, infoObj}) {
     const classes = useStyles();
+    // when true calls to server for changing the password
     const [callToServer, setCallToServer] = React.useState(false)
 
+    // saves the values the user enters
     const [changePasswordValues, setChangePasswordValues] = React.useState({
         currentPassword: '',
         newPassword: ''
@@ -32,6 +34,7 @@ export default function ChangePassword({userType, infoObj}) {
         getter: changePasswordValues,
         setter: setChangePasswordValues
     }
+    // the fields may get bad input, those variables exist to indicate that.
     const [errChangePassword, setErrChangePassword] = React.useState({
         currentPasswordErr: false,
         newPasswordErr: false,
@@ -56,19 +59,17 @@ export default function ChangePassword({userType, infoObj}) {
     }
 
     function onClickChange() {
-        let mayContinue = true
         let currShort = changePasswordValues.currentPassword.length < 6
         let newShort = changePasswordValues.newPassword.length < 6
+        // checks if user entered bad input
         if (currShort || newShort) {
-            mayContinue = false
             setErrChangePassword({
                 currentPasswordErr: currShort,
                 currentPasswordMsg: currShort ? short_pass : '',
                 newPasswordErr: newShort,
                 newPasswordMsg: newShort ? short_pass : '',
             })
-        }
-        if (mayContinue) {
+        } else{
             setCallToServer(true)
         }
     }
@@ -85,10 +86,14 @@ export default function ChangePassword({userType, infoObj}) {
             <div style={{height: 80}}>
                 <InputPassword val={valuesObj} err={errObj} info={newPassInfo}/>
             </div>
-            <Button disabled={changePasswordValues.currentPassword === '' || changePasswordValues.newPassword === ''} color={"secondary"} style={{marginTop:20}} fullWidth variant={"contained"} onClick={onClickChange}>Change Password</Button>
+            <Button disabled={changePasswordValues.currentPassword === '' || changePasswordValues.newPassword === ''}
+                    color={"secondary"} style={{marginTop:20}} fullWidth variant={"contained"} onClick={onClickChange}>
+                Change Password
+            </Button>
             <AnswerOfServer callServerObj={{getter: callToServer, setter: setCallToServer}}
                             url={`/api/${userType}/change-password/${infoObj._id}`}
-                            methodObj={{method: 'PUT', headers: {'Content-type': 'application/json; charset=UTF-8'}, body: JSON.stringify(changePasswordValues)}}
+                            methodObj={{method: 'PUT', headers: {'Content-type': 'application/json; charset=UTF-8'},
+                                body: JSON.stringify(changePasswordValues)}}
                             sucMsg={'Changes saved successfully'} failMsg={'Save Failed'}
                             sucFunc={()=>{setChangePasswordValues({currentPassword: '', newPassword: ''})}}/>
         </div>

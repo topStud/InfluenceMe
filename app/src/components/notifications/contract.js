@@ -3,7 +3,6 @@ import {Divider} from "@material-ui/core";
 import React from "react";
 import {makeStyles} from "@material-ui/core/styles";
 
-
 const useStyles = makeStyles(() => ({
     contact:{
         display:"flex",
@@ -46,6 +45,7 @@ const useStyles = makeStyles(() => ({
 export default function Contract({contractInfo}) {
     const classes = useStyles()
 
+    // transfers the date given by the server to a date in US format to show the user.
     function fromServerDateToUSDate(dateWithTime) {
         const date = dateWithTime.substring(0,dateWithTime.indexOf('T'))
         const usDateWithTime = new Date(date).toLocaleString('en-US')

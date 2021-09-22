@@ -10,7 +10,7 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import IconButton from "@material-ui/core/IconButton";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
-import {AnswerOfServer, email_bad_format, parseJwt, required_txt} from '../utils'
+import {AnswerOfServer, email_bad_format, parseJwt, required_txt, ValidateEmail} from '../utils'
 
 export default function SignIn() {
     const [emailValue, setEmailValue] = React.useState('')
@@ -168,9 +168,4 @@ export default function SignIn() {
             </Container>
         </div>
     );
-}
-
-function ValidateEmail(email)
-{
-    return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email);
 }

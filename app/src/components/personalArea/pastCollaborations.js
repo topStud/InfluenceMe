@@ -10,9 +10,11 @@ PastCollaborations.proppTypes = {
 }
 
 export default function PastCollaborations({setValue, index, id}) {
+    // related to fetching the data of past contracts
     const [contracts, setContracts] = React.useState(null)
     const [errFetch, setErrFetch] = React.useState(false)
 
+    // fetched data of past contract of current user
     useEffect(()=> {
         setValue(index)
         fetch(`/api/contracts/of/${id}`).then(res => {

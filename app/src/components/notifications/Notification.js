@@ -9,6 +9,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import {AnswerOfServer} from "../../utils";
 import {Avatar} from "@mui/material";
 
+// amount of notifications increases by viewMoreJump each time
 const viewMoreJump = 3
 
 const styles = (theme) => ({
@@ -35,7 +36,6 @@ const styles = (theme) => ({
     }
 });
 
-
 class Notification extends React.Component {
     constructor(props) {
         super(props);
@@ -51,20 +51,25 @@ class Notification extends React.Component {
             expandNotificationsNumber: 1,
         };
     }
+
+    // sets list of notifications
     componentDidMount() {
         this.setState({...this.state, listItems: this.props.listItems });
     }
 
+    // checks if notifications list updated and updates state accordingly
     componentDidUpdate(previousProps,prevState, snapShot) {
         if (previousProps.listItems !== this.props.listItems) {
             this.setState({...this.state, listItems: this.props.listItems });
         }
     }
 
+    // opens notification window
     toggleNotification = (event) => {
         this.setState({...this.state, expandNotificationsNumber:1, anchorEl: event.currentTarget});
     };
 
+    // function to generate date according to timestamp
     generateDate = timeStamp => {
         const d = new Date(timeStamp);
         const n = d.getDate();
@@ -83,7 +88,7 @@ class Notification extends React.Component {
             "NOV",
             "DEC"
         ];
-        return { date: `${n} ${monthNames[m]}`, time: timeStamp };
+        return `${n} ${monthNames[m]}`
     };
 
     closeNotifications = () => {
@@ -94,21 +99,21 @@ class Notification extends React.Component {
     }
 
     onNotificationClick = (notification) => {
-        if (notification.seen === true) {
-            this.closeNotifications()
-            return
+        // if notification has not been clicked before, updates it with server (calls it)
+        if (notification.seen !== true) {
+            this.setState({
+                ...this.state,
+                callServer: {
+                    ...this.state.callServer,
+                    handedNotification: notification,
+                    seen: true
+                }
+            })
         }
-        this.setState({
-            ...this.state,
-            callServer: {
-                ...this.state.callServer,
-                handedNotification: notification,
-                seen: true
-            }
-        })
     }
 
     deleteNotification = (notification) => {
+        // calls server to delete the notification
         this.setState({
             ...this.state,
             callServer: {
@@ -120,6 +125,7 @@ class Notification extends React.Component {
     }
 
     onClickClearAll = () => {
+        // calls server to delete all the notifications
         this.setState({
             ...this.state,
             callServer: {
@@ -130,6 +136,7 @@ class Notification extends React.Component {
     }
 
     onViewMoreClick = () => {
+        // expands amount of the notifications visible to the user
         this.setState({
             ...this.state,
             expandNotificationsNumber: this.state.expandNotificationsNumber + 1
@@ -139,6 +146,9 @@ class Notification extends React.Component {
     render() {
         const { classes } = this.props;
         const { listItems } = this.state;
+        // prepares objects to split the notifications to 2 groups.
+        // fullList - all the notifications in group.
+        // list - visible notifications to user in group.
         const allTimestamp = [
             {
                 groupName: 'New Notifications',
@@ -155,24 +165,29 @@ class Notification extends React.Component {
             // checks for 10 hours difference
             const days = daysDifferent(notification.createdAt)
             const hours = hoursDifferent(notification.createdAt)
+            // if a notification exists ess than 10 hours, it will be shown as a new notification
             if (hours < 9 && days === 0)
                 allTimestamp[0].fullList.push(notification)
             else
                 allTimestamp[1].fullList.push(notification)
         });
+        // sorts list according to creation time. latest at the beginning.
         allTimestamp[0].fullList.sort((a, b) => (a.createdAt < b.createdAt) ? 1 : -1)
         allTimestamp[1].fullList.sort((a, b) => (a.createdAt < b.createdAt) ? 1 : -1)
+        // sets the list of notifications that will be visible to user. first new and then old notifications.
         allTimestamp[0].list = allTimestamp[0].fullList.slice(0,Math.min(viewMoreJump * this.state.expandNotificationsNumber, allTimestamp[0].fullList.length))
         if (allTimestamp[0].list.length < this.state.expandNotificationsNumber * viewMoreJump){
             allTimestamp[1].list = allTimestamp[1].fullList.slice(0,Math.min(viewMoreJump * this.state.expandNotificationsNumber - allTimestamp[0].list.length, allTimestamp[1].fullList.length))
         }
         return (
             <>
+                {/*icon of notifications*/}
                 <IconButton color="inherit" style={{height: '80%', alignSelf:"center"}} onClick={(event) => this.toggleNotification(event)}>
                     <Badge badgeContent={this.props.unseen} hidden={this.props.unseen === 0} color="secondary">
                         <NotificationsIcon style={{color: 'black'}}/>
                     </Badge>
                 </IconButton>
+                {/*menu item that contains all notifications*/}
                 <Menu
                     id="notification-menu"
                     getContentAnchorEl={null}
@@ -188,10 +203,12 @@ class Notification extends React.Component {
                     disableScrollLock={true}
                     style={{position: 'fixed'}}
                 >
+                    {/* if there are no notifications, tells it to user*/}
                     {listItems.length === 0 ?
                         <Typography style={{margin: 10, fontSize: '0.8em', color: '#747474'}}>You Did Not
                             Get New Notifications </Typography> :
                         <div>
+                            {/*clear all notifications option*/}
                             <div style={{display: "flex", justifyContent: 'flex-end'}}>
                                 <button onClick={()=>this.onClickClearAll()} className={classes.clearAll} style={{
                                     backgroundColor: "transparent",
@@ -200,6 +217,7 @@ class Notification extends React.Component {
                                 }}>clear all
                                 </button>
                             </div>
+                            {/*for each group creates notifications*/}
                             {allTimestamp.map((timestamp, k) => {
                                 return (
                                     <div key={k}>
@@ -212,6 +230,7 @@ class Notification extends React.Component {
                                                 display: "initial"
                                             }}
                                         >
+                                            {/*title of notifications group*/}
                                             <span style={{display: "inline-block", width: "50%", marginBottom: 10, marginTop: 10}}>
                                               {timestamp.groupName}
                                             </span>
@@ -228,9 +247,10 @@ class Notification extends React.Component {
                                                 hours = '0' + hours
                                             }
                                             const dayDifferent = daysDifferent(obj.createdAt)
-                                            const date = this.generateDate(d).date
+                                            const date = this.generateDate(d)
                                             return (
                                                 <div key={key}>
+                                                    {/*each notifications transfers user to different page accordingly*/}
                                                     <Link
                                                         to={`/${this.props.userType}/${this.props.id}/${obj.messageType === 1
                                                             ? obj.senderID+'?id='+obj.itemID : obj.messageType === 2 ? `contract/${obj.itemID}` :
@@ -242,7 +262,9 @@ class Notification extends React.Component {
                                                                 justifyContent: 'space-between',
                                                                 width: '320px'
                                                             }}>
+                                                                {/*photo of sender*/}
                                                                 <Avatar src={obj.photo} style={{marginRight: 10, alignSelf: "center", width:50, height:50}}/>
+                                                                {/*content of notification*/}
                                                                 <Typography style={{
                                                                     fontFamily: 'Rubik',
                                                                     fontSize: "13px",
@@ -250,6 +272,7 @@ class Notification extends React.Component {
                                                                     whiteSpace: "pre-wrap",
                                                                     marginRight: 10
                                                                 }}>{obj.message}</Typography>
+                                                                {/*date of notification*/}
                                                                 <div
                                                                     style={{
                                                                         fontSize: "11px",
@@ -266,6 +289,7 @@ class Notification extends React.Component {
                                                             </div>
                                                         </MenuItem>
                                                     </Link>
+                                                    {/*each notification has an option of deletion*/}
                                                     <IconButton
                                                         style={{
                                                             padding: 3,
@@ -284,6 +308,7 @@ class Notification extends React.Component {
                                     </div>
                                 );
                             })}
+                            {/*view more option*/}
                             {this.state.listItems.length > (this.state.expandNotificationsNumber * viewMoreJump) && <MenuItem style={{display: "flex", justifyContent: 'center', color: '#F27746'}}
                                       onClick={this.onViewMoreClick}>
                                 VIEW MORE
@@ -291,9 +316,11 @@ class Notification extends React.Component {
                         </div>}
                     </Menu>
                 }
+                {/*call server for deletion*/}
                 {this.state.callServer.delete && <AnswerOfServerClassOption
                     url={`/api/notifications/${this.state.callServer.handedNotification._id}/${this.props.id}`}
                     methodObj={{method: 'DELETE'}} sucMsg={''} failMsg={'Couldn\'t delete notification'} sucFunc={()=> {
+                    // updates list to be without the deleted notification
                     this.setState({
                         ...this.state,
                         listItems: this.state.listItems.filter(o => o._id !== this.state.callServer.handedNotification._id),
@@ -304,6 +331,7 @@ class Notification extends React.Component {
                         }
                     });
                 }}/>}
+                {/*call server for notification first click*/}
                 {this.state.callServer.seen && <AnswerOfServerClassOption
                     url={`/api/notifications/${this.state.callServer.handedNotification._id}`} methodObj={{method: 'PUT'}}
                     sucMsg={''} failMsg={'An Error occurred'} sucFunc={()=> {
@@ -323,9 +351,11 @@ class Notification extends React.Component {
                             }
                         })
                 }}/>}
+                {/*call server for clearing all the notifications*/}
                 {this.state.callServer.clearAll && <AnswerOfServerClassOption
                     url={`/api/notifications/${this.props.id}`} methodObj={{method: 'DELETE'}}
                     sucMsg={''} failMsg={'An Error occurred'} sucFunc={()=> {
+                    // updates state in case of success
                     this.setState({
                         ...this.state,
                         listItems: [],
@@ -341,12 +371,13 @@ class Notification extends React.Component {
     }
 }
 
-
+// calculates hours different between current time to given time as parameter
 function hoursDifferent(timestamp) {
     let diffInMilliSeconds = Math.abs(new Date().getTime() - new Date(timestamp).getTime()) / 1000;
     return Math.floor(diffInMilliSeconds / 3600) % 24;
 }
 
+// calculates days different between current time to given time as parameter
 function daysDifferent(timestamp) {
     let diffInMilliSeconds = Math.abs(new Date().getTime() - new Date(timestamp).getTime()) / 1000;
     return Math.floor(diffInMilliSeconds / 86400);

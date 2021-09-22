@@ -39,10 +39,6 @@ const useStyles = makeStyles((theme) => ({
         marginRight: theme.spacing(2),
         marginLeft: 0,
         width: '100%',
-        // [theme.breakpoints.up('sm')]: {
-        //     marginLeft: theme.spacing(3),
-        //     width: '100%',
-        // },
     },
 }));
 
@@ -67,6 +63,7 @@ export default function SearchField({searchObj, filterString, objList, urlType})
     const [searchValue, setSearchValue] = React.useState('')
     const [callServerSearch, setCallServerSearch] = React.useState(false)
 
+    // enables the user to click enter for making the search
     const onKeyDownSearchInput = (e) => {
         if (e.key === 'Enter') {
             onClickSearch()

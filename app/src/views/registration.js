@@ -71,32 +71,22 @@ export default function Registration() {
         }
     }
 
+    // helps us know in what stage we are
     const [filledRegistrationData, setFilledRegistrationData] = React.useState(false)
+    // user decides what type of user he wants to be
     const [userType, setUserType] = React.useState('influencers')
-    const [markedChip, setMarkedChip] = React.useState({
-        influencers: 'default',
-        companies: 'outlined'
-    })
-    const chip = {
-        getter: markedChip,
-        setter: setMarkedChip
-    }
 
     return (
         <Layout pageOption={1}>
             <Grid container spacing={0}>
-                <Grid item xs={12} sm={2}>
-
-                </Grid>
-                <Grid item xs={12} sm={8}>
+                <Grid item  xs={2}/>
+                <Grid item  xs={8}>
                     {!filledRegistrationData ?
-                        (<Register filled={setFilledRegistrationData} values={values} setUserType={setUserType} chip={chip}/>) :
+                        (<Register filled={setFilledRegistrationData} values={values} setUserType={setUserType}/>) :
                         (<ProfileData profileValues={objProfileInfo} regValues={registrationValues}
                                       userType={userType} filledCorrectly={setFilledRegistrationData}/>)}
                 </Grid>
-                <Grid item xs={12} sm={2}>
-
-                </Grid>
+                <Grid item  xs={2}/>
             </Grid>
         </Layout>
     );

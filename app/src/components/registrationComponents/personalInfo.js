@@ -4,6 +4,20 @@ import PhoneTextField from '../InputComponents/phoneTextField'
 import InputText from '../InputComponents/inputText'
 import InputImage from "../InputComponents/inputImage";
 import InputDate from "../InputComponents/inputDate";
+import PropTypes from 'prop-types'
+
+PersonalInfo.propTypes = {
+    values: PropTypes.exact({
+        val: PropTypes.exact({
+            getter: PropTypes.object,
+            setter: PropTypes.func
+        }),
+        err: PropTypes.exact({
+            getter: PropTypes.object,
+            setter: PropTypes.func
+        })
+    })
+}
 
 export default function PersonalInfo(props) {
     // values

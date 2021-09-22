@@ -2,11 +2,10 @@ import {Route, Switch, useParams} from 'react-router-dom';
 import AppBar from "../components/appBar";
 import React, {useEffect} from "react";
 import {MuiThemeProvider} from "@material-ui/core";
-import {createTheme, makeStyles} from "@material-ui/core/styles";
+import {createTheme} from "@material-ui/core/styles";
 import ProposalsOfCompany from "../components/Cards/proposalsOfCompany";
 import Footer from "../components/footer";
 import PersonalArea from "../components/personalArea/personalArea";
-import BackDrop from "@material-ui/core/Backdrop";
 import FullInfoInfluencer from '../components/Cards/fullInfoInfluencer'
 import FilteringCards from "../components/Cards/filteringCards";
 import PersonalInfluencerDataPage from '../components/notifications/personalInfluencerDataPage'
@@ -23,15 +22,7 @@ const theme = createTheme({
     }
 });
 
-const useStyles = makeStyles((theme) => ({
-    backdrop: {
-        zIndex: theme.zIndex.drawer + 1,
-        color: '#fff',
-    },
-}));
-
 export default function CompanyPage() {
-    const classes = useStyles()
     // gets id of company from url
     const {id} = useParams()
 
@@ -75,11 +66,13 @@ export default function CompanyPage() {
         setter: setSearchStringInfluencers
     }
 
+    // proposal list - the original list and the filtered
     const [proposalsList, setProposalsList] = React.useState({
         original: null,
         filtered: null
     })
 
+    // influencers list - the original list and the filtered
     const [influencersList, setInfluencersList] = React.useState({
         original: null,
         filtered: null
@@ -128,46 +121,45 @@ export default function CompanyPage() {
     },[])
 
     return(
-            <MuiThemeProvider theme={theme}>
-                <div style={{minHeight: 'calc(100vh - 61px)'}}>
-                    {companyInfo !== null &&
-                    <>
-                        <AppBar data={companyInfo} filtersString={{proposals: filterStringObjProposals.getter,
-                            influencers: filterStringObjInfluencers.getter}} searchesString={{proposals: searchStringProposalsObj,
-                            influencers: searchStringInfluencersObj}} itemsLists={{proposals:{getter: proposalsList,
-                                setter: setProposalsList}, influencers: {getter: influencersList, setter: setInfluencersList}}}/>
-                        <Switch>
-                            <Route exact path={`/companies/${id}`}>
-                                {influencersList.original !== null &&
-                                <FilteringCards display={'influencers'} objList={{getter: influencersList,
-                                    setter: setInfluencersList}} backdrop={backdropObj} setClickedCard={setInfluencerClickedForInfo}
-                                                filterStringObj={filterStringObjInfluencers} searchStringObj={searchStringInfluencersObj}/>
-                                }
-                                <BackDrop className={classes.backdrop} open={openBackDrop}>
-                                    {influencerClickedForInfo !== null &&
-                                    <FullInfoInfluencer backdrop={backdropObj} influencerObj={influencerClickedForInfo}/>
-                                    }
-                                </BackDrop>
-                            </Route>
-                            <Route path={`/companies/${id}/proposals`}>
-                                <ProposalsOfCompany companyInfo={companyInfo} searchStringObj={searchStringProposalsObj}
-                                                    filterStringObj={filterStringObjProposals}
-                                                    proposalsListObj={{getter: proposalsList, setter: setProposalsList}}/>
-                            </Route>
-                            <Route path={`/companies/${id}/personal`}>
-                                <PersonalArea objData={companyInfo} setObjData={setCompanyInfo}/>
-                            </Route>
-                            <Route path='/companies/:id/:influencerId'>
-                                <PersonalInfluencerDataPage company={companyInfo}/>
-                            </Route>
-                        </Switch>
-                    </>
-                    }
-                    { errFetchCompanyData && errFetchInfluencersData && <FetchError name={'company\'s and influencers\''}/>}
-                    { errFetchCompanyData && !errFetchInfluencersData && <FetchError name={'company\'s'}/>}
-                    { errFetchInfluencersData && !errFetchCompanyData && <FetchError name={'influencers\''}/>}
-                </div>
-                <Footer/>
-            </MuiThemeProvider>
+        <MuiThemeProvider theme={theme}>
+            <div style={{minHeight: 'calc(100vh - 61px)'}}>
+                {companyInfo !== null &&
+                <>
+                    <AppBar data={companyInfo} filtersString={{proposals: filterStringObjProposals.getter,
+                        influencers: filterStringObjInfluencers.getter}} searchesString={{proposals: searchStringProposalsObj,
+                        influencers: searchStringInfluencersObj}} itemsLists={{proposals:{getter: proposalsList,
+                            setter: setProposalsList}, influencers: {getter: influencersList, setter: setInfluencersList}}}/>
+                    <Switch>
+                        <Route exact path={`/companies/${id}`}>
+                            {influencersList.original !== null &&
+                            <FilteringCards display={'influencers'} objList={{getter: influencersList,
+                                setter: setInfluencersList}} backdrop={backdropObj} setClickedCard={setInfluencerClickedForInfo}
+                                            filterStringObj={filterStringObjInfluencers} searchStringObj={searchStringInfluencersObj}/>
+                            }
+                            {influencerClickedForInfo !== null &&
+                                <FullInfoInfluencer backdrop={backdropObj} influencerObj={influencerClickedForInfo}/>
+                            }
+                        </Route>
+                        <Route path={`/companies/${id}/proposals`}>
+                            <ProposalsOfCompany companyInfo={companyInfo} searchStringObj={searchStringProposalsObj}
+                                                filterStringObj={filterStringObjProposals}
+                                                proposalsListObj={{getter: proposalsList, setter: setProposalsList}}/>
+                        </Route>
+                        <Route path={`/companies/${id}/personal`}>
+                            <PersonalArea objData={companyInfo} setObjData={setCompanyInfo}/>
+                        </Route>
+                        <Route path='/companies/:id/:influencerId'>
+                            <PersonalInfluencerDataPage company={companyInfo}/>
+                        </Route>
+                    </Switch>
+                </>
+                }
+                {/*show fitting error*/}
+                { errFetchCompanyData && errFetchInfluencersData && <FetchError name={'company\'s and influencers\''}/>}
+                { errFetchCompanyData && !errFetchInfluencersData && <FetchError name={'company\'s'}/>}
+                { errFetchInfluencersData && !errFetchCompanyData && <FetchError name={'influencers\''}/>}
+            </div>
+            <Footer/>
+        </MuiThemeProvider>
     )
 }

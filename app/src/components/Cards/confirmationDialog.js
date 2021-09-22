@@ -19,10 +19,12 @@ ConfirmationDialog.propTypes = {
 }
 
 export default function ConfirmationDialog({backdrop, setCallServer, msg, setDialogOpen, type}) {
+    // closes confirmation dialog
     const handleClose = () => {
         backdrop.setter(false)
     };
 
+    // if accepts, calls the server before closing dialog window
     function handleConfirm() {
         setCallServer(true)
         backdrop.setter(false)

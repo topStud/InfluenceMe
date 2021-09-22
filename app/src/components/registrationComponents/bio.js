@@ -1,4 +1,18 @@
 import {TextField} from "@material-ui/core";
+import PropTypes from 'prop-types'
+
+Bio.propTypes = {
+    values: PropTypes.exact({
+        val: PropTypes.exact({
+            getter: PropTypes.string,
+            setter: PropTypes.func
+        }),
+        err: PropTypes.exact({
+            getter: PropTypes.object,
+            setter: PropTypes.func
+        })
+    })
+}
 
 export default function Bio(props) {
     function handleChange(e) {

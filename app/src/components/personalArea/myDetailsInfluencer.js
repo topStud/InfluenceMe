@@ -19,14 +19,16 @@ const useStyles = makeStyles(() => ({
 
 export default function MyDetailsInfluencer({setValue, influencerData, setInfluencerData, index}) {
     const classes = useStyles();
+    // related to server
     const [callToServer, setCallToServer] = React.useState(false)
     const [objToServer, setObjToServer] = React.useState({})
 
-    // so the correct tab will be marked
     useEffect(()=>{
+        // so the correct tab will be marked in personal area
         setValue(index)
     })
-    
+
+    // current values of user
     const [valuesMyDetails, setValuesMyDetails] = React.useState({
         firstName: influencerData.firstName,
         lastName: influencerData.lastName,
@@ -40,6 +42,7 @@ export default function MyDetailsInfluencer({setValue, influencerData, setInflue
         categories: influencerData.categories
     })
     const [bio, setBio] = React.useState(influencerData.bio)
+    // exist for indicating bad input
     const [errMyDetails, setErrMyDetails] = React.useState({
         firstNameErr: false,
         lastNameErr: false,
@@ -76,19 +79,21 @@ export default function MyDetailsInfluencer({setValue, influencerData, setInflue
             setter: setErrBio
         }
     }
+    // saves previous data in case the user does not save changes.
     const [prevMyDetailsData, setPrevMyDetailsData] = React.useState(valuesMyDetails)
     const [prevBio, setPrevBio] = React.useState(bio)
 
     function onClickSave() {
         let mayContinue = true
-        // check input
-        let phoneNumberErr = !(valuesMyDetails.phone === '' || (valuesMyDetails.phone.split(" ").length - 1) === 0 || isMobilePhone(valuesMyDetails.phone.replace(/\s+/g, ''), 'any'))
+        let phoneNumberErr = !(valuesMyDetails.phone === '' || (valuesMyDetails.phone.split(" ").length - 1) === 0 ||
+            isMobilePhone(valuesMyDetails.phone.replace(/\s+/g, ''), 'any'))
         let fNameErr = valuesMyDetails.firstName === ''
         let lNameErr = valuesMyDetails.lastName === ''
         let instaUserErr = valuesMyDetails.instagramUser === ''
         let instaFollowersErr = valuesMyDetails.followersAmount === ''
         let linkErr = valuesMyDetails.instagramUrl !== '' && !validateWebsiteUrl(valuesMyDetails.instagramUrl)
         let categoryErr = valuesMyDetails.categories.length === 0
+        // checks for bad input
         if (fNameErr || lNameErr || phoneNumberErr || linkErr || instaUserErr || instaFollowersErr || categoryErr) {
             mayContinue = false;
         }
@@ -108,6 +113,7 @@ export default function MyDetailsInfluencer({setValue, influencerData, setInflue
             categoryErr: categoryErr
         })
         let bioEmpty = bio === ''
+        // checks bio separately
         if (bioEmpty) {
             mayContinue = false
         }
@@ -147,12 +153,18 @@ export default function MyDetailsInfluencer({setValue, influencerData, setInflue
             </div>
             <Button 
                 disabled={(JSON.stringify(prevMyDetailsData) === JSON.stringify(valuesMyDetails)) && prevBio === bio}
-                color={"secondary"} style={{marginTop:20}} fullWidth variant={"contained"} onClick={onClickSave}>Save Changes</Button>
+                color={"secondary"} style={{marginTop:20}} fullWidth variant={"contained"} onClick={onClickSave}>
+                Save Changes
+            </Button>
             <AnswerOfServer callServerObj={{getter: callToServer, setter: setCallToServer}}
                             url={`/api/influencers/${influencerData._id}`}
-                            methodObj={{method: 'PUT', headers: {'Content-type': 'application/json; charset=UTF-8'}, body: JSON.stringify(objToServer)}}
-                            sucMsg={'Changes saved successfully'} failMsg={'Save Failed'}
-                            sucFunc={()=>{setPrevBio(bio); setPrevMyDetailsData(valuesMyDetails); setInfluencerData({...influencerData,...valuesMyDetails, bio: bio}) }}/>
+                            methodObj={{method: 'PUT', headers: {'Content-type': 'application/json; charset=UTF-8'},
+                                body: JSON.stringify(objToServer)}} sucMsg={'Changes saved successfully'}
+                            failMsg={'Save Failed'} sucFunc={()=>{
+                                setPrevBio(bio);
+                                setPrevMyDetailsData(valuesMyDetails);
+                                setInfluencerData({...influencerData,...valuesMyDetails, bio: bio})
+                            }}/>
         </>
     );
 }

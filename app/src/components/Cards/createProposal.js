@@ -22,19 +22,23 @@ CreateProposalDialog.propTypes = {
 }
 
 export default function CreateProposalDialog(props) {
+    // we call to server when true
     const [sendToServerCreate, setSendToServerCreate] = React.useState(false)
     const [sendToServerEdit, setSendToServerEdit] = React.useState(false)
+    // we called to server successfully
     const [proposalAccepted, setProposalAccepted] = React.useState(false)
     const [proposalEdited, setProposalEdited] = React.useState(false)
+    // if user entered bad input, true
     const [badInput, setBadInput] = React.useState(false)
 
     function usePrevious(value) {
         const ref = useRef(value);
         return ref.current;
     }
-
+    // saves the previous values of the proposal (in case the user changes things and regrets)
     const prevObj = usePrevious(props.val.getter)
 
+    // all possible field that may get an error
     const [errProposals, setErrProposals] = React.useState({
         titleErr: false,
         titleMsg: '',
@@ -71,13 +75,16 @@ export default function CreateProposalDialog(props) {
     }
 
     function onClickCancelFinish() {
+        // closes dialog
         props.backdrop.setter(false)
+        // returns to previous values
+        props.val.setter(prevObj)
+        // resets values
         if (props.option === 'create') {
             setProposalAccepted(false)
         } else {
             setProposalEdited(false)
         }
-        props.val.setter(prevObj)
         setErrProposals({
             titleErr: false,
             titleMsg: '',
@@ -89,10 +96,12 @@ export default function CreateProposalDialog(props) {
         })
     }
 
+    // handles the two checkboxes
     const handleAddContactInfoChange = (event) => {
         if (props.option === 'create') {
             props.val.setter({ ...props.val.getter, [event.target.name]: event.target.checked});
         } else {
+            // in case of edit, we already enter the correct values or null in case of uncheck.
             if (props.val.getter[event.target.name] !== null) {
                 props.val.setter({ ...props.val.getter, [event.target.name]: null})
             } else {
@@ -107,6 +116,7 @@ export default function CreateProposalDialog(props) {
         let categoriesErr = props.val.getter.categories.length === 0
         let emptyDescription = props.val.getter.description === ''
         let emptyRequirements = props.val.getter.requirements === ''
+        // checks if the user entered bad input and notifies him about it
         if (emptyTitle || categoriesErr || emptyDescription || emptyRequirements) {
             setErrProposals({
                 titleErr: emptyTitle || longTitle,
@@ -136,11 +146,14 @@ export default function CreateProposalDialog(props) {
             fullWidth
             maxWidth={'sm'}
         >
-            <DialogTitle><span style={{fontFamily:'Rubik', fontWeight:800,
-                color: '#1F75A6', fontSize:'1.5em'}}>{props.option === 'create' ? 'Create New Proposal' : 'Edit '
-                + props.val.getter.title}</span></DialogTitle>
+            <DialogTitle>
+                <span style={{fontFamily:'Rubik', fontWeight:800, color: '#1F75A6', fontSize:'1.5em'}}>
+                    {props.option === 'create' ? 'Create New Proposal' : 'Edit ' + props.val.getter.title}
+                </span>
+            </DialogTitle>
             <DialogContent>
-                {props.option === 'create' && <DialogContentText id="alert-dialog-slide-description" style={{fontFamily:'Rubik'}}>
+                {props.option === 'create' &&
+                <DialogContentText id="alert-dialog-slide-description" style={{fontFamily:'Rubik'}}>
                     Please fill in all the required field before creating your proposal.<br/>
                     All the proposals will be shared with all users (not only influencers registered to this site).
                 </DialogContentText>}
@@ -162,14 +175,23 @@ export default function CreateProposalDialog(props) {
                     <Grid item xs={12} style={{maxHeight: 90}}>
                         <FormGroup row>
                             <FormControlLabel
-                                control={<Checkbox checked={props.option === 'create' ? props.val.getter.addPhone : props.val.getter.phone !== null} onChange={handleAddContactInfoChange}
-                                                   name={props.option === 'create' ? "addPhone":'phone'} color="primary" value={true} size={"small"}/>}
+                                control={
+                                    <Checkbox
+                                        checked={props.option === 'create' ? props.val.getter.addPhone :
+                                            props.val.getter.phone !== null}
+                                        onChange={handleAddContactInfoChange}
+                                        name={props.option === 'create' ? "addPhone":'phone'}
+                                        color="primary"
+                                        value={true} size={"small"}
+                                    />
+                                }
                                 label="Add my company's phone to proposal"
                             />
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        checked={props.option === 'create' ? props.val.getter.addEmail: props.val.getter.email !== null}
+                                        checked={props.option === 'create' ? props.val.getter.addEmail :
+                                            props.val.getter.email !== null}
                                         onChange={handleAddContactInfoChange}
                                         name={props.option === 'create' ? "addEmail":'email'}
                                         color="primary"
@@ -201,7 +223,8 @@ export default function CreateProposalDialog(props) {
                     <Button color="primary" onClick={onClickCancelFinish}>
                         Cancel
                     </Button>
-                    <Button disabled={JSON.stringify(prevObj) === JSON.stringify(props.val.getter)} color="primary" variant={"contained"} onClick={onClickCreateEdit}>
+                    <Button disabled={JSON.stringify(prevObj) === JSON.stringify(props.val.getter)} color="primary"
+                            variant={"contained"} onClick={onClickCreateEdit}>
                         Edit
                     </Button>
                 </DialogActions> :
@@ -218,8 +241,11 @@ export default function CreateProposalDialog(props) {
                                             'application/json'}, body: JSON.stringify({...props.val.getter,
                                         companyID: props.companyInfo._id})}} sucMsg={'Proposal created successfully'}
                                 sucFunc={(response)=>{
+                                    // getting the id of the new proposal
                                     let dic = parseJwt(response.data)
+                                    // seperated all field from addPhone and addEmail
                                     const {addPhone: phoneVal, addEmail: emailVal,...otherKeys} = props.val.getter;
+                                    // creates new proposal by adding all the information related to company and proposal id.
                                     props.proposalList.setter({
                                         ...props.proposalList.getter,
                                         original: [{...otherKeys,
@@ -228,7 +254,8 @@ export default function CreateProposalDialog(props) {
                                             bio: props.companyInfo.bio, email: emailVal ? props.companyInfo.email : null,
                                             phone: phoneVal ? props.companyInfo.phone : null, contact:
                                                 {phone: props.companyInfo.phone, email: props.companyInfo.email},
-                                            canEdit: true, collaborationsNumber:0, _id: dic.id}, ...props.proposalList.getter.original]
+                                            canEdit: true, collaborationsNumber:0, _id: dic.id},
+                                            ...props.proposalList.getter.original]
                                     })
                                     setProposalAccepted(true)
                                 }}/>
@@ -239,6 +266,7 @@ export default function CreateProposalDialog(props) {
                                 body: JSON.stringify({...props.val.getter})}} sucMsg={'Proposal edited successfully'}
                                 failMsg={'Edit failed'} sucFunc={()=>{
                                     setProposalEdited(true);
+                                    // actions for inserting the proposal in it's index
                                     let proposal = props.proposalList.getter.original.find(proposal => proposal._id === props.val.getter._id);
                                     let newArr = props.proposalList.getter.original.filter(o=>o._id !== proposal._id);
                                     let index = props.proposalList.getter.original.indexOf(proposal)

@@ -11,9 +11,20 @@ import styles from "../../styles/Home.module.css";
 import InputText from '../InputComponents/inputText';
 import InputPassword from '../InputComponents/inputPassword'
 import {email_bad_format, required_txt, short_pass, ValidateEmail} from "../../utils";
+import PropTypes from 'prop-types'
+
+SignUp.propTypes = {
+    filled: PropTypes.func.isRequired,
+    values: PropTypes.exact({
+        getter: PropTypes.object,
+        setter: PropTypes.func
+    }).isRequired,
+    setUserType: PropTypes.func.isRequired,
+}
 
 export default function SignUp(props) {
     const values = props.values
+    // will indicate the user of bad input
     const [err, setErr] = React.useState({
         emailErr: false,
         passwordErr: false,
@@ -28,9 +39,12 @@ export default function SignUp(props) {
     }
 
     // chips
-    const variantValue = props.chip.getter
-    const setVariantValue = props.chip.setter
+    const [variantValue, setVariantValue] = React.useState({
+        influencers: 'default',
+        companies: 'outlined'
+    })
 
+    // user clicks on the chip of influencers
     function handleInfluencerClick() {
         props.setUserType('influencers')
         setVariantValue({
@@ -39,6 +53,7 @@ export default function SignUp(props) {
         })
     }
 
+    // user clicks on the chip of companies
     function handleCompanyClick() {
         props.setUserType('companies')
         setVariantValue({
@@ -53,6 +68,7 @@ export default function SignUp(props) {
         passVEmpty = values.getter.passwordV === ''
         emailEmpty = values.getter.email === ''
         badEmail = !ValidateEmail(values.getter.email)
+        // checks for bad input
         if (passEmpty || passVEmpty || emailEmpty || badEmail || (values.getter.password.length < 6) || (values.getter.password !== values.getter.passwordV)) {
             setErr({
                 passwordMsg: passEmpty ? required_txt : values.getter.password.length < 6 ? short_pass : '',

@@ -51,9 +51,6 @@ const useStyles = makeStyles((theme) => ({
         height: '100%',
         minWidth:420
     },
-    selectEmpty: {
-        marginTop: theme.spacing(2),
-    }
 }));
 
 CurrentCollaborations.propTypes = {
@@ -66,15 +63,20 @@ export default function CurrentCollaborations({objData, setValue, index}) {
     const classes = useStyles();
     const theme = useTheme();
 
+    // keeps track of current tab
     const [valueTabs, setValueTabs] = React.useState(0);
+    // contract lists
     const [contracts, setContracts] = React.useState({
         current: null,
         pending: null
     })
     const [errFetch, setErrFetch] = React.useState(false)
 
+    // fetches contracts.
     useEffect(()=> {
+        // if we get to page through url, it updates the tabs of personal area.
         setValue(index)
+        // gets all current and pending contracts of current user
         fetch(`/api/contracts/of/${objData.getter._id}`).then(res => {
             if (!res.ok) {
                 throw new Error("Couldn't get contract info")

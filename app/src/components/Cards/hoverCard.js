@@ -65,6 +65,7 @@ HoverCard.propTypes = {
 }
 
 export default function HoverCard({infoObj, cardType, backdrop, setClickedCard}) {
+    // opens card specific dialog window according to obj we gibe the setClickedCard function.
     function onClickCard() {
         backdrop.setter(true)
         setClickedCard(infoObj)
@@ -74,7 +75,9 @@ export default function HoverCard({infoObj, cardType, backdrop, setClickedCard})
         <Background>
             <GeneralCard infoObj={infoObj} cardType={cardType}/>
             <DisplayOver onClick={onClickCard}>
+                {/*shown when mouse hovers the card*/}
                 <Hover>
+                    {/*content of hover*/}
                     <SubTitle style={{textAlign: 'center'}}>About Me</SubTitle>
                     <Paragraph style={{textAlign: 'center'}}>
                         { cardType === 'influencers' ? infoObj.bio.substring(0,120) +

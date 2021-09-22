@@ -20,11 +20,14 @@ import CompanyData from "./companyData";
 import isMobilePhone from "validator/es/lib/isMobilePhone";
 import {calculateAge, invalid_phone, invalid_url, parseJwt} from '../../utils'
 import {required_txt, validateWebsiteUrl} from "../../utils";
+import PropTypes from 'prop-types'
 
+// the titles of the steps. for influencer and company we have different titles.
 function getSteps(userType) {
     return userType === 'influencers' ? ['Personal information', 'instagram account', 'Bio'] : ['Company information', 'Bio'];
 }
 
+// the content of each step if the user is influencer
 function getStepContentInfluencer(stepIndex, values) {
     switch (stepIndex) {
         case 0:
@@ -38,6 +41,7 @@ function getStepContentInfluencer(stepIndex, values) {
     }
 }
 
+// the content of each step if the user is company
 function getStepContentCompany(stepIndex, values) {
     switch (stepIndex) {
         case 0:
@@ -49,6 +53,7 @@ function getStepContentCompany(stepIndex, values) {
     }
 }
 
+// steps' icons if the user is influencer
 function ColorStepIconInfluencer(props) {
     const { active, completed } = props;
 
@@ -70,6 +75,7 @@ function ColorStepIconInfluencer(props) {
     );
 }
 
+// steps' icons if the user is company
 function ColorStepIconCompany(props) {
     const { active, completed } = props;
 
@@ -90,8 +96,21 @@ function ColorStepIconCompany(props) {
     );
 }
 
+NewAccountSteps.propTypes = {
+    profileValues: PropTypes.exact({
+        getter: PropTypes.object,
+        setter: PropTypes.func
+    }).isRequired,
+    regValues: PropTypes.exact({
+        email: PropTypes.string,
+        password: PropTypes.string,
+        passwordV: PropTypes.string
+    }).isRequired,
+    userType: PropTypes.oneOf(['influences', 'companies']).isRequired,
+    filledCorrectly: PropTypes.func.isRequired
+}
 
-export default function ContentBelowStepper(props) {
+export default function NewAccountSteps(props) {
     const [activeStep, setActiveStep] = React.useState(0);
     const userType = props.userType;
     const steps = getSteps(userType);
@@ -110,6 +129,7 @@ export default function ContentBelowStepper(props) {
     const bioCompany = props.profileValues.companies.bio.getter
     const setBioCompany = props.profileValues.companies.bio.setter
 
+    // exist for indicating vad input for user - personal info
     const [errPersonalInfo, setErrPersonalInfo] = React.useState({
         firstNameErr: false,
         lastNameErr: false,
@@ -120,6 +140,7 @@ export default function ContentBelowStepper(props) {
         dateErr: false,
         dateMsg: ''
     })
+    // exist for indicating vad input for user - instagram account
     const [errInstaAccount, setErrInstaAccount] = React.useState({
         instagramUserErr: false,
         followersErr: false,
@@ -129,6 +150,7 @@ export default function ContentBelowStepper(props) {
         followersMsg: '',
         instagramUrlMsg: '',
     })
+    // exist for indicating vad input for user - company data
     const [errCompanyData, setErrCompanyData] = React.useState({
         companyNameErr: false,
         companyNameMsg: '',
@@ -137,6 +159,7 @@ export default function ContentBelowStepper(props) {
         phoneErr: false,
         phoneMsg: ''
     })
+    // exist for indicating vad input for user - bio
     const [errBio, setErrBio] = React.useState({
         bioErr: false,
         bioMsg: ''
@@ -206,6 +229,7 @@ export default function ContentBelowStepper(props) {
             let fNameErr = valuesPersonalInfo.firstName === ''
             let lNameErr = valuesPersonalInfo.lastName === ''
             let invalidAge = new Date(valuesPersonalInfo.date).getTime() > new Date().getTime() || calculateAge(valuesPersonalInfo.date) > 120
+            // checks for bad input
             if (fNameErr || lNameErr || phoneNumberErr || invalidAge) {
                 mayContinue = false;
             }
@@ -227,6 +251,7 @@ export default function ContentBelowStepper(props) {
             let instaFollowersErr = valuesInstaAccount.followersAmount === ''
             let linkErr = valuesInstaAccount.instagramUrl !== '' && !validateWebsiteUrl(valuesInstaAccount.instagramUrl)
             let categoryErr = valuesInstaAccount.categories.length === 0
+            // checks for bad input
             if (linkErr || instaUserEmpty || instaFollowersErr || categoryErr || instagramUserTooLong) {
                 mayContinue = false
                 setErrInstaAccount({
@@ -241,6 +266,7 @@ export default function ContentBelowStepper(props) {
             }
         } else if (activeStep === 2) {
             let bioEmpty = bioInfluencer === ''
+            // checks for bad input
             if (bioEmpty) {
                 mayContinue = false
             }
@@ -249,6 +275,7 @@ export default function ContentBelowStepper(props) {
                 bioMsg: bioEmpty ? required_txt : ''
             })
         }
+        // continuous to next step if all values are valid
         if (mayContinue)
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
     };
@@ -260,6 +287,7 @@ export default function ContentBelowStepper(props) {
             let phoneNumberErr = !(valuesCompany.phone === '' || (valuesCompany.phone.split(" ").length - 1) === 0 || isMobilePhone(valuesCompany.phone.replace(/\s+/g, ''), 'any')),
                 compNameEmpty = valuesCompany.name === '', companyNameTooLong = valuesCompany.name.length > 30,
                 linkErr = valuesCompany.siteUrl !== '' && !validateWebsiteUrl(valuesCompany.siteUrl);
+            // checks for bad input
             if (compNameEmpty || linkErr || phoneNumberErr || companyNameTooLong) {
                 mayContinue = false
             }
@@ -272,6 +300,7 @@ export default function ContentBelowStepper(props) {
                 phoneMsg: phoneNumberErr ? invalid_phone : ''
             })
         } else if (activeStep === 1) {
+            // checks for bad input
             let bioEmpty = bioCompany === ''
             if (bioEmpty) {
                 mayContinue = false
@@ -281,12 +310,14 @@ export default function ContentBelowStepper(props) {
                 bioMsg: bioEmpty ? required_txt : ''
             })
         }
+        // continuous to next step if all values are valid
         if (mayContinue) {
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
         }
     };
 
     const handleBackStandardInfluencer = () => {
+        // removes all errors indications before returning to previous step
         if(activeStep === 1) {
             setErrInstaAccount({
                 instagramUserErr: false,
@@ -302,6 +333,7 @@ export default function ContentBelowStepper(props) {
     };
 
     const handleBackStandardCompany = () => {
+        // removes error indication before returning to previous step
         if(activeStep === 1) {
             setErrBio({
                 bioErr: false,
@@ -316,12 +348,15 @@ export default function ContentBelowStepper(props) {
     };
 
     return (
-        <div style={{width: '100%', boxShadow: '1px 10px 10px gray', paddingRight:50, paddingLeft:50, paddingBottom:20, marginBottom: 20, height:520}} >
-            <Stepper style={{backgroundColor:'transparent'}} activeStep={activeStep} alternativeLabel connector={<StepConnector style={{marginTop: '10px'}}
+        <div style={{width: '100%', boxShadow: '1px 10px 10px gray', paddingRight:50, paddingLeft:50, paddingBottom:20,
+            marginBottom: 20, height:520}} >
+            <Stepper style={{backgroundColor:'transparent'}} activeStep={activeStep} alternativeLabel
+                     connector={<StepConnector style={{marginTop: '10px'}}
             classes={{completed: classes.completed_conn, active: classes.active_conn, line: classes.line_conn}}/>}>
                 {steps.map((label) => (
                     <Step key={label}>
-                        <StepLabel StepIconComponent={props.userType === 'influencers' ? ColorStepIconInfluencer : ColorStepIconCompany}>{label}</StepLabel>
+                        <StepLabel StepIconComponent={props.userType === 'influencers' ? ColorStepIconInfluencer :
+                            ColorStepIconCompany}>{label}</StepLabel>
                     </Step>
                 ))}
             </Stepper>
@@ -355,7 +390,8 @@ export default function ContentBelowStepper(props) {
                             >
                                 Back
                             </Button>
-                            <Button variant="contained" color="primary" onClick={userType === 'influencers' ? handleNextInfluencer : handleNextCompany}>
+                            <Button variant="contained" color="primary" onClick={userType === 'influencers' ?
+                                handleNextInfluencer : handleNextCompany}>
                                 {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                             </Button>
                         </div>
@@ -371,24 +407,28 @@ const AnswerOfServer = ({obj, filledCorrectly, userType}) => {
     const [err, setErr] = React.useState(false)
     const [errEmailExists, setErrEmailExists] = React.useState(false)
 
+    // returns to the beginning of registration process
     const handleReset = () => {
         window.location.href = '/register'
     };
 
+    // moves user to personal page
     const handleContinue = () => {
         window.location.href = `/${userType}/${id}`
     }
 
+    // returns the user to login page
     const BackToLogIn = () => {
         window.location.href = '/'
     }
 
+    // returns user to change his email
     const ChangeEmail = () => {
         filledCorrectly(false)
     }
 
+    // sends information to server to register the user
     useEffect(() => {
-        console.log(JSON.stringify(obj))
         fetch(`/api/${userType}/register`, {
             method: 'POST',
             headers: {
@@ -399,12 +439,13 @@ const AnswerOfServer = ({obj, filledCorrectly, userType}) => {
         }).then(res=> {
             if(!res.ok) {
                 setErr(true)
-                throw new Error(res.statusText)
+                throw new Error('didn\'t register the user')
             }
             return res.json()
         }).then(data=>{
             if (data.status === 'error') {
                 setErrEmailExists(true)
+                throw new Error('email exists')
             } else {
                 let idData = parseJwt(data.data)
                 setId(idData.id)
@@ -416,6 +457,7 @@ const AnswerOfServer = ({obj, filledCorrectly, userType}) => {
 
     return (
         <>
+            {/*registered successfully*/}
             {id !== '' && !err && !errEmailExists && <div style={{display: "flex", flexDirection: "column", height:320}}>
                 <Alert severity="success" style={{height: 150, fontSize:16, marginBottom: 50, width:'100%', lineHeight: '22pt'}}>
                     <AlertTitle style={{fontSize:28}}><strong>Congrats!</strong></AlertTitle>
@@ -424,6 +466,7 @@ const AnswerOfServer = ({obj, filledCorrectly, userType}) => {
                 </Alert>
                 <Button onClick={handleContinue} style={{alignSelf:"center"}}>Continue</Button>
             </div>}
+            {/*an error occurred*/}
             {err && !id && !errEmailExists && <div style={{display: "flex", flexDirection: "column", height:320}}>
                 <Alert severity="error" style={{height: 150, fontSize:16, marginBottom: 50, width:'100%', lineHeight: '22pt'}}>
                     <AlertTitle style={{fontSize:28}}><strong>Note!</strong></AlertTitle>
@@ -432,19 +475,21 @@ const AnswerOfServer = ({obj, filledCorrectly, userType}) => {
                 </Alert>
                 <Button onClick={handleReset} style={{alignSelf:"center"}}>reset registration</Button>
             </div>}
+            {/*a user with this email already exists*/}
             {errEmailExists && !id && !err && <div style={{display: "flex", flexDirection: "column", height:320}}>
                 <Alert severity="error" style={{height: 150, fontSize:16, marginBottom: 50, width:'100%', lineHeight: '22pt'}}>
                     <AlertTitle style={{fontSize:28}}><strong>User exists!</strong></AlertTitle>
                     Hi there,<br/>
                     A user with the provided email already exists.
                 </Alert>
-
                 <div style={{display: "flex", justifyContent: "center" }}>
                     <Button onClick={ChangeEmail} style={{alignSelf:"center", marginRight: '4%'}}>Change email</Button>
                     <Button variant="contained" color="primary" onClick={BackToLogIn} style={{alignSelf:"center"}}>Log in</Button>
                 </div>
             </div>}
-            {!(id || err || errEmailExists) && <div style={{display:"flex", justifyContent: "center", alignItems: "center", height:350}}><CircularProgress/></div>}
+            {/*loading result*/}
+            {!(id || err || errEmailExists) && <div style={{display:"flex", justifyContent: "center",
+                alignItems: "center", height:350}}><CircularProgress/></div>}
         </>
     )
 }

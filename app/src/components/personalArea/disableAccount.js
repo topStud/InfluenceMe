@@ -15,16 +15,20 @@ const useStyles = makeStyles(() => ({
 }));
 
 DisableAccount.propTypes = {
-    userData: PropTypes.object.isRequired
+    userData: PropTypes.object.isRequired,
+    setUserData: PropTypes.func.isRequired
 }
 
 export default function DisableAccount({userData, setUserData}) {
     const classes = useStyles()
 
+    // get user type from url - influencers/ companies
     const { pathname } = useLocation();
     const userType = pathname.split('/')[1]
 
+    // state of switch
     const [checked, setChecked] = React.useState(!userData.disabled)
+    // when true, we cal the server to disable/activate user.
     const [callServer, setCallServer] = React.useState(false)
 
     const handleChange = () => {

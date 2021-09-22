@@ -97,7 +97,10 @@ export default function CategoriesComponent(props) {
                     variant={props.val.getter.categories.includes('Beauty')?'default':'outlined'}
                 />
             </FormGroup>
-            <FormHelperText hidden={!props.err.getter.categoryErr} error={props.err.getter.categoryErr}>Please select at least one category</FormHelperText>
+            {/*appears when user did not check at least one category*/}
+            <FormHelperText hidden={!props.err.getter.categoryErr} error={props.err.getter.categoryErr}>
+                Please select at least one category
+            </FormHelperText>
         </>
     )
 }

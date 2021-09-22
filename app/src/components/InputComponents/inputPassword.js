@@ -63,6 +63,7 @@ export default function InputPassword(props) {
             onClick={onPassClick}
             InputProps={{
                 endAdornment: (
+                    // adds option to show password
                     <InputAdornment position="end">
                         <IconButton
                             aria-label="toggle password visibility"

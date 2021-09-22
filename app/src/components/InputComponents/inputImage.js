@@ -54,7 +54,9 @@ export default function InputImage(props) {
                 <Fab component="span" style={{color: blue[900], margin: 10}}>
                     <AddPhotoAlternateIcon />
                 </Fab>
-                {props.val.getter.photoName !== '' ? (<span>{props.val.getter.photoName}</span>) : (<span>{props.info.label}</span>)}
+                {/*shows name of the photo chosen, or some text for the user (label content)*/}
+                {props.val.getter.photoName !== '' ? (<span>{props.val.getter.photoName}</span>) :
+                    (<span>{props.info.label}</span>)}
             </label>
         </>
     )

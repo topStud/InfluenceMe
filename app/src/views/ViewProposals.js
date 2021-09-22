@@ -1,21 +1,13 @@
 import React, {useEffect} from "react";
 import FilteringCards from "../components/Cards/filteringCards";
-import BackDrop from "@material-ui/core/Backdrop";
 import FullInfoProposal from "../components/Cards/fullInfoProposal";
-import {createTheme, makeStyles, MuiThemeProvider} from "@material-ui/core/styles";
+import {createTheme, MuiThemeProvider} from "@material-ui/core/styles";
 import {FetchError} from "../utils";
 import {Link} from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import Footer from "../components/footer";
 import SearchField from "../components/InputComponents/searchField";
 import Grid from "@material-ui/core/Grid";
-
-const useStyles = makeStyles((theme) => ({
-    backdrop: {
-        zIndex: theme.zIndex.drawer + 1,
-        color: '#fff',
-    },
-}));
 
 const theme = createTheme({
     palette: {
@@ -29,19 +21,21 @@ const theme = createTheme({
 });
 
 export default function ViewProposals() {
-    const classes = useStyles()
+    // proposals list - original list and filtered
     const [proposals, setProposals] = React.useState({
         original: null,
         filtered: null
     })
     const [errFetch, setErrFetch] = React.useState(false)
 
+    // when true opens dialog
     const [openBackdrop, setOpenBackdrop] = React.useState(false)
     const backdropObj = {
         getter: openBackdrop,
         setter: setOpenBackdrop
     }
 
+    // proposal shown to user with all info
     const [proposalClicked, setProposalClicked] = React.useState(null)
 
     // search
@@ -50,6 +44,7 @@ export default function ViewProposals() {
 
     useEffect(()=>{
         let companiesList
+        // fetched the data of all companies
         fetch('/api/companies').then(res=>{
             if (!res.ok) {
                 throw new Error('Couldn\'t get companies\' data');
@@ -60,6 +55,7 @@ export default function ViewProposals() {
                 throw new Error('Couldn\'t get companies\' data');
             } else {
                 companiesList = companiesData.response
+                // fetches all the data of the proposals
                 return fetch('/api/collaboration_proposals')
             }
         }).then(res => {
@@ -72,6 +68,7 @@ export default function ViewProposals() {
                 throw new Error('Couldn\'t get proposals\' data');
             } else {
                 let tempProposalsList = proposalsList.response.map((proposal)=> {
+                    // create single proposal
                     let company = companiesList.find(company => company._id === proposal.companyID)
                     proposal.companyName = company.name
                     proposal.companySite = company.siteUrl
@@ -93,7 +90,8 @@ export default function ViewProposals() {
     return (
         <MuiThemeProvider theme={theme}>
             <div style={{minHeight: 'calc(100vh - 81px)'}}>
-                <Typography component="h1" variant={"h2"} style={{textAlign:'left',fontFamily: 'Rubik',fontWeight: 800, marginBottom: 40,color: '#1F75A6', margin:20, marginLeft: '8%'}}>
+                <Typography component="h1" variant={"h2"} style={{textAlign:'left',fontFamily: 'Rubik',fontWeight: 800,
+                    marginBottom: 40,color: '#1F75A6', margin:20, marginLeft: '8%'}}>
                     <Link to={'/'}>
                         Influence<span style={{color: '#A64B28'}}>Me</span>
                     </Link>
@@ -102,7 +100,8 @@ export default function ViewProposals() {
                     <Grid item xs={4}/>
                     <Grid item xs={6}>
                         <SearchField objList={{getter: proposals, setter: setProposals}} filterString={filterString}
-                                     searchObj={{getter: searchString, setter: setSearchString}} urlType={'collaboration_proposals'}/>
+                                     searchObj={{getter: searchString, setter: setSearchString}}
+                                     urlType={'collaboration_proposals'}/>
                     </Grid>
                 </Grid>
                 {proposals.original !== null && <FilteringCards display={'proposals'}
@@ -111,10 +110,8 @@ export default function ViewProposals() {
                                                                 filterStringObj={{getter:filterString, setter: setFilterString}}
                                                                 searchStringObj={{getter:searchString, setter: setSearchString}}/>
                 }
-                <BackDrop className={classes.backdrop} open={openBackdrop}>
-                    {proposalClicked !== null &&
-                    <FullInfoProposal backdrop={backdropObj} proposalObj={{getter: proposalClicked, setter: setProposalClicked}}/>}
-                </BackDrop>
+                {proposalClicked !== null &&
+                <FullInfoProposal backdrop={backdropObj} proposalObj={{getter: proposalClicked, setter: setProposalClicked}}/>}
                 { errFetch && <FetchError name={'proposals\''}/>}
             </div>
             <Footer/>

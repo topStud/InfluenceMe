@@ -1,4 +1,4 @@
-import {Avatar, Backdrop, Button, Divider} from "@material-ui/core";
+import {Avatar, Button, Divider} from "@material-ui/core";
 import {useEffect} from "react";
 import {AccountCircle} from "@material-ui/icons";
 import {useLocation, useParams} from "react-router-dom";
@@ -67,10 +67,6 @@ const useStyles = makeStyles((theme) => ({
         alignItems: "flex-start",
         paddingRight: '2%'
     },
-    backdrop: {
-        zIndex: theme.zIndex.drawer + 1,
-        color: '#fff',
-    },
     container: {
         boxShadow: '1px 10px 10px gray',
         backgroundColor: 'white',
@@ -79,21 +75,29 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function PersonalInfluencerDataPage({company}) {
+    // gets id of proposal from url
     const { search } = useLocation();
     const match = search.match(/id=(.*)/);
     const itemID = match?.[1];
 
+    // gets id of influencer from url
     const {influencerId} = useParams()
+
     const classes = useStyles()
+    // related to data fetch
     const [errFetchData, setErrFetchData] = React.useState(false)
     const [influencerData, setInfluencerData] = React.useState(null)
 
+    // when true, calls to server
     const [callServerCreateContract, setCallServerCreateContract] = React.useState(false)
     const [callServerSendNotification, setCallServerSendNotification] = React.useState(false)
 
+    // when true dialog window opens
     const [contractBackdrop, setContractBackdrop] = React.useState(false)
+    // saves the id of the created contract - knows to send notification when id exists.
     const [createdContractID, setCreatedContractID] = React.useState('')
 
+    // values for creating a new contract
     const [contractValues, setContractValues] = React.useState({
         companyID: '',
         title: '',
@@ -114,6 +118,7 @@ export default function PersonalInfluencerDataPage({company}) {
         setter: setContractValues
     }
 
+    // fetches data of influencer and proposal
     useEffect(()=>{
         let influencer, proposal
         fetch(`/api/influencers/${influencerId}`).then(res => {
@@ -159,6 +164,7 @@ export default function PersonalInfluencerDataPage({company}) {
     },[itemID, influencerId])
 
     function onClickCreate() {
+        // opens create contract dialog
         setContractBackdrop(true)
     }
 
@@ -221,11 +227,9 @@ export default function PersonalInfluencerDataPage({company}) {
                 </Grid>
             </Grid>
             }
-            <Backdrop open={contractBackdrop} className={classes.backdrop}>
-                {contractValues.title !== '' && <CreateContractDialog
-                    backdrop={{getter: contractBackdrop, setter: setContractBackdrop}}
-                    contractValues={values} setCallServer={setCallServerCreateContract}/>}
-            </Backdrop>
+            {contractValues.title !== '' && <CreateContractDialog
+                backdrop={{getter: contractBackdrop, setter: setContractBackdrop}}
+                contractValues={values} setCallServer={setCallServerCreateContract}/>}
             <AnswerOfServer failMsg={"Couldn't save the contract"} methodObj={{method: 'POST',
                 headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
                 body: JSON.stringify({...contractValues})
@@ -238,11 +242,13 @@ export default function PersonalInfluencerDataPage({company}) {
             {createdContractID !== '' &&
             <AnswerOfServer failMsg={"Saved Contract but couldn't notify the influencer of the new contract"}
                             methodObj={{method: 'POST', headers: {'Accept': 'application/json',
-                                    'Content-type': 'application/json'}, body: JSON.stringify({itemID: createdContractID,
-                                    itemName: contractValues.title, receiverID: influencerId, senderID: contractValues.companyID,
-                                    senderName: contractValues.companyName, messageType: 2, photo: company.photo})}}
-                            sucMsg={'Contract created successfully and sent to use'} url={`/api/notifications`} callServerObj={{getter: callServerSendNotification,
-                            setter: setCallServerSendNotification}}/>}
+                                    'Content-type': 'application/json'},
+                                    body: JSON.stringify({itemID: createdContractID, itemName: contractValues.title,
+                                        receiverID: influencerId, senderID: contractValues.companyID,
+                                        senderName: contractValues.companyName, messageType: 2, photo: company.photo})}}
+                            sucMsg={'Contract created successfully and sent to use'} url={`/api/notifications`}
+                            callServerObj={{getter: callServerSendNotification, setter: setCallServerSendNotification}}
+            />}
             {errFetchData && <FetchError name={''}/>}
         </div>
     )

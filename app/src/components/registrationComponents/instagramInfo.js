@@ -6,6 +6,19 @@ import PropTypes from 'prop-types';
 import InputText from "../InputComponents/inputText";
 import CategoriesComponent from "../InputComponents/categoriesComponent";
 
+InstagramInfo.propTypes = {
+    values: PropTypes.exact({
+        val: PropTypes.exact({
+            getter: PropTypes.object,
+            setter: PropTypes.func
+        }),
+        err: PropTypes.exact({
+            getter: PropTypes.object,
+            setter: PropTypes.func
+        })
+    })
+}
+
 export default function InstagramInfo(props) {
     const values = props.values.val
     const errors = props.values.err
@@ -52,6 +65,7 @@ export default function InstagramInfo(props) {
                     name="followers"
                     id="followers"
                     InputProps={{
+                        // enables only numeric input
                         inputComponent: NumberFormatCustom,
                     }}
                     fullWidth
