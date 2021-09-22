@@ -34,7 +34,7 @@ export const TransitionZoom = React.forwardRef(function Transition(props, ref) {
     return <Zoom ref={ref} {...props} />;
 });
 
-export const AnswerOfServer = ({callServerObj, url, methodObj, sucMsg, failMsg, sucFunc}) => {
+export const AnswerOfServer = ({callServerObj, url, methodObj, sucMsg, failMsg, sucFunc, failFunc}) => {
     const [open, setOpen] = React.useState(false)
     const [errMsg, setErrMsg] = React.useState('')
     const [severity, setSeverity] = React.useState('error')
@@ -59,12 +59,16 @@ export const AnswerOfServer = ({callServerObj, url, methodObj, sucMsg, failMsg, 
                     sucFunc(response)
                     callServerObj.setter(false)
                 } else {
-                    setSeverity('error')
-                    setOpen(true)
-                    if ('error' in response) {
-                        setErrMsg(response.error)
+                    if (failMsg === '') {
+                        failFunc()
                     } else {
-                        setErrMsg(failMsg)
+                        setSeverity('error')
+                        setOpen(true)
+                        if ('error' in response) {
+                            setErrMsg(response.error)
+                        } else {
+                            setErrMsg(failMsg)
+                        }
                     }
                 }
             }).catch((error) => {
@@ -168,7 +172,8 @@ AnswerOfServer.propTypes = {
     methodObj: PropTypes.object.isRequired,
     sucMsg: PropTypes.string.isRequired,
     failMsg: PropTypes.string.isRequired,
-    sucFunc: PropTypes.func
+    sucFunc: PropTypes.func,
+    failFunc: PropTypes.func
 }
 
 export function calculateAge(birthday) { // birthday is a date

@@ -8,6 +8,7 @@ import Button from "@material-ui/core/Button";
 import Footer from "../components/footer";
 import InputPassword from "../components/InputComponents/inputPassword";
 import {AnswerOfServer, required_txt, short_pass} from "../utils";
+import {Alert} from "@material-ui/lab";
 
 const theme = createTheme({
     palette: {
@@ -29,6 +30,7 @@ export default function Reset() {
     // calls server when true
     const [callServer, setCallServer] = React.useState(false)
     const [passUpdated, setPassUpdated] = React.useState(false)
+    const [oldToken, setOldToken] = React.useState(false)
 
     // values
     const [resetValues, setResetValues] = React.useState({
@@ -99,6 +101,13 @@ export default function Reset() {
                             backgroundColor: 'white',
                             padding: 30
                         }}>
+                            {oldToken && <Alert severity="error" style={{marginBottom:30, fontSize:'1em'}}>
+                                Sorry, this link has expired.<br/>
+                                <Link to={'/forgotPassword'}>
+                                    <Typography component={"a"} href={''} style={{fontSize: '0.9em',
+                                        textDecoration: "underline"}}>Resend email</Typography>
+                                </Link>
+                            </Alert>}
                             <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center',
                                 fontFamily: 'Rubik'}}>
                                 <Typography color={"secondary"} component={'h1'} variant={'h4'} style={{margin:0}}>
@@ -135,12 +144,12 @@ export default function Reset() {
                     </Grid>
                 </Grid>
             </div>
-            <AnswerOfServer failMsg={"Password couldn't be reset"} methodObj={{method: 'PUT',
+            <AnswerOfServer failMsg={''} methodObj={{method: 'PUT',
                 headers: {'Content-type': 'application/json; charset=UTF-8'}, body: JSON.stringify({token:token,
                     newPassword:resetValues.password})}} sucMsg={''} url={'/api/reset-password'}
                             callServerObj={{getter: callServer, setter: setCallServer}} sucFunc={()=>{
                                 setPassUpdated(true)
-            }}/>
+            }} failFunc={()=>{setOldToken(true)}}/>
             <Footer/>
         </MuiThemeProvider>
     )
