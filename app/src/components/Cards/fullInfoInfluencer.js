@@ -28,6 +28,7 @@ export default function FullInfoInfluencer({backdrop, influencerObj}) {
             keepMounted
             fullWidth
             scroll={'body'}
+            onClose={onClickCancelFinish}
             maxWidth={'md'}
             aria-labelledby="alert-dialog-slide-title"
             aria-describedby="alert-dialog-slide-description"

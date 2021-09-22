@@ -81,6 +81,7 @@ export default function FullInfoProposal({backdrop, proposalObj, setCallToServer
                 TransitionComponent={TransitionZoom}
                 keepMounted
                 fullWidth
+                onClose={onClickCancelFinish}
                 scroll={'body'}
                 maxWidth={'md'}
                 aria-labelledby="alert-dialog-slide-title"
