@@ -8,7 +8,7 @@ router.get('/', companyController.companies)
 router.get('/:id', companyController.company)
 router.put('/:id', companyController.update)
 router.put('/change-password/:id', companyController.passwordUpdate)
-router.put('/forgot-password/:email', companyController.forgotPassword)
+
 router.put('/disable/:id', companyController.makeDisabled)
 router.put('/activate/:id', companyController.makeActive)
 

@@ -4,6 +4,9 @@ const influencer = require('../models/influencer')
 const company = require('../models/company')
 const mailer = require('./mailer')
 
+const Token = require("../models/Token")
+const crypto = require("crypto")
+
 const JWT_SECRET = 'gkdd462gfkbjfoh#$#54*jfdsdf&$&$#)fhdsadfkl676q3478dfcSgd'
 
 const login = async (req,res,next) => {
@@ -16,7 +19,7 @@ const login = async (req,res,next) => {
     }
     // for error case
     if(!user){
-        return res.json({status: 'error', error: 'User does not exist'})
+        return res.status(400).json({status: 'error', error: 'User does not exist'})
     }
     if(await bcrypt.compare(password, user.password)){
         const token = jwt.sign({
@@ -118,6 +121,8 @@ async function passwordUpdate(model, req, res) {
             return res.status(400).json({status: 'error',
                 'error': 'current password doesn\'t match to real current password'})
         }
+        await changePassword(req, res, user)
+        /*
         if(await bcrypt.compare(req.body.newPassword, user.password)){
             return res.status(400).json({status: 'error',
                 'error': 'Hey! It looks like you’ve used this password before. Please choose a fresh one.'})
@@ -128,21 +133,62 @@ async function passwordUpdate(model, req, res) {
         })
 
         // send email about changing
-        await mailer.sendEmail(user.email)
+        await mailer.changePasswordSendEmail(user.email)
 
-        return res.json({status: 'ok'})
+        return res.json({status: 'ok'})*/
     })
 }
 
-async function forgotPassword(model, req, res) {
-    await model.
-    findOne({ _id: req.params.email}, async (err, user) => {
-        if (err || user === null) {
-            return res.status(400).json({status: 'error', 'error': 'user not exist'})
-        }
-        const token = jwt.sign({id: user._id}, JWT_SECRET, {expiresIn: '20m'})
+async function forgotPassword(req, res) {
+    let user = await influencer.findOne({ email: req.body.email}).lean()
+    if(!user){
+        user = await company.findOne({ email: req.body.email}).lean()
+    }
+    // for error case
+    if(!user){
+        return res.status(400).json({status: 'error', error: 'User does not exist'})
+    }
+    //const token = await Token.findOne({userId: user._id})
+    //if (token) await token.deleteOne()
+    const resetToken = crypto.randomBytes(32).toString("hex")
+
+    await new Token({
+        userId: user._id,
+        token: resetToken,
+        createdAt: Date.now(),
+    }).save().catch((err) => {
+        return res.status(500).json({status: 'error', 'error': 'could not save token'})
     })
 
+    const link = `http://localhost:3000/reset?token=${resetToken}`
+    console.log(link)
+    await mailer.forgotPasswordSendEmail(user.email, "Password Reset Request", link)
+    return res.json({status: 'ok'})
+}
+
+async function resetPassword(req, res) {
+    console.log(req.body)
+    const token = await Token.findOne({ token: req.body.token}).lean()
+    if(!token){
+        return res.status(400).json({status: 'error', error: 'Sorry, this link has expired.'})
+    }
+
+    await influencer.
+    findOne({ _id: token.userId}, async (err, influencer) => {
+        if (err || influencer === null) {
+            await company.findOne({_id: token.userId}, async (err, company) => {
+                if (err || company === null) {
+                    return res.status(400).json({status: 'error', 'error': 'user not exist'})
+                }
+                await changePassword(req,res,company)
+            })
+        } else {
+            await changePassword(req,res,influencer)
+        }
+        console.log("yay its working!")
+        // delete token after using
+        await Token.findOneAndDelete({ token: req.params.token})
+    })
 }
 
 async function changeStatus(user, req, res, bool) {
@@ -153,6 +199,21 @@ async function changeStatus(user, req, res, bool) {
     return res.json({status: 'ok'})
 }
 
+async function changePassword(req, res, user) {
+    if(await bcrypt.compare(req.body.newPassword, user.password)){
+        return res.status(400).json({status: 'error',
+            'error': 'Hey! It looks like you’ve used this password before. Please choose a fresh one.'})
+    }
+    user.password = await bcrypt.hash(req.body.newPassword ,10)
+    user.save().catch((err) => {
+        return res.status(500).json({status: 'error', 'error': 'could not save user'})
+    })
+
+    // send email about changing
+    await mailer.changePasswordSendEmail(user.email)
+
+    return res.json({status: 'ok'})
+}
 
 module.exports = {
     login,
@@ -164,5 +225,6 @@ module.exports = {
     searchByCategories,
     searchBySearchBar,
     searchBySearchBarAndCategories,
-    forgotPassword
+    forgotPassword,
+    resetPassword
 }

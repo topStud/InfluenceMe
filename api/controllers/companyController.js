@@ -61,10 +61,6 @@ const passwordUpdate = async (req, res) => {
     await commonController.passwordUpdate(companyModel, req, res)
 }
 
-const forgotPassword = async (req, res) => {
-    await commonController.forgotPassword(companyModel, req, res)
-}
-
 const makeDisabled = async (req, res) => {
     await changeStatus(req, res, true)
 }
@@ -100,6 +96,5 @@ module.exports = {
     update,
     passwordUpdate,
     makeDisabled,
-    makeActive,
-    forgotPassword
+    makeActive
 }
