@@ -1,20 +1,20 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const companyModel = require('../models/company')
-const commonController = require('./commonController')
 const collaborationModel = require('../models/collaboration')
 const influencerModel = require('../models/influencer')
+const utils = require('./utils')
 
 const JWT_SECRET = 'gkdd462gfkbjfoh#$#54*jfdsdf&$&$#)fhdsadfkl676q3478dfcSgd'
 
 // show the list of companies
 const companies = async (req, res) => {
-    await commonController.findMany(companyModel, req, res)
+    await utils.findMany(companyModel, req, res)
 }
 
 // find specific company by id
 const company = async (req, res) => {
-    await commonController.findOne(companyModel, req, res)
+    await utils.findOne(companyModel, req, res)
 }
 
 const companyRegister = async (req, res) => {
@@ -54,11 +54,11 @@ const companyRegister = async (req, res) => {
 }
 
 const update = async (req, res) => {
-    await commonController.update(companyModel, req, res)
+    await utils.update(companyModel, req, res)
 }
 
 const passwordUpdate = async (req, res) => {
-    await commonController.passwordUpdate(companyModel, req, res)
+    await utils.passwordUpdate(companyModel, req, res)
 }
 
 const makeDisabled = async (req, res) => {
@@ -84,7 +84,7 @@ async function changeStatus(req, res, bool) {
                     'error': 'can\'t update collaboration proposals to be disabled'})
             }
         })
-        await commonController.changeStatus(company, req, res, bool)
+        await utils.changeStatus(company, req, res, bool)
     })
 }
 

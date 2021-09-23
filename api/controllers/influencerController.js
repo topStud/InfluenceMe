@@ -1,19 +1,19 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const influencerModel = require('../models/influencer')
-const commonController = require('./commonController')
 const companyModel = require('../models/company')
+const utils = require('./utils')
 
 const JWT_SECRET = 'gkdd462gfkbjfoh#$#54*jfdsdf&$&$#)fhdsadfkl676q3478dfcSgd'
 
 // show the list of infulencers
 const influencers = async (req, res) => {
-    await commonController.findMany(influencerModel, req, res)
+    await utils.findMany(influencerModel, req, res)
 }
 
 // find specific infulencer by id
 const influencer = async (req, res) => {
-    await commonController.findOne(influencerModel, req, res)
+    await utils.findOne(influencerModel, req, res)
 }
 
 const influencerRegister = async (req, res) => {
@@ -60,24 +60,24 @@ const influencerRegister = async (req, res) => {
 
 
 const update = async (req, res) => {
-    await commonController.update(influencerModel, req, res)
+    await utils.update(influencerModel, req, res)
 }
 
 // accept string with ' ' delimiter
 const searchByCategories = async (req, res) => {
-    await commonController.searchByCategories(influencerModel, req, res)
+    await utils.searchByCategories(influencerModel, req, res)
 }
 
 const searchBySearchBar = async (req, res) => {
-    await commonController.searchBySearchBar(influencerModel, req, res)
+    await utils.searchBySearchBar(influencerModel, req, res)
 }
 
 const searchBySearchBarAndCategories = async (req, res) => {
-    await commonController.searchBySearchBarAndCategories(influencerModel, req, res)
+    await utils.searchBySearchBarAndCategories(influencerModel, req, res)
 }
 
 const passwordUpdate = async (req, res) => {
-    await commonController.passwordUpdate(influencerModel, req, res)
+    await utils.passwordUpdate(influencerModel, req, res)
 }
 
 
@@ -95,7 +95,7 @@ async function changeStatus(req, res, bool) {
         if (err || influencer === null){
             return res.status(400).json({status: 'error', 'error': 'influencer not exist'})
         }
-        await commonController.changeStatus(influencer, req, res, bool)
+        await utils.changeStatus(influencer, req, res, bool)
     })
 }
 

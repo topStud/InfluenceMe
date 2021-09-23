@@ -8,7 +8,6 @@ async function changePasswordSendEmail(userEmail) {
             pass: 'Shaked15'
         }
     })
-    console.log(userEmail)
     const mailOptions = {
         from: 'influenceme@outlook.co.il',
         to: userEmail,

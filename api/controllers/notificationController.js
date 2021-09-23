@@ -3,6 +3,7 @@ const notificationModel = require('../models/notification')
 const influencerModel = require('../models/influencer')
 const collaborationModel = require('../models/collaboration')
 const contractModel = require('../models/contract')
+const utils = require('./utils')
 
 
 const sendNotification = async (req, res) => {
@@ -163,26 +164,8 @@ async function createNotificationTo(user, req, res, message) {
 }
 
 
-const notificationsOf = async (req, res) => {
-    await companyModel.
-    findOne({ _id: req.params.id}, async (err, company) => {
-        if (err || company === null){
-            await influencerModel.
-            findOne({ _id: req.params.id}, async (err, influencer) => {
-                if (err || influencer === null){
-                    return res.status(400).json({status: 'error', 'error': 'user not exist'})
-                }
-                // return influencer's notifications
-                await findNotificationsOf(influencer, req, res)
-            })
-        }else{
-            // return company's notifications
-            await findNotificationsOf(company, req, res)
-        }
-    })
-}
-
-async function findNotificationsOf(user, req, res) {
+async function notificationsOf(req, res) {
+    const user = await utils.findUser(req, res, { _id: req.params.id})
     notificationModel.find({
         '_id': { $in: user.Notifications}
     }, function(err, response){

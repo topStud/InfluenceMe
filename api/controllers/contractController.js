@@ -1,7 +1,7 @@
 const companyModel = require('../models/company')
 const influencerModel = require('../models/influencer')
 const contractModel = require('../models/contract')
-const commonController = require('./commonController')
+const utils = require('./utils')
 const jwt = require('jsonwebtoken')
 
 const JWT_SECRET = 'gkdd462gfkbjfoh#$#54*jfdsdf&$&$#)fhdsadfkl676q3478dfcSgd'
@@ -58,7 +58,7 @@ const addContract = async (req, res) => {
         })
     })
 }
-
+/*
 const contractsOf = async (req, res) => {
     await companyModel.
     findOne({ _id: req.params.id}, async (err, company) => {
@@ -104,16 +104,66 @@ async function findContractsOf(user, req, res) {
                 })
     })
 }
+*/
+
+
+async function findPendingContractsOf(req, res) {
+    const user = await utils.findUser(req, res, { _id: req.params.id})
+    await contractModel.find(
+        {'_id': { $in: user.pendingContracts}},
+        function(err, pending) {
+            if (err) return res.status(400).json({status: 'error', 'error': 'can\'t find'})
+            return res.status(200).json({
+                status: 'ok',
+                pendingContracts: pending
+            })
+        })
+}
+
+async function findPastContractsOf(req, res) {
+    const now = new Date(new Date().setUTCHours(0, 0, 0, 0))
+    const user = await utils.findUser(req, res, { _id: req.params.id})
+    contractModel.find(
+        {$and: [{'_id': { $in: user.currentContracts}}, { endDay: { $lt: now} }]},
+        function(err, past) {
+            if (err) return res.status(400).json({status: 'error', 'error': 'can\'t find'})
+
+            return res.status(200).json({
+                status: 'ok',
+                pastContracts: past
+            })
+        })
+}
+
+
+async function findCurrentContractsOf(req, res) {
+    const now = new Date(new Date().setUTCHours(0, 0, 0, 0))
+    const user = await utils.findUser(req, res, { _id: req.params.id})
+    contractModel.find(
+        {$and: [{'_id': { $in: user.currentContracts}},
+                { $or:[{endDay: { $exists: false }}, {endDay: { $gte: now}}]}]},
+        function(err, current){
+            if (err) return res.status(400).json({status: 'error', 'error': 'can\'t find'})
+
+            return res.status(200).json({
+                status: 'ok',
+                currentContracts: current
+            })
+        })
+}
+
 
 // find specific contract by id
 const findContract = async (req, res) => {
-    await commonController.findOne(contractModel, req, res)
+    await utils.findOne(contractModel, req, res)
 }
 
 
 
 module.exports = {
     addContract,
-    contractsOf,
-    findContract
+    findContract,
+    findPendingContractsOf,
+    findPastContractsOf,
+    findCurrentContractsOf
 }

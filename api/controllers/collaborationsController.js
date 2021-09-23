@@ -1,6 +1,6 @@
 const companyModel = require('../models/company')
 const collaborationModel = require('../models/collaboration')
-const commonController = require('./commonController')
+const utils = require('./utils')
 const jwt = require('jsonwebtoken')
 
 const JWT_SECRET = 'gkdd462gfkbjfoh#$#54*jfdsdf&$&$#)fhdsadfkl676q3478dfcSgd'
@@ -76,11 +76,11 @@ const deleteCollaborationProposal = async (req, res) => {
 
 
 const collaborationProposals = async (req, res) => {
-    await commonController.findMany(collaborationModel, req, res)
+    await utils.findMany(collaborationModel, req, res)
 }
 
 const specificCollaborationProposal = async (req, res) => {
-    await commonController.findOne(collaborationModel, req, res)
+    await utils.findOne(collaborationModel, req, res)
 }
 
 
@@ -102,20 +102,20 @@ const collaborationProposalsOf = async (req, res) => {
 }
 
 const update = async (req, res) => {
-    await commonController.update(collaborationModel, req, res)
+    await utils.update(collaborationModel, req, res)
 }
 
 // accept string with ' ' delimiter
 const searchByCategories = async (req, res) => {
-    await commonController.searchByCategories(collaborationModel, req, res)
+    await utils.searchByCategories(collaborationModel, req, res)
 }
 
 const searchBySearchBar = async (req, res) => {
-    await commonController.searchBySearchBar(collaborationModel, req, res)
+    await utils.searchBySearchBar(collaborationModel, req, res)
 }
 
 const searchBySearchBarAndCategories = async (req, res) => {
-    await commonController.searchBySearchBarAndCategories(collaborationModel, req, res)
+    await utils.searchBySearchBarAndCategories(collaborationModel, req, res)
 }
 
 
