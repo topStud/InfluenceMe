@@ -4,7 +4,6 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import {FetchError} from "../../utils";
 import CollaborationDisplay from "./collaborationDisplay";
 
 function PanelTab(props) {
@@ -66,30 +65,41 @@ export default function CurrentCollaborations({objData, setValue, index}) {
     // keeps track of current tab
     const [valueTabs, setValueTabs] = React.useState(0);
     // contract lists
-    const [contracts, setContracts] = React.useState({
-        current: null,
-        pending: null
-    })
+    const [currentContracts, setCurrentContracts] = React.useState(null)
+    const [pendingContracts, setPendingContracts] = React.useState(null)
     const [errFetch, setErrFetch] = React.useState(false)
 
     // fetches contracts.
     useEffect(()=> {
         // if we get to page through url, it updates the tabs of personal area.
         setValue(index)
-        // gets all current and pending contracts of current user
-        fetch(`/api/contracts/of/${objData.getter._id}`).then(res => {
+        // gets all current contracts of current user
+        fetch(`/api/contracts/current/${objData.getter._id}`).then(res => {
             if (!res.ok) {
-                throw new Error("Couldn't get contract info")
+                throw new Error("Couldn't get current contract info")
             }
             return res.json()
         }).then(contractData => {
             if ('error' in contractData) {
-                throw new Error("Couldn't get contract info")
+                throw new Error("Couldn't get current contract info")
             } else {
-                setContracts({
-                    current: contractData.currentContracts,
-                    pending: contractData.pendingContracts
-                })
+                setCurrentContracts(contractData.currentContracts)
+            }
+        }).catch((error) => {
+            setErrFetch(true)
+            console.log(error)
+        });
+        // gets all pending contracts of current user
+        fetch(`/api/contracts/pending/${objData.getter._id}`).then(res => {
+            if (!res.ok) {
+                throw new Error("Couldn't get pending contract info")
+            }
+            return res.json()
+        }).then(contractData => {
+            if ('error' in contractData) {
+                throw new Error("Couldn't get pending contract info")
+            } else {
+                setPendingContracts(contractData.pendingContracts)
             }
         }).catch((error) => {
             setErrFetch(true)
@@ -116,11 +126,13 @@ export default function CurrentCollaborations({objData, setValue, index}) {
                     <Tab label="Pending Collaborations" {...a11yProps(1)} />
                 </Tabs>
             </AppBar>
-            {contracts.current !== null && <>
-                <PanelTab value={valueTabs} objData={objData} index={0} dir={theme.direction} contracts={contracts.current} type={'exists'}/>
-                <PanelTab value={valueTabs} objData={objData} index={1} dir={theme.direction} contracts={contracts.pending} type={'pending'}/>
-            </>}
-            {errFetch && <FetchError name={'contracts\''}/>}
+
+            {currentContracts !== null &&
+                <PanelTab value={valueTabs} objData={objData} index={0} dir={theme.direction} contracts={currentContracts} type={'exists'}/>}
+            {pendingContracts !== null &&
+                <PanelTab value={valueTabs} objData={objData} index={1} dir={theme.direction} contracts={pendingContracts} type={'pending'}/>}
+
+           {/*<FetchError name={'contracts\''}/>*/}
         </div>
     );
 }

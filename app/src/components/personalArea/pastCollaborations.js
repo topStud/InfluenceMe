@@ -19,7 +19,7 @@ export default function PastCollaborations({setValue, index, id}) {
     // fetched data of past contract of current user
     useEffect(()=> {
         setValue(index)
-        fetch(`/api/contracts/of/${id}`).then(res => {
+        fetch(`/api/contracts/past/${id}`).then(res => {
             if (!res.ok) {
                 throw new Error("Couldn't get contracts info")
             }
@@ -38,7 +38,8 @@ export default function PastCollaborations({setValue, index, id}) {
 
     return (
         <div style={{minWidth:420}}>
-            <Typography component={'h3'} variant={"h4"} style={{fontFamily: 'Rubik', fontWeight:200, color: '#A68617', padding:30, paddingBottom:0}}>
+            <Typography component={'h3'} variant={"h4"} style={{fontFamily: 'Rubik', fontWeight:200, color: '#A68617',
+                padding:30, paddingBottom:0}}>
                 Past Collaborations
             </Typography>
             <Divider style={{marginBottom: 20}}/>
