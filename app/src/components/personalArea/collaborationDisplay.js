@@ -39,7 +39,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 export default function CollaborationDisplay(props) {
-    const {contracts, type, objData} = props;
+    const {contracts, type, objData, allContracts} = props;
     const [selectOption, setSelectOption] = React.useState('Choose title here...')
 
     // gets user type of url - influences/companies
@@ -62,6 +62,7 @@ export default function CollaborationDisplay(props) {
                 list: []
             };
             groupedContracts.push(itemObj);
+            console.log(i)
             // pushes title/companyName to list for select display.
             selectList.push({label: i[field], value: i[field]})
         }
@@ -74,13 +75,20 @@ export default function CollaborationDisplay(props) {
         });
         contractsWithSameTitle[0].list.push(i)
     });
+    let contractList
 
     return (
         <Box p={3} style={{height:'100%'}}>
-            <SelectSingle valueObj={{getter: selectOption, setter: setSelectOption}} titleList={selectList} userType={userType}/>
+            <SelectSingle valueObj={{getter: selectOption, setter: setSelectOption}} titleList={selectList}
+                          userType={userType}/>
             {/*if user selected an option, contracts are shown to him*/}
             <div style={{marginTop: 20}}>
-                {selectOption !== 'Choose title here...' && <ContractCarousel objData={objData} contracts={groupedContracts.find(o=>o[field] === selectOption).list} type={type}/>}
+                {selectOption !== 'Choose title here...' &&
+                    <ContractCarousel objData={objData}
+                                      contracts={(contractList = groupedContracts.find(o=>o[field] === selectOption)?.list) === undefined ?
+                                          [] : contractList}
+                                      type={type} allContracts={allContracts}/>
+                }
             </div>
         </Box>
     );
@@ -92,5 +100,15 @@ CollaborationDisplay.propTypes = {
     objData: PropTypes.exact({
         getter: PropTypes.object,
         setter: PropTypes.func
+    }),
+    allContracts: PropTypes.exact({
+        pending: PropTypes.exact({
+            getter: PropTypes.array,
+            setter: PropTypes.func
+        }),
+        current: PropTypes.exact({
+            getter: PropTypes.array,
+            setter: PropTypes.func
+        })
     })
 }

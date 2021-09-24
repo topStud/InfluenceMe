@@ -19,8 +19,14 @@ CreateContractDialog.propTypes = {
         setter: PropTypes.func
     }).isRequired,
     contractValues: PropTypes.exact({
-        getter: PropTypes.object,
-        setter: PropTypes.func
+        data: PropTypes.exact({
+            getter: PropTypes.object,
+            setter: PropTypes.func
+        }),
+        dates: PropTypes.exact({
+            getter: PropTypes.object,
+            setter: PropTypes.func
+        })
     }).isRequired,
     setCallServer: PropTypes.func.isRequired
 }
@@ -57,28 +63,40 @@ export default function CreateContractDialog({backdrop, contractValues, setCallS
 
     // saves previous states
     const prevErrObj = usePrevious(errContract)
-    const preContractValues = usePrevious(contractValues.getter)
+    const preContractValues = usePrevious(contractValues.data.getter)
+    const preDatesValues = usePrevious(contractValues.dates.getter)
 
     // returns all the fields to their initial state
     function onClickCancel() {
         backdrop.setter(false)
-        contractValues.setter(preContractValues)
+        contractValues.data.setter(preContractValues)
+        contractValues.dates.setter(preDatesValues)
         setErrContract(prevErrObj)
     }
 
     function onClickCreate() {
-        let currentDate = new Date().setHours(0,0,0,0),
-            startDate = new Date(contractValues.getter.startDay).setHours(0,0,0,0),
-            endDate = new Date(contractValues.getter.endDay).setHours(0,0,0,0)
-        let invalidStartDay = startDate < currentDate
-        let invalidEndDay = endDate < currentDate
-        let invalidDates = startDate > endDate
-        let detailsEmpty = contractValues.getter.details === ''
-        let paymentEmpty = contractValues.getter.payment === ''
-        let invalidEmail = !ValidateEmail(contractValues.getter.companyEmail)
-        let invalidPhone = !(contractValues.getter.companyPhone === '' ||
-            (contractValues.getter.companyPhone.split(" ").length - 1) === 0 ||
-            isMobilePhone(contractValues.getter.companyPhone.replace(/\s+/g, ''), 'any'))
+        let invalidStartDay = false, invalidEndDay = false, invalidDates = false
+        let currentDate = new Date().setHours(0,0,0,0)
+        if (contractValues.dates.getter.startDay !== '' || contractValues.dates.getter.endDay !== '') {
+            let startDate, endDate
+            if (contractValues.dates.getter.startDay !== '') {
+                startDate = new Date(contractValues.dates.getter.startDay).setHours(0,0,0,0)
+                invalidStartDay = startDate < currentDate
+            }
+            if (contractValues.dates.getter.endDay !== '') {
+                endDate = new Date(contractValues.dates.getter.endDay).setHours(0,0,0,0)
+                invalidEndDay = endDate < currentDate
+            }
+            if (contractValues.dates.getter.startDay !== '' && contractValues.dates.getter.endDay !== '') {
+                invalidDates = startDate > endDate
+            }
+        }
+        let detailsEmpty = contractValues.data.getter.details === ''
+        let paymentEmpty = contractValues.data.getter.payment === ''
+        let invalidEmail = !ValidateEmail(contractValues.data.getter.companyEmail)
+        let invalidPhone = !(contractValues.data.getter.companyPhone === '' ||
+            (contractValues.data.getter.companyPhone.split(" ").length - 1) === 0 ||
+            isMobilePhone(contractValues.data.getter.companyPhone.replace(/\s+/g, ''), 'any'))
         // checks for mistakes
         if (detailsEmpty || paymentEmpty || invalidEmail || invalidPhone ||
             invalidDates || invalidStartDay || invalidEndDay) {
@@ -90,7 +108,7 @@ export default function CreateContractDialog({backdrop, contractValues, setCallS
                 companyPhoneErr: invalidPhone,
                 companyPhoneMsg: invalidPhone ? invalid_phone : '',
                 companyEmailErr: invalidEmail,
-                companyEmailMsg: contractValues.getter.companyEmail === '' ? required_txt : invalidEmail ? email_bad_format : '',
+                companyEmailMsg: contractValues.data.getter.companyEmail === '' ? required_txt : invalidEmail ? email_bad_format : '',
                 startDayErr: invalidDates || invalidStartDay,
                 startDayMsg: invalidDates ? 'The collaboration needs first to start' : invalidStartDay ? 'Invalid Date' : '',
                 endDayErr: invalidEndDay || invalidDates,
@@ -145,7 +163,7 @@ export default function CreateContractDialog({backdrop, contractValues, setCallS
             <DialogTitle>
             <span style={{fontFamily:'Rubik', fontWeight:800,
                 color: '#1F75A6', fontSize:'1.5em'}}>{'Contract for: '
-            + contractValues.getter.title}</span>
+            + contractValues.data.getter.title}</span>
             </DialogTitle>
             <DialogContent>
                 <DialogContentText style={{marginBottom: 40}}>
@@ -156,22 +174,22 @@ export default function CreateContractDialog({backdrop, contractValues, setCallS
                 </DialogContentText>
                 <Grid container spacing={5}>
                     <Grid item xs={6}>
-                        <InputDate val={contractValues} info={startDayInfoObj} err={err}/>
+                        <InputDate val={contractValues.dates} info={startDayInfoObj} err={err}/>
                     </Grid>
                     <Grid item xs={6}>
-                        <InputDate val={contractValues} info={endDayInfoObj} err={err}/>
+                        <InputDate val={contractValues.dates} info={endDayInfoObj} err={err}/>
                     </Grid>
                     <Grid item xs={12} style={{height: 145}}>
-                        <InputTextArea val={contractValues} err={err} info={detailsInfoObj}/>
+                        <InputTextArea val={contractValues.data} err={err} info={detailsInfoObj}/>
                     </Grid>
                     <Grid item xs={12} style={{height: 145}}>
-                        <InputTextArea val={contractValues} err={err} info={paymentInfoObj}/>
+                        <InputTextArea val={contractValues.data} err={err} info={paymentInfoObj}/>
                     </Grid>
                     <Grid item xs={6}>
-                        <TextInput info={emailInfoObj} val={contractValues} err={err}/>
+                        <TextInput info={emailInfoObj} val={contractValues.data} err={err}/>
                     </Grid>
                     <Grid item xs={6}>
-                        <InputPhone err={err} info={{name: 'companyPhone'}} val={contractValues}/>
+                        <InputPhone err={err} info={{name: 'companyPhone'}} val={contractValues.data}/>
                     </Grid>
                 </Grid>
             </DialogContent>
@@ -187,7 +205,7 @@ export default function CreateContractDialog({backdrop, contractValues, setCallS
                 backdrop={{getter: backdropConfirmationDialog, setter: setBackdropConfirmationDialog}}
                 setDialogOpen={backdrop.setter} type={'create'} setCallServer={setCallServer}
                 msg={<>Are you sure you want to create this contract for the proposal
-                    {contractValues.getter.title}?<br/><b>Note, you won't be able to edit it later on!</b></>}/>
+                    {contractValues.data.getter.title}?<br/><b>Note, you won't be able to edit it later on!</b></>}/>
 
         </Dialog>
     )

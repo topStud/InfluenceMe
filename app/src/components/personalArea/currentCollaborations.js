@@ -5,9 +5,10 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import CollaborationDisplay from "./collaborationDisplay";
+import {FetchError} from "../../utils";
 
 function PanelTab(props) {
-    const { value, index, contracts, type,objData , ...other } = props;
+    const { value, index, contracts, type,objData ,allContracts, ...other } = props;
 
     return (
         <div
@@ -19,7 +20,7 @@ function PanelTab(props) {
             {...other}
         >
             {value === index &&
-                <CollaborationDisplay objData={objData} contracts={contracts} type={type}/>
+                <CollaborationDisplay objData={objData} contracts={contracts} type={type} allContracts={allContracts}/>
             }
         </div>
     );
@@ -33,7 +34,17 @@ PanelTab.propTypes = {
     objData: PropTypes.exact({
         getter: PropTypes.object,
         setter: PropTypes.func
-    }).isRequired
+    }).isRequired,
+    allContracts: PropTypes.exact({
+        pending: PropTypes.exact({
+            getter: PropTypes.array,
+            setter: PropTypes.func
+        }),
+        current: PropTypes.exact({
+            getter: PropTypes.array,
+            setter: PropTypes.func
+        })
+    })
 };
 
 function a11yProps(index) {
@@ -58,6 +69,29 @@ CurrentCollaborations.propTypes = {
     index: PropTypes.number.isRequired
 }
 
+function PanelTabError(props) {
+    const { value, index, ...other } = props;
+
+    return (
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`full-width-tabpanel-${index}`}
+            aria-labelledby={`full-width-tab-${index}`}
+            style={{height:'100%'}}
+            {...other}
+        >
+            {value === index &&
+                <FetchError name={'contracts\''}/>
+            }
+        </div>
+    );
+}
+
+PanelTabError.propTypes = {
+    index: PropTypes.number,
+    value: PropTypes.number
+};
 export default function CurrentCollaborations({objData, setValue, index}) {
     const classes = useStyles();
     const theme = useTheme();
@@ -67,7 +101,8 @@ export default function CurrentCollaborations({objData, setValue, index}) {
     // contract lists
     const [currentContracts, setCurrentContracts] = React.useState(null)
     const [pendingContracts, setPendingContracts] = React.useState(null)
-    const [errFetch, setErrFetch] = React.useState(false)
+    const [errCurrentFetch, setErrCurrentFetch] = React.useState(false)
+    const [errPendingFetch, setErrPendingFetch] = React.useState(false)
 
     // fetches contracts.
     useEffect(()=> {
@@ -86,7 +121,7 @@ export default function CurrentCollaborations({objData, setValue, index}) {
                 setCurrentContracts(contractData.currentContracts)
             }
         }).catch((error) => {
-            setErrFetch(true)
+            setErrCurrentFetch(true)
             console.log(error)
         });
         // gets all pending contracts of current user
@@ -102,7 +137,7 @@ export default function CurrentCollaborations({objData, setValue, index}) {
                 setPendingContracts(contractData.pendingContracts)
             }
         }).catch((error) => {
-            setErrFetch(true)
+            setErrPendingFetch(true)
             console.log(error)
         });
     },[])
@@ -128,11 +163,17 @@ export default function CurrentCollaborations({objData, setValue, index}) {
             </AppBar>
 
             {currentContracts !== null &&
-                <PanelTab value={valueTabs} objData={objData} index={0} dir={theme.direction} contracts={currentContracts} type={'exists'}/>}
+                <PanelTab value={valueTabs} objData={objData} index={0} dir={theme.direction}
+                          contracts={currentContracts} type={'exists'}/>}
             {pendingContracts !== null &&
-                <PanelTab value={valueTabs} objData={objData} index={1} dir={theme.direction} contracts={pendingContracts} type={'pending'}/>}
-
-           {/*<FetchError name={'contracts\''}/>*/}
+                <PanelTab value={valueTabs} objData={objData} index={1} dir={theme.direction}
+                          contracts={pendingContracts} type={'pending'}
+                          allContracts={{pending:{getter: pendingContracts, setter: setPendingContracts},
+                          current:{getter: currentContracts, setter: setCurrentContracts}}}/>}
+            {errCurrentFetch &&
+                <PanelTabError value={valueTabs} index={0}/>}
+            {errPendingFetch &&
+                <PanelTabError value={valueTabs} index={1}/>}
         </div>
     );
 }

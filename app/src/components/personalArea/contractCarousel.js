@@ -25,10 +25,20 @@ ContractCarousel.propTypes = {
     objData: PropTypes.exact({
         getter: PropTypes.object,
         setter: PropTypes.func
-    }).isRequired
+    }).isRequired,
+    allContracts: PropTypes.exact({
+        pending: PropTypes.exact({
+            getter: PropTypes.array,
+            setter: PropTypes.func
+        }),
+        current: PropTypes.exact({
+            getter: PropTypes.array,
+            setter: PropTypes.func
+        })
+    })
 }
 
-export default function ContractCarousel({contracts, type, objData}) {
+export default function ContractCarousel({contracts, type, objData, allContracts}) {
     const classes = useStyles()
 
     // gets user type from url - influencers/companies
@@ -93,15 +103,27 @@ export default function ContractCarousel({contracts, type, objData}) {
                                 messageType: answerOfInfluencer === 'decline' ? 4 : 3})}} sucMsg={''}
                                 url={`/api/notifications`} callServerObj={{getter: callServer, setter: setCallServer}}
                                 sucFunc={()=>{
-                                  setServerUpdatedSuccessfully(true)
-                                  objData.setter({
-                                      ...objData.getter,
-                                      currentContracts: [...objData.getter.currentContracts, item._id]
-                                  })
+                                    setServerUpdatedSuccessfully(true)
+                                    // user declined, we remove from pending,
+                                    // if accepts, we adding item to current contract
+                                    objData.setter({
+                                        ...objData.getter,
+                                        pendingContracts: objData.getter.pendingContracts.filter(o=>o._id !== item._id),
+                                        currentContracts: answerOfInfluencer === 'accept'?
+                                            [item._id,...objData.getter.currentContracts] :
+                                            [...objData.getter.currentContracts]
+                                    })
+                                    allContracts.pending.setter(
+                                        allContracts.pending.getter.filter(o=>o._id !== item._id)
+                                    )
+                                    allContracts.current.setter(
+                                        answerOfInfluencer === 'accept'?
+                                            [allContracts.pending.getter.find(o=>o._id===item._id),...allContracts.current.getter] :
+                                            [...allContracts.current.getter]
+                                    )
                               }}/>}
                     </div>
-                )
-            }
+                )}
         </Carousel>
     )
 }

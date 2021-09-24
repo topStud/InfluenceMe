@@ -110,12 +110,20 @@ export default function PersonalInfluencerDataPage({company}) {
         categories: [],
         details: '',
         payment: '',
+    })
+    const [dates, setDates] = React.useState({
         startDay: '',
         endDay: ''
     })
     const values = {
-        getter: contractValues,
-        setter: setContractValues
+        data: {
+            getter: contractValues,
+            setter: setContractValues
+        },
+        dates: {
+            getter: dates,
+            setter:setDates
+        }
     }
 
     // fetches data of influencer and proposal
@@ -230,15 +238,19 @@ export default function PersonalInfluencerDataPage({company}) {
             {contractValues.title !== '' && <CreateContractDialog
                 backdrop={{getter: contractBackdrop, setter: setContractBackdrop}}
                 contractValues={values} setCallServer={setCallServerCreateContract}/>}
-            <AnswerOfServer failMsg={"Couldn't save the contract"} methodObj={{method: 'POST',
+            {
+                <AnswerOfServer failMsg={"Couldn't save the contract"} methodObj={{method: 'POST',
                 headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
-                body: JSON.stringify({...contractValues})
+                body: JSON.stringify(dates.startDay !== '' ? (dates.endDay !== '' ?
+                    {...contractValues, startDay: dates.startDay, endDay: dates.endDay} :
+                    {...contractValues, startDay: dates.startDay}) : (dates.endDay !== '' ?
+                    {...contractValues, endDay: dates.endDay} : {...contractValues} ))
             }}  sucMsg={''} url={`/api/contracts`}
                 callServerObj={{getter: callServerCreateContract, setter: setCallServerCreateContract}}
                 sucFunc={(response)=>{
                     setCallServerSendNotification(true)
                     setCreatedContractID(parseJwt(response.data).id)
-                }}/>
+                }}/>}
             {createdContractID !== '' &&
             <AnswerOfServer failMsg={"Saved Contract but couldn't notify the influencer of the new contract"}
                             methodObj={{method: 'POST', headers: {'Accept': 'application/json',
