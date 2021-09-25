@@ -98,15 +98,31 @@ function ColorStepIconCompany(props) {
 
 NewAccountSteps.propTypes = {
     profileValues: PropTypes.exact({
-        getter: PropTypes.object,
-        setter: PropTypes.func
+        influencers: PropTypes.exact({
+            personal: PropTypes.exact({
+                getter: PropTypes.object,
+                setter: PropTypes.func
+            }),
+            instagram: PropTypes.exact({
+                getter: PropTypes.object,
+                setter: PropTypes.func
+            }),
+            bio: PropTypes.object
+        }),
+        companies: PropTypes.exact({
+            info: PropTypes.exact({
+                getter: PropTypes.object,
+                setter: PropTypes.func
+            }),
+            bio: PropTypes.object
+        })
     }).isRequired,
     regValues: PropTypes.exact({
         email: PropTypes.string,
         password: PropTypes.string,
         passwordV: PropTypes.string
     }).isRequired,
-    userType: PropTypes.oneOf(['influences', 'companies']).isRequired,
+    userType: PropTypes.oneOf(['influencers', 'companies']).isRequired,
     filledCorrectly: PropTypes.func.isRequired
 }
 

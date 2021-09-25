@@ -7,7 +7,14 @@ import Container from "@material-ui/core/Container";
 import Button from "@material-ui/core/Button";
 import Footer from "../components/footer";
 import InputPassword from "../components/InputComponents/inputPassword";
-import {AnswerOfServer, required_txt, short_pass} from "../utils";
+import {
+    AnswerOfServer,
+    required_txt,
+    short_pass,
+    stringContainsBigLetter,
+    stringContainsNumber,
+    stringContainsSmallLetter, without_big_letter, without_digit, without_small_letter
+} from "../utils";
 import {Alert} from "@material-ui/lab";
 
 const theme = createTheme({
@@ -57,13 +64,21 @@ export default function Reset() {
     const sendPasswordClicked = () => {
         let passwordEmpty = resetValues.password === '',
             passwordVEmpty = resetValues.passwordV === '',
-            passwordShort = resetValues.password.length < 6,
-            differentPasswords = resetValues.password !== resetValues.passwordV
+            differentPasswords = resetValues.password !== resetValues.passwordV,
+            passShort = false, withoutDigit = false, withoutSmallLetter = false, withoutBigLetter = false
+        if (!passwordEmpty) {
+            passShort = resetValues.password.length < 8
+            withoutDigit = !stringContainsNumber(resetValues.password)
+            withoutSmallLetter = !stringContainsSmallLetter(resetValues.password)
+            withoutBigLetter = !stringContainsBigLetter(resetValues.password)
+        }
         // checks for bad input
-        if (passwordVEmpty || passwordEmpty || passwordShort || differentPasswords) {
+        if (passwordVEmpty || passwordEmpty || passShort || withoutDigit || withoutSmallLetter || withoutBigLetter
+            || differentPasswords) {
             setErrReset({
-                passwordErr: passwordEmpty || passwordShort,
-                passwordMsg: passwordEmpty ? required_txt : passwordShort ? short_pass : '',
+                passwordErr: passwordEmpty || passShort || withoutDigit || withoutSmallLetter || withoutBigLetter,
+                passwordMsg: passwordEmpty ? required_txt : (passShort ? short_pass : (withoutDigit ? without_digit :
+                    (withoutSmallLetter ? without_small_letter : (withoutBigLetter ? without_big_letter : '')))),
                 passwordVErr: passwordVEmpty || differentPasswords,
                 passwordVMsg: passwordVEmpty ? required_txt : differentPasswords ? "'The passwords don\'t match" : ''
             })
@@ -82,6 +97,12 @@ export default function Reset() {
         id: 'password-verification',
         label: 'Password Verification',
         name: 'passwordV',
+    }
+
+    function onKeyDownReset (e) {
+        if (e.key === 'Enter') {
+            sendPasswordClicked()
+        }
     }
 
     return (
@@ -114,15 +135,19 @@ export default function Reset() {
                                     Reset Password
                                 </Typography>
                                 <form noValidate style={{borderTop: '1px solid #F2C116'}}>
-                                    <div style={{marginTop: 20}}>
-                                        <InputPassword val={values} err={errors} info={passObj}/>
-                                        <InputPassword val={values} err={errors} info={passVObj}/>
-                                    </div>
+                                    <Grid container style={{marginTop: 20}}>
+                                        <Grid item xs={12} style={{height: 70}}>
+                                            <InputPassword val={values} err={errors} info={passObj}/>
+                                        </Grid>
+                                        <Grid item xs={12} style={{height: 70}}>
+                                            <InputPassword val={values} err={errors} info={passVObj} onKeyDown={(e)=>onKeyDownReset(e)}/>
+                                        </Grid>
+                                    </Grid>
                                     {!passUpdated ? <Button
                                         fullWidth
                                         variant="contained"
                                         color="primary"
-                                        style={{fontWeight: 300, marginTop: '10%', marginBottom: '2%'}}
+                                        style={{fontWeight: 300, marginTop: '5%', marginBottom: '2%'}}
                                         onClick={() => sendPasswordClicked()}
                                     >
                                         Reset

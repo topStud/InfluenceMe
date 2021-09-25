@@ -5,6 +5,8 @@ import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import TextField from "@material-ui/core/TextField";
 import React from "react";
 import PropTypes from "prop-types";
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import {Tooltip} from "@material-ui/core";
 
 InputPassword.propTypes = {
     val: PropTypes.exact({
@@ -23,18 +25,19 @@ InputPassword.propTypes = {
 }
 
 export default function InputPassword(props) {
+    const {val, err, info, ...otherProps} = props
     const [showPass, setShowPass] = React.useState(false)
 
     function onPassChange(e) {
-        props.val.setter({
-            ...props.val.getter,
+        val.setter({
+            ...val.getter,
             [e.target.name]: e.target.value
         })
     }
 
     function onPassClick(e) {
-        props.err.setter({
-            ...props.err.getter,
+        err.setter({
+            ...err.getter,
             [e.target.name+'Err']: false,
             [e.target.name+'Msg']: ''
         })
@@ -50,22 +53,30 @@ export default function InputPassword(props) {
 
     return (
         <TextField
+            {...otherProps}
             required
-            error={props.err.getter[props.info.name+'Err']}
+            error={err.getter[info.name+'Err']}
             fullWidth
-            name= {props.info.name}
-            label= {props.info.label}
+            name= {info.name}
+            label= {info.label}
             type={showPass ? 'text' : 'password'}
-            id={props.info.id}
-            helperText={props.err.getter[props.info.name+'Msg']}
-            value={props.val.getter[props.info.name]}
+            id={info.id}
+            helperText={err.getter[info.name+'Msg']}
+            value={val.getter[info.name]}
             onChange={onPassChange}
             onClick={onPassClick}
             InputProps={{
                 endAdornment: (
                     // adds option to show password
                     <InputAdornment position="end">
+                        <Tooltip title={'Must contain at least one of A-Z, a-z and 0-9. Minimum length for' +
+                        ' a password is 8 characters'} style={{marginRight: -10}} tabIndex={-1}>
+                            <IconButton>
+                                <HelpOutlineIcon style={{color: "gray"}}/>
+                            </IconButton>
+                        </Tooltip>
                         <IconButton
+                            tabIndex={-1}
                             aria-label="toggle password visibility"
                             onClick={handleClickShowPassword}
                             onMouseDown={handleMouseDownPassword}

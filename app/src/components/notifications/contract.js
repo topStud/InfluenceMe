@@ -60,7 +60,7 @@ export default function Contract({contractInfo}) {
             <p>
                 The following contract is binding the influencer named <b>{contractInfo.influencerName} </b>
                 and the company named <b>{contractInfo.companyName}</b> in the next time frame:<br/><br/>
-                The collaboration starts at: {fromServerDateToUSDate(contractInfo.startDay)}.<br/>
+                The collaboration starts on: {fromServerDateToUSDate(contractInfo.startDay)}.<br/>
                 {contractInfo.endDay !== undefined ? `The collaboration ends at: ${fromServerDateToUSDate(contractInfo.endDay)}.`:
                     'The end of the collaboration was not determined.'}<br/><br/>
                 It deals with the company's proposal named <b>{contractInfo.title}</b> and relates to the categories

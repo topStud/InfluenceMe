@@ -10,7 +10,14 @@ import {Link} from "react-router-dom";
 import styles from "../../styles/Home.module.css";
 import InputText from '../InputComponents/inputText';
 import InputPassword from '../InputComponents/inputPassword'
-import {email_bad_format, required_txt, short_pass, ValidateEmail} from "../../utils";
+import {
+    email_bad_format,
+    required_txt,
+    short_pass, stringContainsBigLetter, stringContainsNumber, stringContainsSmallLetter,
+    ValidateEmail, without_big_letter,
+    without_digit,
+    without_small_letter
+} from "../../utils";
 import PropTypes from 'prop-types'
 
 SignUp.propTypes = {
@@ -63,16 +70,25 @@ export default function SignUp(props) {
     }
 
     function SignUpClicked() {
-        let passEmpty, passVEmpty, emailEmpty, badEmail
+        let passEmpty, passVEmpty, emailEmpty, badEmail, passShort = false, withoutDigit = false,
+            withoutSmallLetter = false, withoutBigLetter = false
         passEmpty = values.getter.password === ''
         passVEmpty = values.getter.passwordV === ''
+        if (!passEmpty) {
+            passShort = values.getter.password.length < 8
+            withoutDigit = !stringContainsNumber(values.getter.password)
+            withoutSmallLetter = !stringContainsSmallLetter(values.getter.password)
+            withoutBigLetter = !stringContainsBigLetter(values.getter.password)
+        }
         emailEmpty = values.getter.email === ''
         badEmail = !ValidateEmail(values.getter.email)
         // checks for bad input
-        if (passEmpty || passVEmpty || emailEmpty || badEmail || (values.getter.password.length < 6) || (values.getter.password !== values.getter.passwordV)) {
+        if (passEmpty || passShort || withoutDigit || withoutSmallLetter || withoutBigLetter || passVEmpty ||
+            emailEmpty || badEmail || (values.getter.password !== values.getter.passwordV)) {
             setErr({
-                passwordMsg: passEmpty ? required_txt : values.getter.password.length < 6 ? short_pass : '',
-                passwordErr: passEmpty || values.getter.password.length < 6,
+                passwordMsg: passEmpty ? required_txt : (passShort ? short_pass : (withoutDigit ? without_digit :
+                    (withoutSmallLetter ? without_small_letter : (withoutBigLetter ? without_big_letter : '')))),
+                passwordErr: passEmpty || passShort || withoutDigit || withoutSmallLetter || withoutBigLetter,
                 passwordVErr: passVEmpty || values.getter.password !== values.getter.passwordV,
                 passwordVMsg: passVEmpty ? required_txt : values.getter.password !== values.getter.passwordV ? 'The passwords don\'t match' : '',
                 emailErr: badEmail,

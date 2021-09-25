@@ -21,7 +21,7 @@ const useStyles = makeStyles({
 
 ContractCarousel.propTypes = {
     contracts: PropTypes.array.isRequired,
-    type: PropTypes.oneOf(['pending', 'exists']).isRequired,
+    type: PropTypes.oneOf(['pending', 'current', 'past']).isRequired,
     objData: PropTypes.exact({
         getter: PropTypes.object,
         setter: PropTypes.func

@@ -181,56 +181,60 @@ export default function PersonalInfluencerDataPage({company}) {
             {influencerData !== null &&
             <Grid container>
                 <Grid item xs={3}/>
-                <Grid item xs={6} className={classes.container}>
-                    <div className={classes.header}>
-                        {influencerData.photo !== null ? <Avatar src={influencerData.photo} className={classes.photo}/>
-                            : <AccountCircle className={classes.photo}/>}
-                        <div className={classes.identity}>
-                            <Typography className={classes.mainTitle}>
-                                {influencerData.firstName} {influencerData.lastName}
-                            </Typography>
-                            <Typography className={classes.subTitle}>
-                                {influencerData.instagramUser}
-                            </Typography>
-                            <div style={{display: "flex", color:'#747474'}}>
-                                <Typography style={{fontSize:'0.9em'}}>
-                                    Followers: {influencerData.followersAmount}
+                <Grid item xs={6}>
+                    <Typography style={{fontFamily: 'Rubik',color: '#747474', fontSize: '0.8em'}}>Candidate for</Typography>
+                    <Typography style={{fontFamily: 'Rubik', fontSize: '1.7em'}}>{contractValues.title}</Typography>
+                    <div className={classes.container}>
+                        <div className={classes.header}>
+                            {influencerData.photo !== null ? <Avatar src={influencerData.photo} className={classes.photo}/>
+                                : <AccountCircle className={classes.photo}/>}
+                            <div className={classes.identity}>
+                                <Typography className={classes.mainTitle}>
+                                    {influencerData.firstName} {influencerData.lastName}
                                 </Typography>
-                                {influencerData.date !== '' &&
-                                <>
-                                    <Divider orientation="vertical" className={classes.divider}/>
+                                <Typography className={classes.subTitle}>
+                                    {influencerData.instagramUser}
+                                </Typography>
+                                <div style={{display: "flex", color:'#747474'}}>
                                     <Typography style={{fontSize:'0.9em'}}>
-                                        Age: {calculateAge(influencerData.date.substring(0,influencerData.date.indexOf('T')))}
+                                        Followers: {influencerData.followersAmount}
                                     </Typography>
-                                </>}
+                                    {influencerData.date !== '' &&
+                                    <>
+                                        <Divider orientation="vertical" className={classes.divider}/>
+                                        <Typography style={{fontSize:'0.9em'}}>
+                                            Age: {calculateAge(influencerData.date.substring(0,influencerData.date.indexOf('T')))}
+                                        </Typography>
+                                    </>}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <p className={classes.body}>
-                        {influencerData.bio}
-                    </p>
-                    <div className={classes.contact}>
-                        My email address is
-                        <span className={classes.selectable}>
+                        <p className={classes.body}>
+                            {influencerData.bio}
+                        </p>
+                        <div className={classes.contact}>
+                            My email address is
+                            <span className={classes.selectable}>
                             {influencerData.email}
                         </span><br/>
-                        {(influencerData.phone !== '' && influencerData.phone !== null) &&
-                        <>
-                            You may give me a call to
-                            <span className={classes.selectable}>
+                            {(influencerData.phone !== '' && influencerData.phone !== null) &&
+                            <>
+                                You may give me a call to
+                                <span className={classes.selectable}>
                                 {influencerData.phone}
                             </span><br/>
-                        </>}
-                        {influencerData.instagramUrl !== '' &&
-                        <>
-                            Check out my instagram account
-                            <span className={classes.selectable}>
+                            </>}
+                            {influencerData.instagramUrl !== '' &&
+                            <>
+                                Check out my instagram account
+                                <span className={classes.selectable}>
                                 {influencerData.instagramUrl}
                             </span>
-                        </>}
-                    </div>
-                    <div className={classes.contract}>
-                        <Button variant={'contained'} color={"primary"} onClick={onClickCreate}>Create Contract</Button>
+                            </>}
+                        </div>
+                        <div className={classes.contract}>
+                            <Button variant={'contained'} color={"primary"} onClick={onClickCreate}>Create Contract</Button>
+                        </div>
                     </div>
                 </Grid>
             </Grid>

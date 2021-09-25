@@ -41,7 +41,7 @@ export default function InstagramInfo(props) {
     const userObj = {
         required: true,
         id: 'instagramUser',
-        label: 'InstagramUser',
+        label: 'Instagram Username',
         name: 'instagramUser'
     }
 

@@ -107,8 +107,11 @@ class Notification extends React.Component {
                     ...this.state.callServer,
                     handedNotification: notification,
                     seen: true
-                }
+                },
+                anchorEl: null
             })
+        } else {
+            this.closeNotifications()
         }
     }
 

@@ -13,6 +13,7 @@ import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import {useLocation} from "react-router-dom";
 import PropTypes from 'prop-types'
 import {TransitionZoom} from "../../utils";
+import {Tooltip} from "@material-ui/core";
 
 FullInfoProposal.propTypes = {
     backdrop: PropTypes.exact({
@@ -94,12 +95,14 @@ export default function FullInfoProposal({backdrop, proposalObj, setCallToServer
                     </span>
                     {/*delete and edit icons for company*/}
                     {userType === 'companies' && <div style={{display: "flex", justifyContent: "flex-end", marginTop: -50}}>
-                        {proposalObj.getter.canEdit === true && <IconButton aria-label="edit" onClick={onEditClick}>
+                        {proposalObj.getter.canEdit === true && <Tooltip title="Edit"><IconButton aria-label="edit" onClick={onEditClick}>
                             <EditIcon/>
-                        </IconButton>}
-                        <IconButton aria-label="delete" onClick={onDeleteClick}>
-                            <DeleteIcon/>
-                        </IconButton>
+                        </IconButton></Tooltip>}
+                        <Tooltip title="Delete">
+                            <IconButton aria-label="delete" onClick={onDeleteClick}>
+                                <DeleteIcon/>
+                            </IconButton>
+                        </Tooltip>
                     </div>}
                 </DialogTitle>
                 <DialogContent>

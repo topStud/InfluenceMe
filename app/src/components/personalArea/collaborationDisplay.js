@@ -5,12 +5,13 @@ import Box from "@material-ui/core/Box";
 import ContractCarousel from "./contractCarousel";
 import {makeStyles} from "@material-ui/core/styles";
 import PropTypes from "prop-types";
+import Typography from "@material-ui/core/Typography";
 
 const SelectSingle = ({titleList, valueObj, userType}) => (
     <>
         <div style={{marginBottom:10}}>
             <label>{userType === 'companies' ? 'What is the title of the contracts you would like to see?' :
-                'What is a company name you would like to see contracts with'}</label>
+                'What is a company name you would like to see contracts with?'}</label>
         </div>
         <Select
             value={{label:valueObj.getter, value: valueObj.getter}}
@@ -83,11 +84,19 @@ export default function CollaborationDisplay(props) {
                           userType={userType}/>
             {/*if user selected an option, contracts are shown to him*/}
             <div style={{marginTop: 20}}>
-                {selectOption !== 'Choose title here...' &&
+                {selectOption !== 'Choose title here...' ?
                     <ContractCarousel objData={objData}
                                       contracts={(contractList = groupedContracts.find(o=>o[field] === selectOption)?.list) === undefined ?
                                           [] : contractList}
-                                      type={type} allContracts={allContracts}/>
+                                      type={type} allContracts={allContracts}/> :
+                    <Typography style={{textAlign: "center", color: '#9b9b9b', fontFamily: 'Rubik', fontSize: '0.8em', margin: '50px 70px'}}>
+                        {type==='pending'?'After selecting one of the options available above, ' +
+                        'you will be displayed all pending contracts related to that option. You may choose to decline or ' +
+                        'accept each one of them.':type==='current'? 'After selecting one of the options available above, ' +
+                        'you will be displayed all on going contracts related to that option.':'After selecting one of the' +
+                        ' options available above, you will be displayed all contracts of past collaborations related to ' +
+                        'that option. Those collaborations, are no longer active.'}
+                    </Typography>
                 }
             </div>
         </Box>
@@ -96,7 +105,7 @@ export default function CollaborationDisplay(props) {
 
 CollaborationDisplay.propTypes = {
     contracts: PropTypes.array.isRequired,
-    type: PropTypes.oneOf(['pending','exists']).isRequired,
+    type: PropTypes.oneOf(['pending','current','past']).isRequired,
     objData: PropTypes.exact({
         getter: PropTypes.object,
         setter: PropTypes.func

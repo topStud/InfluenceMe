@@ -4,7 +4,13 @@ import Button from "@material-ui/core/Button";
 import React from 'react'
 import Typography from "@material-ui/core/Typography";
 import {Divider} from "@material-ui/core";
-import {AnswerOfServer, short_pass} from "../../utils";
+import {
+    AnswerOfServer, required_txt,
+    short_pass,
+    stringContainsBigLetter,
+    stringContainsNumber,
+    stringContainsSmallLetter, without_big_letter, without_digit, without_small_letter
+} from "../../utils";
 import PropTypes from 'prop-types'
 
 const useStyles = makeStyles(() => ({
@@ -59,15 +65,34 @@ export default function ChangePassword({userType, infoObj}) {
     }
 
     function onClickChange() {
-        let currShort = changePasswordValues.currentPassword.length < 6
-        let newShort = changePasswordValues.newPassword.length < 6
+        let passCurrEmpty = changePasswordValues.currentPassword === ''
+        let passNewEmpty = changePasswordValues.newPassword === ''
+        let passCurrShort = false, currWithoutDigit = false, currWithoutSmallLetter = false, currWithoutBigLetter = false
+        let passNewShort = false, newWithoutDigit = false, newWithoutSmallLetter = false, newWithoutBigLetter = false
+        if (!passCurrEmpty) {
+            passCurrShort = changePasswordValues.currentPassword.length < 8
+            currWithoutDigit = !stringContainsNumber(changePasswordValues.currentPassword)
+            currWithoutSmallLetter = !stringContainsSmallLetter(changePasswordValues.currentPassword)
+            currWithoutBigLetter = !stringContainsBigLetter(changePasswordValues.currentPassword)
+        }
+        if (!passNewEmpty) {
+            passNewShort = changePasswordValues.newPassword.length < 8
+            newWithoutDigit = !stringContainsNumber(changePasswordValues.newPassword)
+            newWithoutSmallLetter = !stringContainsSmallLetter(changePasswordValues.newPassword)
+            newWithoutBigLetter = !stringContainsBigLetter(changePasswordValues.newPassword)
+        }
         // checks if user entered bad input
-        if (currShort || newShort) {
+        if (passCurrEmpty || passCurrShort || currWithoutDigit || currWithoutSmallLetter || currWithoutBigLetter
+            || passNewEmpty || passNewShort || newWithoutDigit || newWithoutSmallLetter || newWithoutBigLetter) {
             setErrChangePassword({
-                currentPasswordErr: currShort,
-                currentPasswordMsg: currShort ? short_pass : '',
-                newPasswordErr: newShort,
-                newPasswordMsg: newShort ? short_pass : '',
+                currentPasswordErr: passCurrEmpty || passCurrShort || currWithoutDigit || currWithoutSmallLetter
+                    || newWithoutBigLetter,
+                currentPasswordMsg: passCurrEmpty ? required_txt : (passCurrShort ? short_pass : (currWithoutDigit ?
+                    without_digit : (currWithoutSmallLetter ? without_small_letter : (currWithoutBigLetter ?
+                        without_big_letter : '')))),
+                newPasswordErr: passNewEmpty || passNewShort || newWithoutDigit || newWithoutSmallLetter || newWithoutBigLetter,
+                newPasswordMsg: passNewEmpty ? required_txt : (passNewShort ? short_pass : (newWithoutDigit ? without_digit :
+                    (newWithoutSmallLetter ? without_small_letter : (newWithoutBigLetter ? without_big_letter : '')))),
             })
         } else{
             setCallToServer(true)

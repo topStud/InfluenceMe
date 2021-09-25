@@ -30,7 +30,7 @@ PanelTab.propTypes = {
     index: PropTypes.any.isRequired,
     value: PropTypes.any.isRequired,
     contracts: PropTypes.array.isRequired,
-    type: PropTypes.oneOf(['pending','exists']).isRequired,
+    type: PropTypes.oneOf(['pending','current', 'past']).isRequired,
     objData: PropTypes.exact({
         getter: PropTypes.object,
         setter: PropTypes.func
@@ -164,7 +164,7 @@ export default function CurrentCollaborations({objData, setValue, index}) {
 
             {currentContracts !== null &&
                 <PanelTab value={valueTabs} objData={objData} index={0} dir={theme.direction}
-                          contracts={currentContracts} type={'exists'}/>}
+                          contracts={currentContracts} type={'current'}/>}
             {pendingContracts !== null &&
                 <PanelTab value={valueTabs} objData={objData} index={1} dir={theme.direction}
                           contracts={pendingContracts} type={'pending'}

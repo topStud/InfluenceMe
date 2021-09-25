@@ -1,7 +1,14 @@
 import DialogTitle from "@material-ui/core/DialogTitle";
 import React, {useRef} from "react";
 import {Dialog, DialogActions, DialogContent} from "@material-ui/core";
-import {email_bad_format, invalid_phone, required_txt, TransitionSlide, ValidateEmail} from "../../utils";
+import {
+    email_bad_format,
+    ErrorSnackbar,
+    invalid_phone,
+    required_txt,
+    TransitionSlide,
+    ValidateEmail
+} from "../../utils";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import InputTextArea from "../InputComponents/InputTextArea";
@@ -60,6 +67,7 @@ export default function CreateContractDialog({backdrop, contractValues, setCallS
         getter: errContract,
         setter: setErrContract
     }
+    const [badInput, setBadInput] = React.useState(false)
 
     // saves previous states
     const prevErrObj = usePrevious(errContract)
@@ -100,6 +108,7 @@ export default function CreateContractDialog({backdrop, contractValues, setCallS
         // checks for mistakes
         if (detailsEmpty || paymentEmpty || invalidEmail || invalidPhone ||
             invalidDates || invalidStartDay || invalidEndDay) {
+            setBadInput(true)
             setErrContract({
                 paymentErr: paymentEmpty,
                 paymentMsg: paymentEmpty ? required_txt : '',
@@ -205,8 +214,9 @@ export default function CreateContractDialog({backdrop, contractValues, setCallS
                 backdrop={{getter: backdropConfirmationDialog, setter: setBackdropConfirmationDialog}}
                 setDialogOpen={backdrop.setter} type={'create'} setCallServer={setCallServer}
                 msg={<>Are you sure you want to create this contract for the proposal
-                    {contractValues.data.getter.title}?<br/><b>Note, you won't be able to edit it later on!</b></>}/>
-
+                    {contractValues.data.getter.title}?<br/><b>Note, you won't be able to edit it later on!</b></>
+                }/>
+            <ErrorSnackbar open={badInput} setOpen={setBadInput}/>
         </Dialog>
     )
 }

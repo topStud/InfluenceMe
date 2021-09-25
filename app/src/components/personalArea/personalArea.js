@@ -148,7 +148,7 @@ export default function PersonalArea({objData, setObjData}) {
                                  classes={{wrapper: classes.iconLabelWrapper}} onClick={()=>handleChange(1)}
                                  className={classes.tabStyle} component={Link}
                                  to={`/${userType}/${objData._id}/personal/currentCollaborations`}
-                                 label="Current Collaborations" {...a11yProps(1)} />
+                                 label="My Collaborations" {...a11yProps(1)} />
                             <Tab icon={<PersonIcon fontSize={'small'} className={classes.icon}/>}
                                  classes={{wrapper: classes.iconLabelWrapper}} onClick={()=>handleChange(2)}
                                  className={classes.tabStyle} component={Link}

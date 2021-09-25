@@ -16,10 +16,25 @@ export function parseJwt (token) {
 }
 
 export const required_txt = 'This field is required'
-export const short_pass = 'Minimum length for a password is 6 characters'
+export const short_pass = 'Minimum length for a password is 8 characters'
+export const without_digit = 'The password must contain at least one digit'
+export const without_small_letter = 'The password must contain at least one small letter a-z'
+export const without_big_letter = 'The password must contain at least one big letter A-Z'
 export const email_bad_format = 'The email entered is not in the correct format'
 export const invalid_phone = 'Phone number is not valid'
 export const invalid_url = 'Url format is invalid'
+
+export function stringContainsNumber(_string) {
+    return /\d/.test(_string);
+}
+
+export function stringContainsSmallLetter(_string) {
+    return /[a-z]/.test(_string);
+}
+
+export function stringContainsBigLetter(_string) {
+    return /[A-Z]/.test(_string);
+}
 
 export const validateWebsiteUrl = websiteUrl => {
     const urlRegEx = new RegExp(/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=+$,\w]+@)?[A-Za-z0-9.-]+|(?:www\.|[-;:&=+$,\w]+@)[A-Za-z0-9.-]+)((?:\/[+~%/.\w\-_]*)?\??#?)?)/);
@@ -42,10 +57,11 @@ export const AnswerOfServer = ({callServerObj, url, methodObj, sucMsg, failMsg, 
     useEffect(() => {
         if(callServerObj.getter) {
             fetch(url, methodObj).then(res => {
-                if (!res.ok) {
+                if (!res.ok && failMsg !== '') {
                     setOpen(true)
                     setSeverity('error')
                     setErrMsg('Connection problem')
+                    throw new Error('Response not returned with status 200')
                 }
                 return res.json()
             }).then(response => {

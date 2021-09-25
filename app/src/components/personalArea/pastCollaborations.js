@@ -43,7 +43,7 @@ export default function PastCollaborations({setValue, index, id}) {
                 Past Collaborations
             </Typography>
             <Divider style={{marginBottom: 20}}/>
-            {contracts !== null && <CollaborationDisplay contracts={contracts} type={'exists'}/>}
+            {contracts !== null && <CollaborationDisplay contracts={contracts} type={'past'}/>}
             {errFetch && <FetchError name={'contracts\''}/>}
         </div>
     )
