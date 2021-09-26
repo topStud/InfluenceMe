@@ -49,12 +49,18 @@ class Notification extends React.Component {
                 handedNotification: {}
             },
             expandNotificationsNumber: 1,
+            unseenNumber: 0
         };
     }
 
     // sets list of notifications
-    componentDidMount() {
-        this.setState({...this.state, listItems: this.props.listItems });
+    // invoked immediately after a component and all its children components have been rendered to the DOM
+    // componentDidMount() {
+    //     this.setState({...this.state, listItems: this.props.listItems });
+    // }
+    // state of component depends on changes in props over time.
+    static getDerivedStateFromProps(props,state){
+        return {...state, listItems: props.listItems, unseenNumber: props.unseenNumber }
     }
 
     // checks if notifications list updated and updates state accordingly
@@ -66,7 +72,8 @@ class Notification extends React.Component {
 
     // opens notification window
     toggleNotification = (event) => {
-        this.setState({...this.state, expandNotificationsNumber:1, anchorEl: event.currentTarget});
+        this.setState({...this.state, expandNotificationsNumber:1, anchorEl: event.currentTarget, unseenNumber: this.props.unseenNumber});
+        fetch(`/api/notifications/reset-unseen/${this.props.id}`, {method: 'PUT'}).catch(e=>console.log(e))
     };
 
     // function to generate date according to timestamp

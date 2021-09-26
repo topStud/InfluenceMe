@@ -110,10 +110,10 @@ export default function FullInfoProposal({backdrop, proposalObj, setCallToServer
                     <div style={{display:"flex",justifyContent: 'flex-start', fontSize: '1em', marginTop:-10}}>
                         {proposalObj.getter.categories.map((category, i)=>(
                             i < proposalObj.getter.categories.length - 1 ?
-                                <div key={i} style={{display:"inline"}}>
+                                <React.Fragment key={i}>
                                     <span>{category}</span>
                                     <span style={{marginRight: 15, marginLeft: 15}}>•</span>
-                                </div>
+                                </React.Fragment>
                                 :
                                 <span key={i}>{category}</span>
                         ))}
@@ -142,14 +142,12 @@ export default function FullInfoProposal({backdrop, proposalObj, setCallToServer
                                 msUserSelect: 'text'}}>{proposalObj.getter.email}</span><br/>
                             </>}
                             {proposalObj.getter.companySite !== '' &&
-                            <>
-                                Visit out website
                                 <a href={(new RegExp('^([a-z]+://|//)', 'i').test(proposalObj.getter.companySite)
                                     ?'':'//')+proposalObj.getter.companySite} target={'_blank'}
-                                   style={{textDecoration: "underline", userSelect: 'text', msUserSelect: 'text'}}>
-                                    {proposalObj.getter.companySite}
+                                   style={{userSelect: 'text', msUserSelect: 'text', color: "blue"}}>
+                                    Visit out website
                                 </a>
-                            </>}
+                            }
                             </div>
                         </>
                     }

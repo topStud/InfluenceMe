@@ -44,10 +44,10 @@ export default function FullInfoInfluencer({backdrop, influencerObj}) {
                 <div style={{display:"flex",justifyContent: 'flex-start', fontSize: '1em', marginTop:-10}}>
                     {influencerObj.categories.map((category, i)=>(
                         i < influencerObj.categories.length - 1 ?
-                            <div key={i} style={{display:"inline"}}>
+                            <React.Fragment key={i}>
                                 <span>{category}</span>
                                 <span style={{marginRight: 15, marginLeft: 15}}>•</span>
-                            </div>
+                            </React.Fragment>
                             :
                             <span key={i}>{category}</span>
                     ))}
@@ -72,13 +72,11 @@ export default function FullInfoInfluencer({backdrop, influencerObj}) {
                         </>
                     }
                     {influencerObj.instagramUrl !== '' &&
-                        <>
+                        <a target={'_blank'}
+                           href={(new RegExp('^([a-z]+://|//)', 'i').test(influencerObj.instagramUrl) ?'':'//')
+                           +influencerObj.instagramUrl} style={{userSelect: 'text', msUserSelect: 'text', color: "blue"}}>
                             Check out my instagram account
-                            <a target={'_blank'}
-                               href={(new RegExp('^([a-z]+://|//)', 'i').test(influencerObj.instagramUrl) ?'':'//')
-                               +influencerObj.instagramUrl} style={{textDecoration: "underline", userSelect: 'text',
-                                msUserSelect: 'text'}}>{influencerObj.instagramUrl}</a>
-                        </>
+                        </a>
                     }
                 </div>
             </DialogContent>

@@ -80,6 +80,9 @@ export default function PrimarySearchAppBar({data, filtersString, searchesString
     const [errFetchNotifications, setErrFetchNotifications] = React.useState(false)
     const [notificationsList, setNotificationsList] = React.useState(null)
 
+    const [ notificationsUpdate, setNotificationsUpdate ] = React.useState([]);
+    const [ listening, setListening ] = React.useState(false);
+
     // search related
     const proposalsOrInfluencers = (userType === 'companies' && pathname.split('/')[3] === 'proposals')
         || userType === 'influencers' ? 'collaboration_proposals' : 'influencers'
@@ -105,6 +108,22 @@ export default function PrimarySearchAppBar({data, filtersString, searchesString
             console.log(error)
         });
     },[])
+
+    useEffect(()=>{
+        console.log('hi')
+        if(!listening) {
+            console.log('i want to listen')
+            const events = new EventSource(`http://localhost:5000/api/sse/events/${data._id}`);
+            console.log('i am listening')
+            events.onmessage = (event) => {
+                const parsedData = JSON.parse(event.data);
+                console.log('i got the data')
+                setNotificationsUpdate((notifications) => notifications.concat(parsedData));
+            };
+
+            setListening(true);
+        }
+    }, [listening, notificationsUpdate])
 
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
