@@ -65,7 +65,7 @@ PrimarySearchAppBar.propsType = {
     }).isRequired
 }
 
-export default function PrimarySearchAppBar({data, filtersString, searchesString, itemsLists}) {
+export default function PrimarySearchAppBar({data, filtersString, searchesString, itemsLists, setData}) {
     const classes = useStyles();
     // get user type by url - influencers/companies
     const { pathname } = useLocation();
@@ -79,8 +79,8 @@ export default function PrimarySearchAppBar({data, filtersString, searchesString
     // notifications related
     const [errFetchNotifications, setErrFetchNotifications] = React.useState(false)
     const [notificationsList, setNotificationsList] = React.useState(null)
+    const [unseen, setUnseen] = React.useState(data.unseenNotification)
 
-    const [ notificationsUpdate, setNotificationsUpdate ] = React.useState([]);
     const [ listening, setListening ] = React.useState(false);
 
     // search related
@@ -110,20 +110,19 @@ export default function PrimarySearchAppBar({data, filtersString, searchesString
     },[])
 
     useEffect(()=>{
-        console.log('hi')
         if(!listening) {
-            console.log('i want to listen')
             const events = new EventSource(`http://localhost:5000/api/sse/events/${data._id}`);
-            console.log('i am listening')
             events.onmessage = (event) => {
                 const parsedData = JSON.parse(event.data);
-                console.log('i got the data')
-                setNotificationsUpdate((notifications) => notifications.concat(parsedData));
+                if (parsedData.receiverID === data._id) {
+                    setNotificationsList((notifications) => [parsedData,...notifications]);
+                    setUnseen(prev=>prev+1)
+                }
             };
 
             setListening(true);
         }
-    }, [listening, notificationsUpdate])
+    }, [listening, notificationsList])
 
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -222,8 +221,8 @@ export default function PrimarySearchAppBar({data, filtersString, searchesString
                             </Link>
                         }
                         {notificationsList !== null &&
-                        <Notification listItems={notificationsList} id={data._id} userType={userType}
-                                      unseen={data.unseenNotification}/>}
+                        <Notification listItems={notificationsList} userType={userType}
+                                      user={{getter: data, setter: setData}} unseen={unseen} setUnseen={setUnseen} setNotificationList={setNotificationsList}/>}
                         <div style={{display: "flex", flexDirection: "column"}}>
                             <IconButton
                                 edge="end"

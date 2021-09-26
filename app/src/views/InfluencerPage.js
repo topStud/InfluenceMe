@@ -136,7 +136,7 @@ export default function InfluencerPage() {
                 <>
                     <AppBar data={influencerData} filtersString={{proposals: filterStringObj.getter, influencers: null}}
                             searchesString={{proposals: searchStringObj, influencers: null}} itemsLists={{proposals:
-                            {getter: proposalsList, setter: setProposalsList}, influencers: null}}/>
+                            {getter: proposalsList, setter: setProposalsList}, influencers: null}} setData={setInfluencerData}/>
                     <Switch>
                         <Route exact path={`/influencers/${id}`}>
                             {proposalsList.original !== null &&

@@ -125,7 +125,7 @@ export default function CompanyPage() {
             <div style={{minHeight: 'calc(100vh - 121px)', marginBottom:40}}>
                 {companyInfo !== null &&
                 <>
-                    <AppBar data={companyInfo} filtersString={{proposals: filterStringObjProposals.getter,
+                    <AppBar data={companyInfo} setData={setCompanyInfo} filtersString={{proposals: filterStringObjProposals.getter,
                         influencers: filterStringObjInfluencers.getter}} searchesString={{proposals: searchStringProposalsObj,
                         influencers: searchStringInfluencersObj}} itemsLists={{proposals:{getter: proposalsList,
                             setter: setProposalsList}, influencers: {getter: influencersList, setter: setInfluencersList}}}/>

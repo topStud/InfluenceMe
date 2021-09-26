@@ -63,7 +63,6 @@ export default function CollaborationDisplay(props) {
                 list: []
             };
             groupedContracts.push(itemObj);
-            console.log(i)
             // pushes title/companyName to list for select display.
             selectList.push({label: i[field], value: i[field]})
         }

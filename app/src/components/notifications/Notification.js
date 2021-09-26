@@ -2,12 +2,12 @@ import React from "react";
 import Badge from "@material-ui/core/Badge";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import IconButton from "@material-ui/core/IconButton";
-import {Divider, Menu, MenuItem, withStyles} from "@material-ui/core";
+import {Divider, Menu, MenuItem, Snackbar, withStyles} from "@material-ui/core";
 import {Link} from 'react-router-dom';
 import Typography from "@material-ui/core/Typography";
 import CloseIcon from '@material-ui/icons/Close';
-import {AnswerOfServer} from "../../utils";
 import {Avatar} from "@mui/material";
+import {Alert} from "@material-ui/lab";
 
 // amount of notifications increases by viewMoreJump each time
 const viewMoreJump = 3
@@ -42,38 +42,27 @@ class Notification extends React.Component {
         this.state = {
             listItems: [],
             anchorEl: null,
-            callServer: {
-                delete: false,
-                seen: false,
-                clearAll: false,
-                handedNotification: {}
+            snackbar: {
+                open: false,
+                msg: ''
             },
             expandNotificationsNumber: 1,
             unseenNumber: 0
         };
+        this.deleteNotification = this.deleteNotification.bind(this)
     }
 
-    // sets list of notifications
-    // invoked immediately after a component and all its children components have been rendered to the DOM
-    // componentDidMount() {
-    //     this.setState({...this.state, listItems: this.props.listItems });
-    // }
-    // state of component depends on changes in props over time.
-    static getDerivedStateFromProps(props,state){
-        return {...state, listItems: props.listItems, unseenNumber: props.unseenNumber }
-    }
-
-    // checks if notifications list updated and updates state accordingly
-    componentDidUpdate(previousProps,prevState, snapShot) {
-        if (previousProps.listItems !== this.props.listItems) {
-            this.setState({...this.state, listItems: this.props.listItems });
-        }
+    static getDerivedStateFromProps(props,state) {
+        return {...state, listItems:  props.listItems, unseenNumber: props.unseen}
     }
 
     // opens notification window
     toggleNotification = (event) => {
-        this.setState({...this.state, expandNotificationsNumber:1, anchorEl: event.currentTarget, unseenNumber: this.props.unseenNumber});
-        fetch(`/api/notifications/reset-unseen/${this.props.id}`, {method: 'PUT'}).catch(e=>console.log(e))
+        if (this.state.unseenNumber !== 0) {
+            this.props.setUnseen(0)
+            fetch(`/api/notifications/reset-unseen/${this.props.user.getter._id}`, {method: 'PUT'}).catch(e=>console.log(e))
+        }
+        this.setState({...this.state, expandNotificationsNumber:1, anchorEl: event.currentTarget});
     };
 
     // function to generate date according to timestamp
@@ -108,41 +97,80 @@ class Notification extends React.Component {
     onNotificationClick = (notification) => {
         // if notification has not been clicked before, updates it with server (calls it)
         if (notification.seen !== true) {
-            this.setState({
-                ...this.state,
-                callServer: {
-                    ...this.state.callServer,
-                    handedNotification: notification,
-                    seen: true
-                },
-                anchorEl: null
-            })
+            this.AnswerOfServer(`/api/notifications/${notification._id}`,
+                {method: 'PUT'}, 'An Error occurred', ()=> {
+                    // updating the notifications' list
+                    let items = [...this.state.listItems];
+                    let index = items.findIndex(i=> i._id === notification._id)
+                    notification.seen = true
+                    items[index] = notification
+                    this.closeNotifications()
+                    this.props.setNotificationList(items)
+                })
         } else {
             this.closeNotifications()
         }
     }
 
     deleteNotification = (notification) => {
-        // calls server to delete the notification
-        this.setState({
-            ...this.state,
-            callServer: {
-                ...this.state.callServer,
-                handedNotification: notification,
-                delete: true
+        this.AnswerOfServer(`/api/notifications/${notification._id}/${this.props.user.getter._id}`,
+            {method: 'DELETE'}, 'Couldn\'t delete notification', ()=> {
+                // updates list to be without the deleted notification
+                this.props.setNotificationList(this.state.listItems.filter(o => o._id !== notification._id))
+            })
+    }
+
+    AnswerOfServer = (url, methodObj, failMsg, sucFunc) => {
+        fetch(url, methodObj).then(res => {
+            if (!res.ok) {
+                this.setState({
+                    ...this.state,
+                    snackbar: {
+                        open: true,
+                        msg: 'An error occurred'
+                    }
+                })
+                throw new Error('Response not returned with status 200')
             }
-        })
+            return res.json()
+        }).then(response => {
+            if (response.status === 'ok') {
+                sucFunc(response)
+            } else {
+                if ('error' in response) {
+                    this.setState({
+                        ...this.state,
+                        snackbar: {
+                            open: true,
+                            msg: response.error
+                        }
+                    })
+                } else {
+                    this.setState({
+                        ...this.state,
+                        snackbar: {
+                            open: true,
+                            msg: failMsg
+                        }
+                    })
+                }
+            }
+        }).catch((error) => {
+            console.log(error)
+        });
     }
 
     onClickClearAll = () => {
-        // calls server to delete all the notifications
-        this.setState({
-            ...this.state,
-            callServer: {
-                ...this.state.callServer,
-                clearAll: true
-            }
-        })
+        this.AnswerOfServer(`/api/notifications/${this.props.user.getter._id}`,
+            {method: 'DELETE'}, 'An error occurred', ()=> {
+                // updates state in case of success
+                this.setState({
+                    ...this.state,
+                    listItems: [],
+                    anchorEl: null,
+                })
+            })
+        this.props.setNotificationList([])
     }
 
     onViewMoreClick = () => {
@@ -152,6 +180,16 @@ class Notification extends React.Component {
             expandNotificationsNumber: this.state.expandNotificationsNumber + 1
         })
     }
+
+    handleCloseSnackbar = () => {
+        this.setState({
+            ...this.state,
+            snackbar: {
+                open: false,
+                msg: ''
+            }
+        })
+    };
 
     render() {
         const { classes } = this.props;
@@ -193,7 +231,8 @@ class Notification extends React.Component {
             <>
                 {/*icon of notifications*/}
                 <IconButton color="inherit" style={{height: '80%', alignSelf:"center"}} onClick={(event) => this.toggleNotification(event)}>
-                    <Badge badgeContent={this.props.unseen} hidden={this.props.unseen === 0} color="secondary">
+                    <Badge badgeContent={this.state.unseenNumber}
+                           hidden={this.state.unseenNumber === 0} color="secondary">
                         <NotificationsIcon style={{color: 'black'}}/>
                     </Badge>
                 </IconButton>
@@ -262,7 +301,7 @@ class Notification extends React.Component {
                                                 <div key={key}>
                                                     {/*each notifications transfers user to different page accordingly*/}
                                                     <Link
-                                                        to={`/${this.props.userType}/${this.props.id}/${obj.messageType === 1
+                                                        to={`/${this.props.userType}/${this.props.user.getter._id}/${obj.messageType === 1
                                                             ? obj.senderID+'?id='+obj.itemID : obj.messageType === 2 ? `contract/${obj.itemID}` :
                                                                 'personal/currentCollaborations'}`} style={{width: '100%'}}>
                                                         <MenuItem className={'' + (!obj.seen ? classes.backgroundUnseen : classes.backgroundSeen)}
@@ -326,56 +365,12 @@ class Notification extends React.Component {
                         </div>}
                     </Menu>
                 }
-                {/*call server for deletion*/}
-                {this.state.callServer.delete && <AnswerOfServerClassOption
-                    url={`/api/notifications/${this.state.callServer.handedNotification._id}/${this.props.id}`}
-                    methodObj={{method: 'DELETE'}} sucMsg={''} failMsg={'Couldn\'t delete notification'} sucFunc={()=> {
-                    // updates list to be without the deleted notification
-                    this.setState({
-                        ...this.state,
-                        listItems: this.state.listItems.filter(o => o._id !== this.state.callServer.handedNotification._id),
-                        callServer: {
-                            ...this.state.callServer,
-                            delete: false,
-                            handedNotification: {}
-                        }
-                    });
-                }}/>}
-                {/*call server for notification first click*/}
-                {this.state.callServer.seen && <AnswerOfServerClassOption
-                    url={`/api/notifications/${this.state.callServer.handedNotification._id}`} methodObj={{method: 'PUT'}}
-                    sucMsg={''} failMsg={'An Error occurred'} sucFunc={()=> {
-                        // updating the notifications' list
-                        let items = [...this.state.listItems];
-                        let index = items.findIndex(i=> i._id === this.state.callServer.handedNotification._id)
-                        this.state.callServer.handedNotification.seen = true
-                        items[index] = this.state.callServer.handedNotification
-                        this.setState({
-                            ...this.state,
-                            listItems: items,
-                            anchorEl: null,
-                            callServer:{
-                                ...this.state,
-                                seen: false,
-                                handedNotification: {}
-                            }
-                        })
-                }}/>}
-                {/*call server for clearing all the notifications*/}
-                {this.state.callServer.clearAll && <AnswerOfServerClassOption
-                    url={`/api/notifications/${this.props.id}`} methodObj={{method: 'DELETE'}}
-                    sucMsg={''} failMsg={'An Error occurred'} sucFunc={()=> {
-                    // updates state in case of success
-                    this.setState({
-                        ...this.state,
-                        listItems: [],
-                        anchorEl: null,
-                        callServer: {
-                            ...this.state,
-                            clearAll: false,
-                        }
-                    })
-                }}/>}
+                <Snackbar open={this.state.snackbar.open} autoHideDuration={6000} onClose={this.handleCloseSnackbar}
+                          anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}>
+                    <Alert onClose={this.handleCloseSnackbar} severity={'error'} style={{fontSize:14, fontFamily:'Rubik'}}>
+                        <div>{this.state.snackbar.msg}</div>
+                    </Alert>
+                </Snackbar>
             </>
         );
     }
@@ -391,12 +386,6 @@ function hoursDifferent(timestamp) {
 function daysDifferent(timestamp) {
     let diffInMilliSeconds = Math.abs(new Date().getTime() - new Date(timestamp).getTime()) / 1000;
     return Math.floor(diffInMilliSeconds / 86400);
-}
-
-const AnswerOfServerClassOption = ({url, methodObj, sucMsg, failMsg, sucFunc}) => {
-     const [callServer, setCallServer] = React.useState(true)
-     return (<AnswerOfServer callServerObj={{getter: callServer, setter: setCallServer}} failMsg={failMsg}
-                             methodObj={methodObj} sucMsg={sucMsg} url={url} sucFunc={sucFunc}/>)
 }
 
 export default withStyles(styles)(Notification);

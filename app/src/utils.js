@@ -68,14 +68,18 @@ export const AnswerOfServer = ({callServerObj, url, methodObj, sucMsg, failMsg, 
                 if (response.status === 'ok' && sucMsg !== '') {
                     setSeverity('success')
                     setErrMsg(sucMsg)
-                    sucFunc(response)
+                    if (typeof sucFunc === 'function') {
+                        sucFunc(response)
+                    }
                     callServerObj.setter(false)
                     setOpen(true)
                 } else if (response.status === 'ok'){
-                    sucFunc(response)
+                    if (typeof sucFunc === 'function') {
+                        sucFunc(response)
+                    }
                     callServerObj.setter(false)
                 } else {
-                    if (failMsg === '') {
+                    if (failMsg === '' && typeof failFunc === 'function') {
                         failFunc()
                     } else {
                         setSeverity('error')
