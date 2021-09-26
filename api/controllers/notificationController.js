@@ -78,7 +78,7 @@ async function createNotificationTo(user, req, res, message) {
         })
 
         // send alert to client side
-        //await sse.sendEventsToAll(notification)
+        await sse.sendEventsToAll(notification)
 
         if(req.body.messageType === 3){
             // add 1 influencer to collaboration proposal that match to the contract of that notification
