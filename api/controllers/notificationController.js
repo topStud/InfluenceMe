@@ -4,6 +4,7 @@ const influencerModel = require('../models/influencer')
 const collaborationModel = require('../models/collaboration')
 const contractModel = require('../models/contract')
 const utils = require('./utils')
+const sse = require('./sse')
 
 
 const sendNotification = async (req, res) => {
@@ -70,12 +71,15 @@ async function createNotificationTo(user, req, res, message) {
         seen:req.body.seen,
         photo:req.body.photo
     }).then(async (notification) => {
+        user.unseenNotification++
         user.Notifications.push(notification)
         user.save().catch((err) => {
             return res.status(500).json({status: 'error', 'error': 'could not save'})
         })
 
-        // todo: check if working
+        // send alert to client side
+        await sse.sendEventsToAll(notification)
+
         if(req.body.messageType === 3){
             // add 1 influencer to collaboration proposal that match to the contract of that notification
             await contractModel.
@@ -248,10 +252,40 @@ async function deleteArray(user, req, res) {
     res.json({status: 'ok'})
 }
 
+
+const resetNumberOfUnseen = async (req, res) => {
+    await companyModel.
+    findOne({ _id: req.params.id}, async (err, company) => {
+        if (err || company === null){
+            await influencerModel.
+            findOne({ _id: req.params.id}, async (err, influencer) => {
+                if (err || influencer === null){
+                    return res.status(400).json({status: 'error', 'error': 'user not exist'})
+                }
+                await reset(influencer, req, res)
+            })
+        } else {
+            await reset(company, req, res)
+        }
+    })
+}
+
+
+async function reset(user, req, res){
+    user.unseenNotification = 0
+    user.save().catch((err) => {
+        return res.status(500).json({status: 'error', 'error': 'could not save'})
+    })
+    res.json({status: 'ok'})
+}
+
+
+
 module.exports = {
     sendNotification,
     notificationsOf,
     updateSeen,
     deleteSpecificNotification,
-    deleteNotifications
+    deleteNotifications,
+    resetNumberOfUnseen
 }

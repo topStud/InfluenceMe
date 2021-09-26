@@ -8,7 +8,7 @@ router.get('/:id', notificationsController.notificationsOf) // id of company/inf
 router.put('/:id', notificationsController.updateSeen) // id of notification
 router.delete('/:notificationID/:userID', notificationsController.deleteSpecificNotification)
 router.delete('/:userID', notificationsController.deleteNotifications)
-
+router.put('/reset-unseen/:id', notificationsController.resetNumberOfUnseen) // id of user
 
 
 module.exports = router

@@ -8,6 +8,8 @@ const companyRoutes = require('./routes/companyRoutes')
 const collaborationsRoutes = require('./routes/collaborationsRoutes')
 const contractRoutes = require('./routes/contractRoutes')
 const notificationRoutes = require('./routes/notificationRoutes')
+const sseRoutes = require('./routes/sseRoutes')
+const cors = require('cors')
 
 
 // connect to the database
@@ -29,7 +31,8 @@ const app = express()
 
 app.use(morgan('dev'))
 app.use(bodyParser.urlencoded({extended:true}))
-app.use(bodyParser.json());
+app.use(bodyParser.json())
+app.use(cors())
 
 const PORT = process.env.PORT || '5000'
 
@@ -37,9 +40,11 @@ app.listen(PORT, ()=>{
     console.log('Server is running on port ' + PORT)
 })
 
+
 app.use('/api/influencers', influencerRoutes)
 app.use('/api', commonRoutes)
 app.use('/api/companies', companyRoutes)
 app.use('/api/collaboration_proposals', collaborationsRoutes)
 app.use('/api/contracts', contractRoutes)
 app.use('/api/notifications', notificationRoutes)
+app.use('/api/sse', sseRoutes)
