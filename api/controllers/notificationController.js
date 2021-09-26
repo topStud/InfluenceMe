@@ -64,6 +64,7 @@ async function updateCanEdit(req, res) {
 async function createNotificationTo(user, req, res, message) {
     await notificationModel.create({
         senderID: req.body.senderID,
+        receiverID: req.body.receiverID,
         itemID: req.body.itemID,
         messageType: req.body.messageType,
         message: message,
