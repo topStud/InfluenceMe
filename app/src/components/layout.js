@@ -26,15 +26,15 @@ export default function Layout({ children, pageOption }) {
                 <header style={{width: '100%'}}>
                     {!pageOption && (
                         <>
-                            <Link to={'/view'}>
-                                <Button style={{marginTop:'2%', marginLeft:'3%'}} variant={"outlined"}>
-                                    View Proposals
-                                </Button>
-                            </Link>
-                            <Typography component="h1" variant={"h1"} style={{textAlign:'center', marginTop: 10,
+                            <Typography component="h1" variant={"h1"} style={{textAlign:'center', marginTop: '2%',
                                 marginBottom: 50, fontFamily: 'Rubik',fontWeight: 400, color: '#1F75A6'}}>
                                 Influence<span style={{color: '#A64B28'}}>Me</span>
                             </Typography>
+                            <a href={'#signIn'} style={{position:"absolute", right: '2%', top:'4%'}}>
+                                <Button variant={"outlined"}>
+                                    Sign In
+                                </Button>
+                            </a>
                         </>
                     ) }
                     {pageOption === 1 && (

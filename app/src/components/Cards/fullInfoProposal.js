@@ -123,7 +123,7 @@ export default function FullInfoProposal({backdrop, proposalObj, setCallToServer
                     <p style={{whiteSpace: "pre-line"}}>{proposalObj.getter.bio}</p>
                     <h3 style={{color: '#A68617', margin:0}}>Some information about the proposal</h3>
                     <p style={{whiteSpace: "pre-line"}}>{proposalObj.getter.description}</p>
-                    <h4 style={{color: '#796211'}}>Requirements</h4>
+                    <h4 style={{color: '#796211', margin:0}}>Requirements</h4>
                     <p style={{whiteSpace: "pre-line"}}>{proposalObj.getter.requirements}</p>
                     {/*company contact info*/}
                     {

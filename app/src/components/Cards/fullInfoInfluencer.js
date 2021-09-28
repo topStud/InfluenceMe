@@ -29,7 +29,7 @@ export default function FullInfoInfluencer({backdrop, influencerObj}) {
             fullWidth
             scroll={'body'}
             onClose={onClickCancelFinish}
-            maxWidth={'md'}
+            maxWidth={'sm'}
             aria-labelledby="alert-dialog-slide-title"
             aria-describedby="alert-dialog-slide-description"
         >
@@ -55,11 +55,11 @@ export default function FullInfoInfluencer({backdrop, influencerObj}) {
                 {/*info about user*/}
                 <h3 style={{color: '#A68617'}}>About Me</h3>
                 {influencerObj.date !== '' &&
-                    <p>
+                    <p style={{marginBottom: 0}}>
                         Age: {calculateAge(influencerObj.date.substring(0,influencerObj.date.indexOf('T')))}
                     </p>
                 }
-                <p>Number of followers: {influencerObj.followersAmount}</p>
+                <p style={{marginTop:0}}>Number of followers: {influencerObj.followersAmount}</p>
                 <p style={{whiteSpace: "pre-line"}}>{influencerObj.bio}</p>
                 {/*contact info*/}
                 <div style={{display:"flex", flexDirection: "column", alignItems:"center"}}>
