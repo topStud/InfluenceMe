@@ -2,6 +2,7 @@ import Typography from "@material-ui/core/Typography";
 import {Divider} from "@material-ui/core";
 import React from "react";
 import {makeStyles} from "@material-ui/core/styles";
+import PropTypes from 'prop-types'
 
 const useStyles = makeStyles(() => ({
     contact:{
@@ -41,6 +42,10 @@ const useStyles = makeStyles(() => ({
         textAlign: 'center'
     },
 }));
+
+Contract.propTypes = {
+    contractInfo: PropTypes.object.isRequired
+}
 
 export default function Contract({contractInfo}) {
     const classes = useStyles()

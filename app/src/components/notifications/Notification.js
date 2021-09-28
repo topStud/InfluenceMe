@@ -302,8 +302,7 @@ class Notification extends React.Component {
                                                     {/*each notifications transfers user to different page accordingly*/}
                                                     <Link
                                                         to={`/${this.props.userType}/${this.props.user.getter._id}/${obj.messageType === 1
-                                                            ? obj.senderID+'?id='+obj.itemID : obj.messageType === 2 ? `contract/${obj.itemID}` :
-                                                                'personal/currentCollaborations'}`} style={{width: '100%'}}>
+                                                            ? obj.senderID+'?id='+obj.itemID : `contract/${obj.itemID}`}`} style={{width: '100%'}}>
                                                         <MenuItem className={'' + (!obj.seen ? classes.backgroundUnseen : classes.backgroundSeen)}
                                                         onClick={() => this.onNotificationClick(obj)}>
                                                             <div style={{

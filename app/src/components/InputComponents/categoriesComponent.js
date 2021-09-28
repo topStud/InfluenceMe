@@ -48,7 +48,7 @@ export default function CategoriesComponent(props) {
                     name="category"
                     color="default"
                     label="Lifestyle"
-                    style={{margin: 5, width: 85}}
+                    style={{margin: 5, width: 74}}
                     variant={props.val.getter.categories.includes('Lifestyle')?'default':'outlined'}
                 />
                 <Chip
@@ -57,7 +57,7 @@ export default function CategoriesComponent(props) {
                     color="default"
                     value={'Travel'}
                     label="Travel"
-                    style={{margin: 5, width: 70}}
+                    style={{margin: 5, width: 62}}
                     variant={props.val.getter.categories.includes('Travel')?'default':'outlined'}
                 />
                 <Chip
@@ -66,7 +66,7 @@ export default function CategoriesComponent(props) {
                     color="default"
                     value={'Games'}
                     label="Games"
-                    style={{margin: 5, width: 70}}
+                    style={{margin: 5, width: 68}}
                     variant={props.val.getter.categories.includes('Games')?'default':'outlined'}
                 />
                 <Chip
@@ -75,8 +75,17 @@ export default function CategoriesComponent(props) {
                     color="default"
                     value={'Gadgets'}
                     label="Gadgets"
-                    style={{margin: 5, width: 80}}
+                    style={{margin: 5, width: 76}}
                     variant={props.val.getter.categories.includes('Gadgets')?'default':'outlined'}
+                />
+                <Chip
+                    onClick={()=>handleChipClick('Sport')}
+                    name="category"
+                    color="default"
+                    value={'Sport'}
+                    label="Sport"
+                    style={{margin: 5, width: 58}}
+                    variant={props.val.getter.categories.includes('Sport')?'default':'outlined'}
                 />
                 <Chip
                     onClick={()=>handleChipClick('Clothing')}
@@ -84,7 +93,7 @@ export default function CategoriesComponent(props) {
                     color="default"
                     value={'Clothing'}
                     label="Clothing"
-                    style={{margin: 5, width: 80}}
+                    style={{margin: 5, width: 74}}
                     variant={props.val.getter.categories.includes('Clothing')?'default':'outlined'}
                 />
                 <Chip
@@ -93,8 +102,26 @@ export default function CategoriesComponent(props) {
                     color="default"
                     value={'Beauty'}
                     label="Beauty"
-                    style={{margin: 5, width: 70}}
+                    style={{margin: 5, width: 67}}
                     variant={props.val.getter.categories.includes('Beauty')?'default':'outlined'}
+                />
+                <Chip
+                    onClick={()=>handleChipClick('Food')}
+                    name="category"
+                    color="default"
+                    value={'Food'}
+                    label="Food"
+                    style={{margin: 5, width: 57}}
+                    variant={props.val.getter.categories.includes('Food')?'default':'outlined'}
+                />
+                <Chip
+                    onClick={()=>handleChipClick('Entertainment')}
+                    name="category"
+                    color="default"
+                    value={'Entertainment'}
+                    label="Entertainment"
+                    style={{margin: 5, width: 108}}
+                    variant={props.val.getter.categories.includes('Entertainment')?'default':'outlined'}
                 />
             </FormGroup>
             {/*appears when user did not check at least one category*/}

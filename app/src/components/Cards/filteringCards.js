@@ -105,8 +105,11 @@ export default function FilteringCards({objList, display, backdrop, setClickedCa
         Travel: false,
         Games: false,
         Gadgets: false,
+        Sport: false,
         Clothing: false,
-        Beauty: false
+        Beauty: false,
+        Food: false,
+        Entertainment: false
     })
 
     function onClickClearAll() {
@@ -115,8 +118,11 @@ export default function FilteringCards({objList, display, backdrop, setClickedCa
             Travel: false,
             Games: false,
             Gadgets: false,
+            Sport: false,
             Clothing: false,
-            Beauty: false
+            Beauty: false,
+            Food: false,
+            Entertainment: false
         })
         filterStringObj.setter('')
         // sets filtered list to be the original list.
@@ -233,15 +239,15 @@ export default function FilteringCards({objList, display, backdrop, setClickedCa
                     {/*categories section*/}
                     <div
                         className={classes.drawer}
-                        style={{paddingLeft: 10, position: "sticky", top: type === 'view' ? 20:70, height: 300}}
+                        style={{paddingLeft: 10, position: "sticky", top: type === 'view' ? 20:70, maxHeight: 'calc(100vh - 171px)'}}
                     >
                         <div className={classes.toolbar}>
                             Categories
                             <button onClick={onClickClearAll} className={classes.clearAll}>clear all</button>
                         </div>
                         <Divider style={{marginTop: 5}} />
-                        <List style={{display: "flex", flexDirection:"column"}}>
-                            {['Lifestyle', 'Travel', 'Games','Gadgets', 'Clothing', 'Beauty'].map((text) => (
+                        <List style={{display: "flex", flexDirection:"column", height:'90%', overflowY: 'auto'}}>
+                            {Object.keys(checked).map((text) => (
                                 <ListItem button key={text} style={{height: 40}} onClick={()=>onCategoryClick(text)}>
                                     <ListItemText style={{textDecorationLine: checked[text] ? "underline" : 'none',
                                         textDecorationColor: '#F27746', textDecorationThickness: '0.4em'}} primary={text} />

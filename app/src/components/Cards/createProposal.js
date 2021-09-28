@@ -163,7 +163,7 @@ export default function CreateProposalDialog(props) {
                          <TextField disabled={true} fullWidth label={'Title'} id={'disabled-title'}
                                     value={props.val.getter.title}/>}
                     </Grid>
-                    <Grid item xs={12} style={{height: 100}}>
+                    <Grid item xs={12} style={{height: 120}}>
                         <CategoriesComponent val={props.val} err={errors}/>
                     </Grid>
                     <Grid item xs={12} style={{height: 145, paddingLeft:0}}>

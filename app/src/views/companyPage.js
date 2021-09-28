@@ -10,6 +10,7 @@ import FullInfoInfluencer from '../components/Cards/fullInfoInfluencer'
 import FilteringCards from "../components/Cards/filteringCards";
 import PersonalInfluencerDataPage from '../components/notifications/personalInfluencerDataPage'
 import {FetchError} from "../utils";
+import ContractView from "../components/notifications/ContractView";
 
 const theme = createTheme({
     palette: {
@@ -147,6 +148,9 @@ export default function CompanyPage() {
                         </Route>
                         <Route path={`/companies/${id}/personal`}>
                             <PersonalArea objData={companyInfo} setObjData={setCompanyInfo}/>
+                        </Route>
+                        <Route path={`/companies/${id}/contract/:contractID`}>
+                            <ContractView/>
                         </Route>
                         <Route path='/companies/:id/:influencerId'>
                             <PersonalInfluencerDataPage company={companyInfo}/>

@@ -9,7 +9,7 @@ import '../styles/globals.css'
 import PersonalArea from "../components/personalArea/personalArea";
 import FullInfoProposal from "../components/Cards/fullInfoProposal";
 import {AnswerOfServer, FetchError} from "../utils";
-import ContractAcceptDecline from "../components/notifications/ContractAcceptDecline";
+import ContractView from "../components/notifications/ContractView";
 
 const theme = createTheme({
     palette: {
@@ -165,7 +165,7 @@ export default function InfluencerPage() {
                             <PersonalArea objData={influencerData} setObjData={setInfluencerData} />
                         </Route>
                         <Route path={`/influencers/${id}/contract/:contractID`}>
-                            <ContractAcceptDecline influencer={influencerData}/>
+                            <ContractView influencer={influencerData}/>
                         </Route>
                     </Switch>
                 </>
