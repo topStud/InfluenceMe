@@ -24,10 +24,11 @@ const useStyles = makeStyles(() => ({
 }));
 
 ContractView.propTypes = {
-    influencer: PropTypes.object
+    influencer: PropTypes.object,
+    updateInfluencer: PropTypes.func
 }
 
-export default function ContractView({influencer}) {
+export default function ContractView({influencer, updateInfluencer}) {
     // gets contract id from url
     const {contractID} = useParams()
     const classes = useStyles()
@@ -43,6 +44,7 @@ export default function ContractView({influencer}) {
 
     // checks if user accepted the contract in the past
     const contractExists = influencer !== undefined ? influencer.currentContracts.includes(contractID) : null
+    console.log(contractExists)
     // if the contract was previously declined by the user - true
     const [contractDeleted, setContractDeleted] = React.useState(false)
 
@@ -174,6 +176,10 @@ export default function ContractView({influencer}) {
                                     url={`/api/notifications`} callServerObj={{getter: callServer, setter: setCallServer}}
                             sucFunc={()=>{
                                 setServerUpdatedSuccessfully(true)
+                                updateInfluencer({
+                                    ...influencer,
+                                    currentContracts: [contractID, ...influencer.currentContracts]
+                                })
                     }}/>}
                 </>}
             {/*A message shown to the user if contract does not exists*/}

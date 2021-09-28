@@ -163,7 +163,8 @@ export default function PersonalInfluencerDataPage({company}) {
                     companyPhone: proposal.phone === null ? '' : proposal.phone,
                     categories: proposal.categories,
                     title: proposal.title,
-                    details: proposal.description
+                    details: proposal.description,
+                    payment: ''
                 })
             }
         }).catch((error) => {

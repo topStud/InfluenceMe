@@ -165,7 +165,7 @@ export default function InfluencerPage() {
                             <PersonalArea objData={influencerData} setObjData={setInfluencerData} />
                         </Route>
                         <Route path={`/influencers/${id}/contract/:contractID`}>
-                            <ContractView influencer={influencerData}/>
+                            <ContractView influencer={influencerData} updateInfluencer={setInfluencerData}/>
                         </Route>
                     </Switch>
                 </>
