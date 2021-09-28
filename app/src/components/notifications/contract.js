@@ -75,12 +75,12 @@ export default function Contract({contractInfo}) {
                 Details of the contract
             </Typography>
             <Divider/>
-            <p>{contractInfo.details}</p>
+            <p style={{whiteSpace: "pre-line"}}>{contractInfo.details}</p>
             <Typography className={classes.sectionTitle}>
                 {contractInfo.companyName}'s payment
             </Typography>
             <Divider/>
-            <p>{contractInfo.payment}</p>
+            <p style={{whiteSpace: "pre-line"}}>{contractInfo.payment}</p>
             <div className={classes.contact}>
                 <div className={classes.userContact}>
                     <Typography className={classes.userContactTitle}>
