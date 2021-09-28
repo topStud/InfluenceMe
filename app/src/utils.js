@@ -57,12 +57,6 @@ export const AnswerOfServer = ({callServerObj, url, methodObj, sucMsg, failMsg, 
     useEffect(() => {
         if(callServerObj.getter) {
             fetch(url, methodObj).then(res => {
-                if (!res.ok && failMsg !== '') {
-                    setOpen(true)
-                    setSeverity('error')
-                    setErrMsg('Connection problem')
-                    throw new Error('Response not returned with status 200')
-                }
                 return res.json()
             }).then(response => {
                 if (response.status === 'ok' && sucMsg !== '') {
