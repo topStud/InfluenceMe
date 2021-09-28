@@ -35,8 +35,8 @@ export default function FullInfoInfluencer({backdrop, influencerObj}) {
         >
             <DialogTitle id="influencer-dialog-slide-title">
                 <span style={{fontFamily:'Rubik', fontWeight:800, color: '#1F75A6', fontSize:'1.7em'}}>
-                    {influencerObj.instagramUser} <small style={{fontSize:'0.5em', color: '#F27746'}}>
-                    ({influencerObj.firstName} {influencerObj.lastName})</small>
+                    {influencerObj.instagramUser} <small style={{fontSize:'0.4em', color: '#F27746'}}>
+                    {influencerObj.firstName} {influencerObj.lastName}</small>
                 </span>
             </DialogTitle>
             <DialogContent>

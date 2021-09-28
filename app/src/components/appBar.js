@@ -119,6 +119,9 @@ export default function PrimarySearchAppBar({data, filtersString, searchesString
                     setUnseen(prev=>prev+1)
                 }
             };
+            events.onerror = () => {
+                console.log("An error occurred while attempting to connect.");
+            };
 
             setListening(true);
         }

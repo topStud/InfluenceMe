@@ -4,16 +4,12 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 import React from "react";
-import IconButton from "@material-ui/core/IconButton";
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
 import ConfirmationDialog from "./confirmationDialog";
 import EditDialog from "./createProposal";
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import {useLocation} from "react-router-dom";
 import PropTypes from 'prop-types'
 import {TransitionZoom} from "../../utils";
-import {Tooltip} from "@material-ui/core";
 
 FullInfoProposal.propTypes = {
     backdrop: PropTypes.exact({
@@ -90,20 +86,9 @@ export default function FullInfoProposal({backdrop, proposalObj, setCallToServer
             >
                 <DialogTitle id="proposal-dialog-slide-title" >
                     <span style={{fontFamily:'Rubik', fontWeight:800, color: '#1F75A6', fontSize:'1.7em'}}>
-                        {proposalObj.getter.title} <small style={{fontSize:'0.5em', color: '#F27746'}}>
-                        ({proposalObj.getter.companyName})</small>
+                        {proposalObj.getter.title} <small style={{fontSize:'0.4em', color: '#F27746'}}>
+                        {proposalObj.getter.companyName}</small>
                     </span>
-                    {/*delete and edit icons for company*/}
-                    {userType === 'companies' && <div style={{display: "flex", justifyContent: "flex-end", marginTop: -50}}>
-                        {proposalObj.getter.canEdit === true && <Tooltip title="Edit"><IconButton aria-label="edit" onClick={onEditClick}>
-                            <EditIcon/>
-                        </IconButton></Tooltip>}
-                        <Tooltip title="Delete">
-                            <IconButton aria-label="delete" onClick={onDeleteClick}>
-                                <DeleteIcon/>
-                            </IconButton>
-                        </Tooltip>
-                    </div>}
                 </DialogTitle>
                 <DialogContent>
                     {/*categories display*/}
@@ -165,6 +150,14 @@ export default function FullInfoProposal({backdrop, proposalObj, setCallToServer
                         Interested
                     </Button>
                     }
+                    <div style={{display: "flex", justifyContent:"flex-start", width:'100%'}}>
+                        <Button variant={"outlined"} color="primary" onClick={onEditClick} style={{marginRight: '1%'}}>
+                            Edit
+                        </Button>
+                        <Button variant={"outlined"} color="primary" onClick={onDeleteClick}>
+                            Delete
+                        </Button>
+                    </div>
                     <Button variant={"contained"} color="primary" onClick={onClickCancelFinish}>
                         Close
                     </Button>

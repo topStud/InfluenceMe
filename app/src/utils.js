@@ -149,6 +149,7 @@ export const GetFilteredList = ({callServerObj, url, itemsList}) => {
                     callServerObj.setter(false)
                     let tempList = response.docs
                     tempList = tempList.reverse().map(item => itemsList.getter.original.find(i=> i._id === item._id))
+                    tempList = tempList.filter(x=> x !== undefined)
                     itemsList.setter({
                         ...itemsList.getter,
                         filtered: tempList
