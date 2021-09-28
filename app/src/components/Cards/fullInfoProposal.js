@@ -138,6 +138,16 @@ export default function FullInfoProposal({backdrop, proposalObj, setCallToServer
                     }
                 </DialogContent>
                 <DialogActions>
+                    {userType==='companies' && <div style={{display: "flex", justifyContent:"flex-start", width:'100%'}}>
+                        {proposalObj.getter.canEdit &&
+                            <Button variant={"outlined"} color="primary" onClick={onEditClick} style={{marginRight: '1%'}}>
+                                Edit
+                            </Button>
+                        }
+                        <Button variant={"outlined"} color="primary" onClick={onDeleteClick}>
+                            Delete
+                        </Button>
+                    </div>}
                     {/*if user disabled, can't send interest requests to companies*/}
                     {userType==='influencers' && !disabled &&
                     <Button
@@ -150,14 +160,6 @@ export default function FullInfoProposal({backdrop, proposalObj, setCallToServer
                         Interested
                     </Button>
                     }
-                    <div style={{display: "flex", justifyContent:"flex-start", width:'100%'}}>
-                        <Button variant={"outlined"} color="primary" onClick={onEditClick} style={{marginRight: '1%'}}>
-                            Edit
-                        </Button>
-                        <Button variant={"outlined"} color="primary" onClick={onDeleteClick}>
-                            Delete
-                        </Button>
-                    </div>
                     <Button variant={"contained"} color="primary" onClick={onClickCancelFinish}>
                         Close
                     </Button>

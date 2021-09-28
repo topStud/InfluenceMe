@@ -69,8 +69,8 @@ export default function InputPassword(props) {
                 endAdornment: (
                     // adds option to show password
                     <InputAdornment position="end">
-                        <Tooltip title={<span style={{fontSize:'1.2em'}}>Must contain at least one of A-Z, a-z and 0-9. Minimum length for' +
-                            ' a password is 8 characters</span>} style={{marginRight: -10}} tabIndex={-1}>
+                        <Tooltip title={<span style={{fontSize:'1.2em'}}>Must contain at least one of A-Z, a-z and 0-9. Minimum length for
+                             a password is 8 characters</span>} style={{marginRight: -10}} tabIndex={-1}>
                             <IconButton>
                                 <HelpOutlineIcon style={{color: "gray"}}/>
                             </IconButton>
