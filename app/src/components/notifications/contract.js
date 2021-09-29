@@ -68,8 +68,7 @@ export default function Contract({contractInfo}) {
                 The collaboration starts on: {fromServerDateToUSDate(contractInfo.startDay)}.<br/>
                 {contractInfo.endDay !== undefined ? `The collaboration ends at: ${fromServerDateToUSDate(contractInfo.endDay)}.`:
                     'The end of the collaboration was not determined.'}<br/><br/>
-                It deals with the company's proposal named <b>{contractInfo.title}</b> and relates to the categories
-                {contractInfo.categories.join(' ')}.<br/><br/>
+                It deals with the company's proposal named <b>{contractInfo.title}</b> and relates to the categories: {contractInfo.categories.join(' ')}.<br/><br/>
             </p>
             <Typography className={classes.sectionTitle}>
                 Details of the contract
