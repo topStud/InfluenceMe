@@ -209,7 +209,7 @@ class Notification extends React.Component {
                 list: []
             }
         ];
-        listItems.map((notification) => {
+        listItems.forEach((notification) => {
             // checks for 10 hours difference
             const days = daysDifferent(notification.createdAt)
             const hours = hoursDifferent(notification.createdAt)

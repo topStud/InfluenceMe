@@ -52,7 +52,7 @@ export default function CollaborationDisplay(props) {
 
     const groupedContracts = [];
     const selectList = []
-    contracts.map((i) => {
+    contracts.forEach(i=>{
         const test = groupedContracts.filter(
             item => item[field] === i[field]
         );
@@ -66,15 +66,39 @@ export default function CollaborationDisplay(props) {
             // pushes title/companyName to list for select display.
             selectList.push({label: i[field], value: i[field]})
         }
-    });
-    contracts.map((i) => {
+    })
+
+    contracts.forEach(i=>{
         const currentTitle = i[field];
         // finds group of the current value for title/CompanyName
         const contractsWithSameTitle = groupedContracts.filter(function(k) {
             return k[field] === currentTitle;
         });
         contractsWithSameTitle[0].list.push(i)
-    });
+    })
+    // contracts.map((i) => {
+    //     const test = groupedContracts.filter(
+    //         item => item[field] === i[field]
+    //     );
+    //     // checks if title/companyName group does not exist yet and creates one.
+    //     if (test.length === 0) {
+    //         const itemObj = {
+    //             [field]: i[field],
+    //             list: []
+    //         };
+    //         groupedContracts.push(itemObj);
+    //         // pushes title/companyName to list for select display.
+    //         selectList.push({label: i[field], value: i[field]})
+    //     }
+    // });
+    // contracts.map((i) => {
+    //     const currentTitle = i[field];
+    //     // finds group of the current value for title/CompanyName
+    //     const contractsWithSameTitle = groupedContracts.filter(function(k) {
+    //         return k[field] === currentTitle;
+    //     });
+    //     contractsWithSameTitle[0].list.push(i)
+    // });
     let contractList
 
     return (
