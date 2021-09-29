@@ -118,7 +118,7 @@ export function ErrorSnackbar({open, setOpen}) {
     return (
         <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}>
             <Alert onClose={handleClose} severity={'error'} style={{fontSize:14, fontFamily:'Rubik'}}>
-                <div>Bad input entered</div>
+                <div>Please check your input and ensure all required fields are filled</div>
             </Alert>
         </Snackbar>
     )
