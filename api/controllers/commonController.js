@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken')
 const influencer = require('../models/influencer')
 const company = require('../models/company')
 const mailer = require('./mailer')
+const utils = require('./utils')
 
 const Token = require("../models/Token")
 const crypto = require("crypto")
@@ -71,10 +72,10 @@ async function resetPassword(req, res) {
                 if (err || company === null) {
                     return res.status(400).json({status: 'error', 'error': 'user not exist'})
                 }
-                await changePassword(req,res,company)
+                await utils.changePassword(req,res,company)
             })
         } else {
-            await changePassword(req,res,influencer)
+            await utils.changePassword(req,res,influencer)
         }
     })
 }

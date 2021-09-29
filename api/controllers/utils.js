@@ -139,6 +139,7 @@ module.exports = {
     searchBySearchBar,
     searchBySearchBarAndCategories,
     passwordUpdate,
-    changeStatus
+    changeStatus,
+    changePassword
 }
 
