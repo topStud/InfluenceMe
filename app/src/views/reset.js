@@ -38,6 +38,7 @@ export default function Reset() {
     const [callServer, setCallServer] = React.useState(false)
     const [passUpdated, setPassUpdated] = React.useState(false)
     const [oldToken, setOldToken] = React.useState(false)
+    const [errMsg, setErrMsg] = React.useState('')
 
     // values
     const [resetValues, setResetValues] = React.useState({
@@ -62,6 +63,7 @@ export default function Reset() {
     }
 
     const sendPasswordClicked = () => {
+        setErrMsg('')
         let passwordEmpty = resetValues.password === '',
             passwordVEmpty = resetValues.passwordV === '',
             differentPasswords = resetValues.password !== resetValues.passwordV,
@@ -122,12 +124,12 @@ export default function Reset() {
                             backgroundColor: 'white',
                             padding: 30
                         }}>
-                            {oldToken && <Alert severity="error" style={{marginBottom:30, fontSize:'1em'}}>
-                                Sorry, this link has expired.<br/>
-                                <Link to={'/forgotPassword'}>
+                            {errMsg !== '' && <Alert severity="error" style={{marginBottom:30, fontSize:'1em'}}>
+                                {errMsg}<br/>
+                                {oldToken && <Link to={'/forgotPassword'}>
                                     <Typography component={"a"} href={''} style={{fontSize: '0.9em',
                                         textDecoration: "underline"}}>Resend email</Typography>
-                                </Link>
+                                </Link>}
                             </Alert>}
                             <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center',
                                 fontFamily: 'Rubik'}}>
@@ -174,7 +176,12 @@ export default function Reset() {
                     newPassword:resetValues.password})}} sucMsg={''} url={'/api/reset-password'}
                             callServerObj={{getter: callServer, setter: setCallServer}} sucFunc={()=>{
                                 setPassUpdated(true)
-            }} failFunc={()=>{setOldToken(true)}}/>
+            }} failFunc={(response)=>{
+                if (response.error === 'Sorry, this link has expired.') {
+                    setOldToken(true);
+                }
+                setErrMsg(response.error)
+            }}/>
             <Footer/>
         </MuiThemeProvider>
     )
