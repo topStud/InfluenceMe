@@ -75,6 +75,7 @@ export const AnswerOfServer = ({callServerObj, url, methodObj, sucMsg, failMsg, 
                 } else {
                     if (failMsg === '' && typeof failFunc === 'function') {
                         failFunc(response)
+                        callServerObj.setter(false)
                     } else {
                         setSeverity('error')
                         setOpen(true)
