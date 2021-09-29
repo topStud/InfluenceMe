@@ -1,5 +1,7 @@
 const companyModel = require('../models/company')
 const influencerModel = require('../models/influencer')
+const bcrypt = require('bcryptjs')
+const mailer = require('./mailer')
 
 async function findUser(req, res, filter){
     let user = await influencerModel.findOne(filter).lean()
@@ -96,15 +98,6 @@ async function changeStatus(user, req, res, bool) {
 }
 
 
-async function changeStatus(user, req, res, bool) {
-    user.disabled = bool
-    user.save().catch((err) => {
-        return res.status(500).json({status: 'error', 'error': 'could not save'})
-    })
-    return res.json({status: 'ok'})
-}
-
-
 async function passwordUpdate(model, req, res) {
     await model.
     findOne({ _id: req.params.id}, async (err, user) => {
@@ -118,6 +111,23 @@ async function passwordUpdate(model, req, res) {
         await changePassword(req, res, user)
     })
 }
+
+async function changePassword(req, res, user) {
+    if(await bcrypt.compare(req.body.newPassword, user.password)){
+        return res.status(400).json({status: 'error',
+            'error': 'Hey! It looks like you’ve used this password before. Please choose a fresh one.'})
+    }
+    user.password = await bcrypt.hash(req.body.newPassword ,10)
+    user.save().catch((err) => {
+        return res.status(500).json({status: 'error', 'error': 'could not save user'})
+    })
+
+    // send email about changing
+    await mailer.changePasswordSendEmail(user.email)
+
+    return res.json({status: 'ok'})
+}
+
 
 
 module.exports = {
